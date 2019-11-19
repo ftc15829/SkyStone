@@ -1,17 +1,34 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import static java.lang.Thread.sleep;
 
 public class AutoBase {
     // INITIALIZATIONS
-    public AutoBase(Hardware hardware, LinearOpMode linearOpMode) { h = hardware; opmode = linearOpMode; }
+    AutoBase(Hardware hardware, LinearOpMode linearOpMode) { h = hardware; opmode = linearOpMode; }
     Hardware h;
     LinearOpMode opmode;
 
     // ACTIONS
-    void pickUp() {
-        // Fix
+    void pickUp(AutoBase.SepThreadMov sepThreadMov) {
+        int screenWidth = 320;
+        int screenHeight = 240;
+        double p = 1;
+        h.phoneCam.startStreaming(screenWidth, screenHeight, OpenCvCameraRotation.UPRIGHT);
+        Thread t = new Thread(sepThreadMov);
+        while (h.sDetect.getScreenPosition().x > screenWidth / 2 + 50 || h.sDetect.getScreenPosition().x < screenWidth / 2 - 50) {
+            if (h.sDetect.getScreenPosition().x > screenWidth / 2 + 50) {
+                sepThreadMov.dir = 0;
+                sepThreadMov.p = p;
+                t.run();
+            } else if (h.sDetect.getScreenPosition().x < screenWidth / 2 + 50) {
+                sepThreadMov.dir = 0;
+                sepThreadMov.p = p;
+                t.run();
+            }
+        }
+        t.stop();
     }
     void drop() {
         // Fix
@@ -149,6 +166,17 @@ public class AutoBase {
             while (!opmode.isStopRequested()) {
                 if (sDetector_xy) h.tWebcam();
                 opmode.idle();
+            }
+        }
+    }
+    public class SepThreadMov implements Runnable {
+        double p;
+        int dir;
+        @Override public void run() {
+            if (dir == 0) {
+                drivePower(-p, p, p, -p);
+            } else {
+                drivePower(p, -p, -p, p);
             }
         }
     }
