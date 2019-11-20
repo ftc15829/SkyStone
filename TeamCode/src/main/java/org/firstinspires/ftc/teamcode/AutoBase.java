@@ -12,6 +12,7 @@ public class AutoBase {
 
     // ACTIONS
     void pickUp(AutoBase.SepThreadMov sepThreadMov) {
+        // Align to Skystone
         int screenWidth = 320;
         int screenHeight = 240;
         double p = 1;
@@ -31,7 +32,10 @@ public class AutoBase {
         t.stop();
 
         // Extend Scissor
-        //
+        h.
+
+        // Grab
+        // Retract Scissor
     }
     void drop() {
         // Fix
