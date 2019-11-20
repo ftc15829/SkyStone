@@ -85,6 +85,10 @@ public class Hardware {
                 drive_lb.getCurrentPosition(), drive_rb.getCurrentPosition()));
         t.update();
     }
+    void tPos(DcMotor motor) {
+        t.addData("Pos", motor.getCurrentPosition());
+        t.update();
+    }
     void tStatus(String status) {
         t.addData("Status", status);
         t.update();

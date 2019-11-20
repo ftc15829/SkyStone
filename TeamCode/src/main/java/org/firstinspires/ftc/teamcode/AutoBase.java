@@ -32,10 +32,12 @@ public class AutoBase {
         t.stop();
 
         // Extend Scissor
-
+        platform(1, 0.2);
 
         // Grab
+
         // Retract Scissor
+        platform(-1, -0.2);
     }
     void drop() {
         // Fix
@@ -44,6 +46,23 @@ public class AutoBase {
     void modeSRE(DcMotor motor) { motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); }
     void modeRTP(DcMotor motor) { motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); }
     void targetPos(DcMotor motor, double rev) { motor.setTargetPosition((int)(rev * 28)); }
+
+    void platform(double rev, double p) {
+        h.lSlide_l.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        h.lSlide_r.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        h.lSlide_l.setTargetPosition((int)(rev * 28));
+        h.lSlide_r.setTargetPosition((int)(rev * 28));
+        h.lSlide_l.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        h.lSlide_r.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        h.lSlide_l.setPower(p);
+        h.lSlide_r.setPower(p);
+        while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) {
+            h.tPos(h.lSlide_l); h.tPos(h.lSlide_r);
+            opmode.idle();
+        }
+        h.lSlide_l.setPower(0);
+        h.lSlide_r.setPower(0);
+    }
  /*
  * CORE
 */
