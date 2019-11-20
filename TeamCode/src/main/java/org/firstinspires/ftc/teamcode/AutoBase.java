@@ -32,7 +32,7 @@ public class AutoBase {
         t.stop();
 
         // Extend Scissor
-        h.
+
 
         // Grab
         // Retract Scissor
