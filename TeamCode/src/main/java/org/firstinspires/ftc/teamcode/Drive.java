@@ -109,11 +109,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		double power;
 		double mod = 0.6;
 		double MOD = 0.3;
+		h.lStick_y = -h.lStick_y;
 		switch (i) {
-			case 0: power = h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_lf
-			case 1: power = h.lStick_y - h.lStick_x + h.rStick_x; break; // drive_rb
-			case 2: power = h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_lb
-			case 3: power = h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_rf
+			case 0: power = h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_lf
+			case 1: power = h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_rb
+			case 2: power = h.lStick_y - h.lStick_x + h.rStick_x; break; // drive_lb
+			case 3: power = h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_rf
 			default: power = 0; break;
 		}
 		power = power > 1 ? 1 : power;
