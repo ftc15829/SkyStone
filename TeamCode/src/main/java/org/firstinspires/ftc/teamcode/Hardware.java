@@ -3,6 +3,7 @@ import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -118,7 +119,7 @@ public class Hardware {
         _lStick_y = gamepad2.left_stick_y;
 //        _rStick_x = gamepad2.right_stick_x;
         _rStick_y = gamepad2.right_stick_y;
-//        _lTrigger = gamepad2.left_trigger;
+        _lTrigger = gamepad2.left_trigger;
         _rTrigger = gamepad2.right_trigger;
 //        _lBumper = gamepad2.left_bumper;
 //        _rBumper = gamepad2.right_bumper;

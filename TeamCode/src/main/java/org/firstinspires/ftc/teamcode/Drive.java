@@ -83,8 +83,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	// UPDATE crServos
 	private void updateCrServos() {
 		// Sets grabber positions
-		h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h.lTrigger != 0.0 ? -1.0 : 0.0));
-		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h.lTrigger != 0.0 ? 1.0 : 0.0));
+		h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h._lTrigger != 0.0 ? -1.0 : 0.0));
+		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
 	}
 	// UPDATE servos
 	private boolean a = true; // Toggle (actual value doesn't matter)
@@ -110,10 +110,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		double mod = 0.6;
 		double MOD = 0.3;
 		switch (i) {
-			case 0: power = h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_lf
-			case 1: power = h.lStick_y - h.lStick_x + h.rStick_x; break; // drive_rb
-			case 2: power = h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_lb
-			case 3: power = h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_rf
+			case 0: power = h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_lf
+			case 1: power = h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_rb
+			case 2: power = h.lStick_y - h.lStick_x + h.rStick_x; break; // drive_lb
+			case 3: power = h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_rf
 			default: power = 0; break;
 		}
 		power = power > 1 ? 1 : power;

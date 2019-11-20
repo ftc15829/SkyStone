@@ -22,13 +22,16 @@ public class AutoBase {
                 sepThreadMov.dir = 0;
                 sepThreadMov.p = p;
                 t.run();
-            } else if (h.sDetect.getScreenPosition().x < screenWidth / 2 + 50) {
-                sepThreadMov.dir = 0;
+            } else if (h.sDetect.getScreenPosition().x < screenWidth / 2 - 50) {
+                sepThreadMov.dir = 1;
                 sepThreadMov.p = p;
                 t.run();
             }
         }
         t.stop();
+
+        // Extend Scissor
+        //
     }
     void drop() {
         // Fix
@@ -51,7 +54,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void movL(int rev, double p) {
         driveModeSRE();
@@ -63,7 +65,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void movR(int rev, double p) {
         driveModeSRE();
@@ -75,7 +76,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void movB(int rev, double p) {
         driveModeSRE();
@@ -87,7 +87,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void trnL() {
         // Fix

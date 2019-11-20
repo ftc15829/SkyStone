@@ -31,7 +31,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 		try {
 			// Instructions:
-			a.movF_(10_000, 1);
+			a.movF(10, 1);
 
 		// Catches exceptions as plain-text
 		} catch(Exception e) {
