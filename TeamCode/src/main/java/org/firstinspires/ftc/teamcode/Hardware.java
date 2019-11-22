@@ -112,7 +112,7 @@ public class Hardware {
 //        lBumper = gamepad1.left_bumper;
 //        rBumper = gamepad1.right_bumper;
 //        button_a = gamepad1.a;
-//        button_b = gamepad1.b;
+        button_b = gamepad1.b;
 //        button_x = gamepad1.x;
 //        button_y = gamepad1.y;
 //        _lStick_x = gamepad2.left_stick_x;
