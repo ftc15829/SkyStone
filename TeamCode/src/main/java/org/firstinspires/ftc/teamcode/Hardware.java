@@ -107,16 +107,16 @@ public class Hardware {
 
     // UPDATE GAMEPAD VALUES
     void updateGamepad(Gamepad gamepad1, Gamepad gamepad2) {
-        lStick_x = gamepad1.left_stick_x;
-        lStick_y = gamepad1.left_stick_y;
-        rStick_x = gamepad1.right_stick_x;
+        lStick_x = -gamepad1.left_stick_x;
+        lStick_y = -gamepad1.left_stick_y;
+        rStick_x = -gamepad1.right_stick_x;
 //        rStick_y = gamepad1.right_stick_y;
         lTrigger = gamepad1.left_trigger;
         rTrigger = gamepad1.right_trigger;
 //        lBumper = gamepad1.left_bumper;
 //        rBumper = gamepad1.right_bumper;
 //        button_a = gamepad1.a;
-//        button_b = gamepad1.b;
+        button_b = gamepad1.b;
 //        button_x = gamepad1.x;
 //        button_y = gamepad1.y;
 //        _lStick_x = gamepad2.left_stick_x;
