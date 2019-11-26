@@ -35,7 +35,8 @@ public class AutoBase {
         platform(1, 0.2);
 
         // Grab
-
+        h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h._lTrigger != 0.0 ? -1.0 : 0.0));
+        h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
         // Retract Scissor
         platform(-1, -0.2);
     }
