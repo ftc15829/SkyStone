@@ -32,9 +32,34 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 		try {
 			// Instructions:
+			// Red Skystone
+//			/*
 			a.findSkystone(sepThreadMov, "Red");
 			a.pickUp();
-			a.movB(10, 1);
+			a.movB(5, 1);
+			a.movR(20, 1);
+			a.drop();
+			a.movL(15, 1);
+			// */
+			// Red Foundation
+			/*
+
+			// */
+			// Blue Skystone
+			/*
+			a.findSkystone(sepThreadMov, "Blue");
+			a.pickUp();
+			a.movB(5, 1);
+			a.movL(20, 1);
+			a.drop();
+			a.movR(15, 1);
+			// */
+			// Blue Foundation
+			/*
+
+			// */
+
+			// TESTING GOES HERE:
 
 		// Catches exceptions as plain-text
 		} catch(Exception e) {

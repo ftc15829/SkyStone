@@ -30,14 +30,21 @@ public class AutoBase {
 
     void pickUp() {
         platform(10, 0.7);
+        h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
+        h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), -1);
+        platform(-10, 0.7);
     }
     void drop() {
-        // Fix
+        platform(10, 0.7);
+        h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), -1);
+        h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
+        platform(-10, 0.7);
     }
     // General Helper
     void modeSRE(DcMotor motor) { motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); }
     void modeRTP(DcMotor motor) { motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); }
     void targetPos(DcMotor motor, double rev) { motor.setTargetPosition((int)(rev * 28)); }
+
     void platform(int rev, double p) {
         modeSRE(h.lSlide_l); modeSRE(h.lSlide_r);
         targetPos(h.lSlide_l, rev); targetPos(h.lSlide_r, -rev);
@@ -48,6 +55,7 @@ public class AutoBase {
         }
         h.lSlide_l.setPower(0); h.lSlide_r.setPower(0);
     }
+
  /*
  * CORE
 */
