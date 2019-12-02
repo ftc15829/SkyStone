@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import static java.lang.Thread.sleep;
 
 public class AutoBase {
     // INITIALIZATIONS
@@ -11,24 +10,26 @@ public class AutoBase {
     LinearOpMode opmode;
 
     // ACTIONS
-    void pickUp(AutoBase.SepThreadMov sepThreadMov) {
-        int screenWidth = 320;
-        int screenHeight = 240;
+    void findSkystone(AutoBase.SepThreadMov sepThreadMov, String team) {
         double p = 1;
-        h.phoneCam.startStreaming(screenWidth, screenHeight, OpenCvCameraRotation.UPRIGHT);
+        h.startStream();
         Thread t = new Thread(sepThreadMov);
-        while (h.sDetect.getScreenPosition().x > screenWidth / 2 + 50 || h.sDetect.getScreenPosition().x < screenWidth / 2 - 50) {
-            if (h.sDetect.getScreenPosition().x > screenWidth / 2 + 50) {
-                sepThreadMov.dir = 0;
+        while(h.sDetect.foundRectangle().area() < 1 && h.sDetect.foundRectangle().area() > 0.5) {
+            if (team == "Red") {
+                sepThreadMov.dir = 3;
                 sepThreadMov.p = p;
                 t.run();
-            } else if (h.sDetect.getScreenPosition().x < screenWidth / 2 + 50) {
-                sepThreadMov.dir = 0;
+            } else if (team == "Blue") {
+                sepThreadMov.dir = 1;
                 sepThreadMov.p = p;
                 t.run();
             }
         }
-        t.stop();
+        movF(10, 1);
+    }
+
+    void pickUp() {
+
     }
     void drop() {
         // Fix
@@ -173,10 +174,19 @@ public class AutoBase {
         double p;
         int dir;
         @Override public void run() {
-            if (dir == 0) {
-                drivePower(-p, p, p, -p);
-            } else {
-                drivePower(p, -p, -p, p);
+            switch(dir) {
+                case 0:
+                    break;
+                case 1:
+                    drivePower(p, -p, -p, p);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    drivePower(-p, p, p, -p);
+                    break;
+                default:
+                    break;
             }
         }
     }
