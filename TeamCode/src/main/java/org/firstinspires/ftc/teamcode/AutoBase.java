@@ -29,7 +29,6 @@ public class AutoBase {
     }
 
     void pickUp() {
-
     }
     void drop() {
         // Fix
@@ -52,7 +51,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void movL(int rev, double p) {
         driveModeSRE();
@@ -64,7 +62,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void movR(int rev, double p) {
         driveModeSRE();
@@ -76,7 +73,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void movB(int rev, double p) {
         driveModeSRE();
@@ -88,7 +84,6 @@ public class AutoBase {
             opmode.idle();
         }
         halt(0);
-        driveModeSRE();
     }
     void trnL() {
         // Fix

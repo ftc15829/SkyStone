@@ -3,6 +3,7 @@ import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -112,23 +113,23 @@ public class Hardware {
 
     // UPDATE GAMEPAD VALUES
     void updateGamepad(Gamepad gamepad1, Gamepad gamepad2) {
-        lStick_x = gamepad1.left_stick_x;
-        lStick_y = gamepad1.left_stick_y;
-        rStick_x = gamepad1.right_stick_x;
+        lStick_x = -gamepad1.left_stick_x;
+        lStick_y = -gamepad1.left_stick_y;
+        rStick_x = -gamepad1.right_stick_x;
 //        rStick_y = gamepad1.right_stick_y;
         lTrigger = gamepad1.left_trigger;
         rTrigger = gamepad1.right_trigger;
 //        lBumper = gamepad1.left_bumper;
 //        rBumper = gamepad1.right_bumper;
 //        button_a = gamepad1.a;
-//        button_b = gamepad1.b;
+        button_b = gamepad1.b;
 //        button_x = gamepad1.x;
 //        button_y = gamepad1.y;
 //        _lStick_x = gamepad2.left_stick_x;
         _lStick_y = gamepad2.left_stick_y;
 //        _rStick_x = gamepad2.right_stick_x;
         _rStick_y = gamepad2.right_stick_y;
-//        _lTrigger = gamepad2.left_trigger;
+        _lTrigger = gamepad2.left_trigger;
         _rTrigger = gamepad2.right_trigger;
 //        _lBumper = gamepad2.left_bumper;
 //        _rBumper = gamepad2.right_bumper;

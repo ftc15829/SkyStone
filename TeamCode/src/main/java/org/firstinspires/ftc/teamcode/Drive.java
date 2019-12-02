@@ -83,8 +83,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	// UPDATE crServos
 	private void updateCrServos() {
 		// Sets grabber positions
-		h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h.lTrigger != 0.0 ? -1.0 : 0.0));
-		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h.lTrigger != 0.0 ? 1.0 : 0.0));
+		h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h._lTrigger != 0.0 ? -1.0 : 0.0));
+		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
 	}
 	// UPDATE servos
 	private boolean a = true; // Toggle (actual value doesn't matter)
@@ -94,7 +94,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			h.fHook_l.setPosition(a ? 1.0 : 0.0);
 			h.fHook_r.setPosition(a ? 0.0 : 1.0);
 			a = !a;
-			sleep(50);
+			sleep(300);
 		}
 	}
 	// UPDATE drive
