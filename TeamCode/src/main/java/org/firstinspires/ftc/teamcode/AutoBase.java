@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import static java.lang.Thread.sleep;
 
 public class AutoBase {
     // INITIALIZATIONS
@@ -11,37 +10,35 @@ public class AutoBase {
     LinearOpMode opmode;
 
     // ACTIONS
-    void pickUp(AutoBase.SepThreadMov sepThreadMov) {
-        // Align to Skystone
-        int screenWidth = 320;
-        int screenHeight = 240;
+    void findSkystone(AutoBase.SepThreadMov sepThreadMov, String team) {
         double p = 1;
-        h.phoneCam.startStreaming(screenWidth, screenHeight, OpenCvCameraRotation.UPRIGHT);
+        h.startStream();
         Thread t = new Thread(sepThreadMov);
-        while (h.sDetect.getScreenPosition().x > screenWidth / 2 + 50 || h.sDetect.getScreenPosition().x < screenWidth / 2 - 50) {
-            if (h.sDetect.getScreenPosition().x > screenWidth / 2 + 50) {
-                sepThreadMov.dir = 0;
+        while(h.sDetect.foundRectangle().area() < 1 && h.sDetect.foundRectangle().area() > 0.5) {
+            if (team == "Red") {
+                sepThreadMov.dir = 3;
                 sepThreadMov.p = p;
                 t.run();
-            } else if (h.sDetect.getScreenPosition().x < screenWidth / 2 - 50) {
+            } else if (team == "Blue") {
                 sepThreadMov.dir = 1;
                 sepThreadMov.p = p;
                 t.run();
             }
         }
-        t.stop();
+        movF(10, 1);
+    }
 
-        // Extend Scissor
-        platform(1, 0.2);
-
-        // Grab
-        h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h._lTrigger != 0.0 ? -1.0 : 0.0));
-        h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
-        // Retract Scissor
-        platform(-1, -0.2);
+    void pickUp() {
+        platform(10, 0.7);
+        h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
+        h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), -1);
+        platform(-10, 0.7);
     }
     void drop() {
-        // Fix
+        platform(10, 0.7);
+        h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), -1);
+        h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
+        platform(-10, 0.7);
     }
     // General Helper
     void modeSRE(DcMotor motor) { motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); }
@@ -192,10 +189,19 @@ public class AutoBase {
         double p;
         int dir;
         @Override public void run() {
-            if (dir == 0) {
-                drivePower(-p, p, p, -p);
-            } else {
-                drivePower(p, -p, -p, p);
+            switch(dir) {
+                case 0:
+                    break;
+                case 1:
+                    drivePower(p, -p, -p, p);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    drivePower(-p, p, p, -p);
+                    break;
+                default:
+                    break;
             }
         }
     }

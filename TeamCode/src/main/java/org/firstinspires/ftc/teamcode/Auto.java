@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	private Hardware h = new Hardware(t, this);
 	private AutoBase a = new AutoBase(h, this);
 	private AutoBase.AutoTelemetry tUpdate = a.new AutoTelemetry();
+	private AutoBase.SepThreadMov sepThreadMov = a.new SepThreadMov();
 
 	// Runs when initialized
 	@Override public void runOpMode() {
@@ -31,13 +32,34 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 		try {
 			// Instructions:
-			a.movF_(1000, 0.6);
-			sleep(2000);
-			a.movB_(1000, 0.6);
-			sleep(2000);
-			a.movL_(1000, 0.6);
-			sleep(2000);
-			a.movR_(1000, 0.6);
+			// Red Skystone
+//			/*
+			a.findSkystone(sepThreadMov, "Red");
+			a.pickUp();
+			a.movB(5, 1);
+			a.movR(20, 1);
+			a.drop();
+			a.movL(15, 1);
+			// */
+			// Red Foundation
+			/*
+
+			// */
+			// Blue Skystone
+			/*
+			a.findSkystone(sepThreadMov, "Blue");
+			a.pickUp();
+			a.movB(5, 1);
+			a.movL(20, 1);
+			a.drop();
+			a.movR(15, 1);
+			// */
+			// Blue Foundation
+			/*
+
+			// */
+
+			// TESTING GOES HERE:
 
 		// Catches exceptions as plain-text
 		} catch(Exception e) {

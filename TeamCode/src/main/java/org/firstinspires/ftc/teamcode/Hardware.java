@@ -26,6 +26,8 @@ public class Hardware {
     CRServo grab_l, grab_r;
         // Initialize visual detection
     OpenCvCamera phoneCam;
+    int screenWidth = 320;
+    int screenHeight = 240;
     SkystoneDetector sDetect;
         // Initialize gamepad values
     double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
@@ -64,8 +66,12 @@ public class Hardware {
 
         sDetect = new SkystoneDetector();
         phoneCam.setPipeline(sDetect);
+        sDetect.useDefaults();
+    }
 
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+    void startStream() {
+        OpenCvCameraRotation direction = OpenCvCameraRotation.SIDEWAYS_LEFT;
+        phoneCam.startStreaming(screenWidth, screenHeight, direction);
     }
 
     // TELEMETRY
@@ -102,6 +108,10 @@ public class Hardware {
         t.addData("Pipeline time ms", phoneCam.getPipelineTimeMs());
         t.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
         t.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());*/
+        t.update();
+    }
+    void tArea() {
+        t.addData("Area", sDetect.foundRectangle().area());
         t.update();
     }
 
