@@ -74,9 +74,9 @@ public class AutoBase {
     }
     void movL(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev); // Fix
+        driveTargetPos(rev, rev, rev, rev);
         driveModeRTP();
-        drivePower(p, p, p, p); // Fix
+        drivePower(p, p, p, p);
         while (drive_isBusy()) {
             h.tDrivePos();
             opmode.idle();
@@ -85,9 +85,9 @@ public class AutoBase {
     }
     void movR(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev); // Fix
+        driveTargetPos(rev, rev, rev, rev);
         driveModeRTP();
-        drivePower(p, p, p, p); // Fix
+        drivePower(p, p, p, p);
         while (drive_isBusy()) {
             h.tDrivePos();
             opmode.idle();
@@ -96,9 +96,9 @@ public class AutoBase {
     }
     void movB(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev); // Fix
+        driveTargetPos(rev, rev, rev, rev);
         driveModeRTP();
-        drivePower(p, p, p, p); // Fix
+        drivePower(p, p, p, p);
         while (drive_isBusy()) {
             h.tDrivePos();
             opmode.idle();
