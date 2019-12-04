@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 			// */
 			// Blue Skystone
-			/*
+			/*f
 			a.findSkystone(sepThreadMov, "Blue");
 			a.pickUp();
 			a.movB(5, 1);
