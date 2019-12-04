@@ -74,7 +74,7 @@ public class AutoBase {
     }
     void movL(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev);
+        driveTargetPos(-rev, rev, rev, -rev);
         driveModeRTP();
         drivePower(p, p, p, p);
         while (drive_isBusy()) {
@@ -85,7 +85,7 @@ public class AutoBase {
     }
     void movR(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev);
+        driveTargetPos(rev, -rev, -rev, rev);
         driveModeRTP();
         drivePower(p, p, p, p);
         while (drive_isBusy()) {
@@ -96,7 +96,7 @@ public class AutoBase {
     }
     void movB(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev);
+        driveTargetPos(-rev, -rev, -rev, -rev);
         driveModeRTP();
         drivePower(p, p, p, p);
         while (drive_isBusy()) {
@@ -113,10 +113,10 @@ public class AutoBase {
     }
     // ENCODER MOVEMENT HELPER
     void driveTargetPos(double revlf, double revrf, double revlb, double revrb) {
-        h.drive_lf.setTargetPosition((int)(revlf * 28));
-        h.drive_rf.setTargetPosition((int)(revrf * 28));
-        h.drive_lb.setTargetPosition((int)(revlb * 28));
-        h.drive_rb.setTargetPosition((int)(revrb * 28));
+        h.drive_lf.setTargetPosition((int)(revlf *28*20));
+        h.drive_rf.setTargetPosition((int)(revrf * 28*20));
+        h.drive_lb.setTargetPosition((int)(revlb * 28*20));
+        h.drive_rb.setTargetPosition((int)(revrb * 28*20));
     }
     void driveModeRTP() {
         h.drive_lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);

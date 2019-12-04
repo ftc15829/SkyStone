@@ -60,16 +60,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			// */
 
 			// TESTING GOES HERE:
+            a.movF(5,1);
+            a.movB(5,1);
+            a.movL(5,1);
+            a.movR(5,1);
 			//a.movF(10, 1);
-			a.modeSRE(h.drive_lf);
-			h.drive_lf.setTargetPosition(20*28);
-			a.modeRTP(h.drive_lf);
-			h.drive_lf.setPower(0.7);
-			while (h.drive_lf.isBusy()) {
-				h.tStatus(Integer.toString(h.drive_lf.getCurrentPosition()));
-				idle();
-			}
-			h.drive_lf.setPower(0);
+			//a.modeSRE(h.drive_lf);
+			//h.drive_lf.setTargetPosition(20*28*5);
+			//a.modeRTP(h.drive_lf);
+			//h.drive_lf.setPower(1);
+			//while (h.drive_lf.isBusy()) {
+			//	h.tStatus(Integer.toString(h.drive_lf.getCurrentPosition()));
+			//	idle();
+			//}
+			//h.drive_lf.setPower(0);
 
 		// Catches exceptions as plain-text
 		} catch(Exception e) {
