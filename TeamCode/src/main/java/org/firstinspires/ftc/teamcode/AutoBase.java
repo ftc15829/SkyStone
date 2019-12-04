@@ -44,18 +44,19 @@ public class AutoBase {
     void modeSRE(DcMotor motor) { motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); }
     void modeRTP(DcMotor motor) { motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); }
     void targetPos(DcMotor motor, double rev) { motor.setTargetPosition((int)(rev * 28)); }
+    void power(DcMotor motor, double p) { motor.setPower(p); }
 
-    void platform(int rev, double p) {
+    void platform(double rev, double p) {
         modeSRE(h.lSlide_l); modeSRE(h.lSlide_r);
-        targetPos(h.lSlide_l, rev); targetPos(h.lSlide_r, -rev);
+        targetPos(h.lSlide_l, rev); targetPos(h.lSlide_r, rev);
         modeRTP(h.lSlide_l); modeRTP(h.lSlide_r);
-        h.lSlide_l.setPower(p); h.lSlide_r.setPower(p);
-        while(h.lSlide_l.isBusy() || h.lSlide_r.isBusy()) {
+        power(h.lSlide_l, p); power(h.lSlide_r, p);
+        while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) {
+            h.tPos(h.lSlide_l); h.tPos(h.lSlide_r);
             opmode.idle();
         }
-        h.lSlide_l.setPower(0); h.lSlide_r.setPower(0);
+        power(h.lSlide_l, 0); power(h.lSlide_r, 0);
     }
-
  /*
  * CORE
 */
