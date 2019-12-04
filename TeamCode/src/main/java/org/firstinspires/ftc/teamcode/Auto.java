@@ -33,13 +33,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			// Instructions:
 			// Red Skystone
-//			/*
+			/*
 			a.findSkystone(sepThreadMov, "Red");
 			a.pickUp();
-			a.movB(5, 1);
-			a.movR(20, 1);
+			a.movB_(200, 1);
+			a.movR_(500, 1);
 			a.drop();
-			a.movL(15, 1);
+			a.movL_(3_000, 1);
 			// */
 			// Red Foundation
 			/*
@@ -60,6 +60,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			// */
 
 			// TESTING GOES HERE:
+			//a.movF(10, 1);
+			a.modeSRE(h.drive_lf);
+			h.drive_lf.setTargetPosition(20*28);
+			a.modeRTP(h.drive_lf);
+			h.drive_lf.setPower(0.7);
+			while (h.drive_lf.isBusy()) {
+				h.tStatus(Integer.toString(h.drive_lf.getCurrentPosition()));
+				idle();
+			}
+			h.drive_lf.setPower(0);
 
 		// Catches exceptions as plain-text
 		} catch(Exception e) {
