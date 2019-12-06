@@ -7,10 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 //@Disabled
 @TeleOp(name="Drive") public class Drive extends LinearOpMode {
 
-	// Define hardware and telemetry
+/*Initializations*/
 	private Telemetry t = telemetry;
 	private Hardware h = new Hardware(t, this);
 
+/*Main*/
 	// Runs when initialized
 	@Override public void runOpMode() {
 		// Initiate hardware
@@ -51,21 +52,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		}
 	}
 
- /*
- * ACTIONS
-*/
+ /*Assisted Actions*/ // (To be removed)
  	// Pick Up
  	private void pickUp() {
-
  		// Note: might think about combining this and AutoBase's pickUp() and drop() functions
 	}
  	// Drop
-	private void drop() {}
+	private void drop() { }
 
- /*
- * UPDATE
-*/
- 	// DETECT Action
+/*Update*/
+ 	// Detect Action
 	private void detectAction() {
 		/*
 		if b then pickup
@@ -73,20 +69,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		etc.
 		 */
 	}
-	// UPDATE auxMotors
+	// Update Auxilary Motors
 	private void updateAux() {
 		// Sets scissor-lift's motor powers
 		h.scissor.setPower(-h._lStick_y);
 		h.lSlide_l.setPower(-h._rStick_y);
 		h.lSlide_r.setPower(h._rStick_y);
 	}
-	// UPDATE crServos
+	// Update CR Servos
 	private void updateCrServos() {
 		// Sets grabber positions
 		h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h._lTrigger != 0.0 ? -1.0 : 0.0));
 		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
 	}
-	// UPDATE servos
+	// Update Servos
 	private boolean a = true; // Toggle (actual value doesn't matter)
 	private void updateServos() {
 		// Sets f-hook positions
@@ -97,14 +93,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			sleep(300);
 		}
 	}
-	// UPDATE drive
+	// Update Drive
 	private void updateDrive() {
 		h.drive_lf.setPower(getPower(0));
 		h.drive_rb.setPower(getPower(1));
 		h.drive_lb.setPower(getPower(2));
 		h.drive_rf.setPower(getPower(3));
 	}
-		// HELPER drive
 	private double getPower(int i) {
 		double power;
 		double mod = 0.6;

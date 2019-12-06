@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 //@Disabled
 @Autonomous(name="Auto") public class Auto extends LinearOpMode {
-	// Initializations
-	private Telemetry t = telemetry;
-	private Hardware h = new Hardware(t, this);
+/*Initializations*/
+	private Telemetry tele = telemetry;
+	private Hardware h = new Hardware(tele, this);
 	private AutoBase a = new AutoBase(h, this);
-	private AutoBase.AutoTelemetry tUpdate = a.new AutoTelemetry();
+//	private AutoBase.AutoTelemetry tUpdate = a.new AutoTelemetry(); // Depreciated
 	private AutoBase.SepThreadMov sepThreadMov = a.new SepThreadMov();
 
 	// Runs when initialized
@@ -20,9 +20,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			h.init(hardwareMap);
 			h.initAuto(hardwareMap);
-			// Start telemetry thread
+			/*// Start telemetry thread // Depreciated
 			Thread t = new Thread(tUpdate);
-			t.start();
+			t.start();*/
 		} catch (Exception e) {
 			h.tErr("HardwareMap", e);
 			sleep(15_000);
@@ -32,36 +32,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		waitForStart();
 
 		try {
-			// Instructions:
+
+/*Instructions*/
 			// Red Skystone
-//			/*
 			a.movF(3,1);
-			a.findSkystone(sepThreadMov, "Red");
+			a.findSkystone(sepThreadMov, 3);
 			a.pickUp();
 			a.movB(3, 1);
 			a.movR(20, 1);
 			a.drop();
 			a.movL(10, 1);
-			// */
-			// Red Foundation
-			/*
 
-			// */
-			// Blue Skystone
-			/*f
-			a.findSkystone(sepThreadMov, "Blue");
-			a.pickUp();
-			a.movB(5, 1);
-			a.movL(20, 1);
-			a.drop();
-			a.movR(15, 1);
-			// */
-			// Blue Foundation
-			/*
-
-			// */
-
-			// Catches exceptions as plain-text
+/*End*/
+		// Catches exceptions as plain-text
 		} catch (Exception e) {
 			h.tErr("Auto Runtime", e);
 			sleep(15_000);
