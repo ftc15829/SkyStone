@@ -14,16 +14,17 @@ public class AutoBase {
         double p = 1;
         h.startStream();
         Thread t = new Thread(sepThreadMov);
-        while(h.sDetect.foundRectangle().area() < 1 && h.sDetect.foundRectangle().area() > 0.5) {
-            if (team == "Red") {
+        while(h.sDetect.foundRectangle().area() < 7000 || ( h.sDetect.getScreenPosition().x < 79 && h.sDetect.getScreenPosition().x > 82 )) {
+            if ("Red".equals(team)) {
                 sepThreadMov.dir = 3;
                 sepThreadMov.p = p;
                 t.run();
-            } else if (team == "Blue") {
+            } else if ("Blue".equals(team)) {
                 sepThreadMov.dir = 1;
                 sepThreadMov.p = p;
                 t.run();
             }
+            opmode.idle();
         }
         movF(10, 1);
     }
@@ -74,7 +75,7 @@ public class AutoBase {
     }
     void movL(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev);
+        driveTargetPos(-rev, rev, rev, -rev);
         driveModeRTP();
         drivePower(p, p, p, p);
         while (drive_isBusy()) {
@@ -85,7 +86,7 @@ public class AutoBase {
     }
     void movR(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev);
+        driveTargetPos(rev, -rev, -rev, rev);
         driveModeRTP();
         drivePower(p, p, p, p);
         while (drive_isBusy()) {
@@ -96,7 +97,7 @@ public class AutoBase {
     }
     void movB(int rev, double p) {
         driveModeSRE();
-        driveTargetPos(rev, rev, rev, rev);
+        driveTargetPos(-rev, -rev, -rev, -rev);
         driveModeRTP();
         drivePower(p, p, p, p);
         while (drive_isBusy()) {
@@ -105,18 +106,41 @@ public class AutoBase {
         }
         halt(0);
     }
-    void trnL() {
+    void trnL(int rev, double p) {
         // Fix
+        double a=5.0;
+        driveModeSRE();
+        driveTargetPos(-rev*a, rev*a, -rev*a, rev*a);
+        driveModeRTP();
+        drivePower(p, p, p, p);
+        while (drive_isBusy()) {
+            h.tDrivePos();
+            opmode.idle();
+        }
+        halt(0);
     }
-    void trnR() {
+
+
+
+    void trnR(int rev, double p) {
         // Fix
+        double a=5.0;
+        driveModeSRE();
+        driveTargetPos(rev*a, -rev*a, rev*a, -rev*a);
+        driveModeRTP();
+        drivePower(p, p, p, p);
+        while (drive_isBusy()) {
+            h.tDrivePos();
+            opmode.idle();
+        }
+        halt(0);
     }
     // ENCODER MOVEMENT HELPER
     void driveTargetPos(double revlf, double revrf, double revlb, double revrb) {
-        h.drive_lf.setTargetPosition((int)(revlf * 28));
-        h.drive_rf.setTargetPosition((int)(revrf * 28));
-        h.drive_lb.setTargetPosition((int)(revlb * 28));
-        h.drive_rb.setTargetPosition((int)(revrb * 28));
+        h.drive_lf.setTargetPosition((int)(revlf *28*20));
+        h.drive_rf.setTargetPosition((int)(revrf * 28*20));
+        h.drive_lb.setTargetPosition((int)(revlb * 28*20));
+        h.drive_rb.setTargetPosition((int)(revrb * 28*20));
     }
     void driveModeRTP() {
         h.drive_lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -197,7 +221,7 @@ public class AutoBase {
                     break;
                 case 2:
                     break;
-                case 3:
+                case 3: // Left
                     drivePower(-p, p, p, -p);
                     break;
                 default:

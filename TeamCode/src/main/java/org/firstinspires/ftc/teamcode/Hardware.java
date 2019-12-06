@@ -67,6 +67,7 @@ public class Hardware {
         sDetect = new SkystoneDetector();
         phoneCam.setPipeline(sDetect);
         sDetect.useDefaults();
+//        startStream();
     }
 
     void startStream() {
@@ -110,8 +111,9 @@ public class Hardware {
         t.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());*/
         t.update();
     }
-    void tArea() {
+    void tCaminfo() {
         t.addData("Area", sDetect.foundRectangle().area());
+        t.addData("X", sDetect.getScreenPosition().x);
         t.update();
     }
 
