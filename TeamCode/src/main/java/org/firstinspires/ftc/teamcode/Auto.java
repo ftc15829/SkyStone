@@ -14,7 +14,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	private AutoBase.SepThreadMov sepThreadMov = a.new SepThreadMov();
 
 	// Runs when initialized
-	@Override public void runOpMode() {
+	@Override
+	public void runOpMode() {
 		// Initiate hardware
 		try {
 			h.init(hardwareMap);
@@ -22,7 +23,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			// Start telemetry thread
 			Thread t = new Thread(tUpdate);
 			t.start();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			h.tErr("HardwareMap", e);
 			sleep(15_000);
 			stop();
@@ -33,13 +34,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			// Instructions:
 			// Red Skystone
-			/*
+//			/*
+			a.movF(3,1);
 			a.findSkystone(sepThreadMov, "Red");
 			a.pickUp();
-			a.movB_(200, 1);
-			a.movR_(500, 1);
+			a.movB(3, 1);
+			a.movR(20, 1);
 			a.drop();
-			a.movL_(3_000, 1);
+			a.movL(10, 1);
 			// */
 			// Red Foundation
 			/*
@@ -59,24 +61,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 			// */
 
-			// TESTING GOES HERE:
-            a.movF(5,1);
-            a.movB(5,1);
-            a.movL(5,1);
-            a.movR(5,1);
-			//a.movF(10, 1);
-			//a.modeSRE(h.drive_lf);
-			//h.drive_lf.setTargetPosition(20*28*5);
-			//a.modeRTP(h.drive_lf);
-			//h.drive_lf.setPower(1);
-			//while (h.drive_lf.isBusy()) {
-			//	h.tStatus(Integer.toString(h.drive_lf.getCurrentPosition()));
-			//	idle();
-			//}
-			//h.drive_lf.setPower(0);
-
-		// Catches exceptions as plain-text
-		} catch(Exception e) {
+			// Catches exceptions as plain-text
+		} catch (Exception e) {
 			h.tErr("Auto Runtime", e);
 			sleep(15_000);
 			stop();

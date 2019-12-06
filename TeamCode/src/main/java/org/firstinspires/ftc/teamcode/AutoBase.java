@@ -14,16 +14,17 @@ public class AutoBase {
         double p = 1;
         h.startStream();
         Thread t = new Thread(sepThreadMov);
-        while(h.sDetect.foundRectangle().area() < 1 && h.sDetect.foundRectangle().area() > 0.5) {
-            if (team == "Red") {
+        while(h.sDetect.foundRectangle().area() < 7000 || ( h.sDetect.getScreenPosition().x < 79 && h.sDetect.getScreenPosition().x > 82 )) {
+            if ("Red".equals(team)) {
                 sepThreadMov.dir = 3;
                 sepThreadMov.p = p;
                 t.run();
-            } else if (team == "Blue") {
+            } else if ("Blue".equals(team)) {
                 sepThreadMov.dir = 1;
                 sepThreadMov.p = p;
                 t.run();
             }
+            opmode.idle();
         }
         movF(10, 1);
     }
@@ -105,11 +106,34 @@ public class AutoBase {
         }
         halt(0);
     }
-    void trnL() {
+    void trnL(int rev, double p) {
         // Fix
+        double a=5.0;
+        driveModeSRE();
+        driveTargetPos(-rev*a, rev*a, -rev*a, rev*a);
+        driveModeRTP();
+        drivePower(p, p, p, p);
+        while (drive_isBusy()) {
+            h.tDrivePos();
+            opmode.idle();
+        }
+        halt(0);
     }
-    void trnR() {
+
+
+
+    void trnR(int rev, double p) {
         // Fix
+        double a=5.0;
+        driveModeSRE();
+        driveTargetPos(rev*a, -rev*a, rev*a, -rev*a);
+        driveModeRTP();
+        drivePower(p, p, p, p);
+        while (drive_isBusy()) {
+            h.tDrivePos();
+            opmode.idle();
+        }
+        halt(0);
     }
     // ENCODER MOVEMENT HELPER
     void driveTargetPos(double revlf, double revrf, double revlb, double revrb) {
@@ -197,7 +221,7 @@ public class AutoBase {
                     break;
                 case 2:
                     break;
-                case 3:
+                case 3: // Left
                     drivePower(-p, p, p, -p);
                     break;
                 default:
