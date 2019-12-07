@@ -46,6 +46,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 		// Catches exceptions as plain-text
 		} catch(Exception e) {
+			h.tStatus("Error");
 			h.tErr("Runtime", e);
 			sleep(15_000);
 			stop();
@@ -71,6 +72,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	}
 	// Update Auxilary Motors
 	private void updateAux() {
+		h.tSub("Updating Aux Motors");
 		// Sets scissor-lift's motor powers
 		h.scissor.setPower(-h._lStick_y);
 		h.lSlide_l.setPower(-h._rStick_y);
@@ -78,6 +80,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	}
 	// Update CR Servos
 	private void updateCrServos() {
+		h.tSub("Updating CRServos");
 		// Sets grabber positions
 		h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h._lTrigger != 0.0 ? -1.0 : 0.0));
 		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
@@ -85,6 +88,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	// Update Servos
 	private boolean a = true; // Toggle (actual value doesn't matter)
 	private void updateServos() {
+		h.tSub("Updating Servos");
 		// Sets f-hook positions
 		if (h.button_b) {
 			h.fHook_l.setPosition(a ? 1.0 : 0.0);
@@ -95,6 +99,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	}
 	// Update Drive
 	private void updateDrive() {
+		h.tSub("Updating Drive");
 		h.drive_lf.setPower(getPower(0));
 		h.drive_rb.setPower(getPower(1));
 		h.drive_lb.setPower(getPower(2));

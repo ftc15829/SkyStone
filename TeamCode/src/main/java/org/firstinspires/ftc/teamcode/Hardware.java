@@ -14,6 +14,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+import static java.lang.Math.round;
+
 public class Hardware {
 /*Initializations*/
     public Hardware(Telemetry telemetry, LinearOpMode linearOpMode) { t = telemetry; opmode = linearOpMode; }
@@ -86,9 +88,9 @@ public class Hardware {
         t.update();
     }
     void tDrivePos() {
-        t.addData("Main Drive Position", String.format("\n| %d | %d |\n| %d | %d |",
-                drive_lf.getCurrentPosition(), drive_rf.getCurrentPosition(),
-                drive_lb.getCurrentPosition(), drive_rb.getCurrentPosition()));
+        t.addData("Main Drive Position", String.format("\n| %.2f | %.2f |\n| %.2f | %.2f |",
+                drive_lf.getCurrentPosition() / 560, drive_rf.getCurrentPosition() / 560,
+                drive_lb.getCurrentPosition() / 560, drive_rb.getCurrentPosition() / 560));
         t.update();
     }
     void tPos(DcMotor motor) {
@@ -97,6 +99,10 @@ public class Hardware {
     }
     void tStatus(String status) {
         t.addData("Status", status);
+        t.update();
+    }
+    void tSub(String sub) {
+        t.addData("Sub", sub);
         t.update();
     }
     void tWebcam() {

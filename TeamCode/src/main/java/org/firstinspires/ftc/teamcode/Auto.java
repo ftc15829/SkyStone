@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			Thread t = new Thread(tUpdate);
 			t.start();*/
 		} catch (Exception e) {
+			h.tStatus("Error");
 			h.tErr("HardwareMap", e);
 			sleep(15_000);
 			stop();
@@ -32,20 +33,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		waitForStart();
 
 		try {
-
+			h.tStatus("Running");
 /*Instructions*/
 			// Red Skystone
-			a.movF(3,1);
+			a.movF(3,1); h.tStatus("Finding Skystone");
 			a.findSkystone(sepThreadMov, 3);
-			a.pickUp();
+			a.pickUp(); h.tStatus("Moving to Foundation");
 			a.movB(3, 1);
 			a.movR(20, 1);
-			a.drop();
-			a.movL(10, 1);
+			a.drop(); h.tSub("Moving under Bridge");
+			a.movL(10, 1); h.tStatus("Done!");
 
 /*End*/
 		// Catches exceptions as plain-text
 		} catch (Exception e) {
+			h.tStatus("Error");
 			h.tErr("Auto Runtime", e);
 			sleep(15_000);
 			stop();
