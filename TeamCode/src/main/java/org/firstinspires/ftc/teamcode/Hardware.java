@@ -74,6 +74,9 @@ public class Hardware {
         OpenCvCameraRotation direction = OpenCvCameraRotation.SIDEWAYS_LEFT;
         phoneCam.startStreaming(screenWidth, screenHeight, direction);
     }
+    void stopStream() {
+        phoneCam.stopStreaming();
+    }
 
 /*Telemetry*/
     void tDrivePower() {

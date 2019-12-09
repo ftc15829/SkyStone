@@ -12,8 +12,6 @@ public class AutoBase {
 /*Actions*/
     void findSkystone(AutoBase.SepThreadMov sepThreadMov, int dir) { // Searches for a skystone in the given direction. When if finds one it will move towards it
         double p = 1;
-        h.startStream();
-        opmode.sleep(800); // Time for stream to start up
         Thread t = new Thread(sepThreadMov);
         sepThreadMov.dir = dir; // 1 = right, 3 = left
         sepThreadMov.p = p;
@@ -62,7 +60,7 @@ public class AutoBase {
         h.drive_lf.setPower(p); h.drive_rf.setPower(p);
         h.drive_lb.setPower(p); h.drive_rb.setPower(p);
     }
-    private boolean drive_isBusy() { // Will return True if any drive motor is busy
+    boolean drive_isBusy() { // Will return True if any drive motor is busy
         return h.drive_lf.isBusy() || h.drive_rf.isBusy() || h.drive_lb.isBusy() || h.drive_rb.isBusy();
     }
     // General

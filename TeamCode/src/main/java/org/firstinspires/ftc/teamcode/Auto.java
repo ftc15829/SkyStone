@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			h.init(hardwareMap);
 			h.initAuto(hardwareMap);
+			h.startStream();
 			/*// Start telemetry thread // Depreciated
 			Thread t = new Thread(tUpdate);
 			t.start();*/

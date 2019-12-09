@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 /*Initializations*/
 	private Telemetry t = telemetry;
 	private Hardware h = new Hardware(t, this);
+	private AutoBase a = new AutoBase(h, this);
 
 /*Main*/
 	// Runs when initialized
@@ -17,6 +18,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		// Initiate hardware
 		try {
 			h.init(hardwareMap);
+			h.initAuto(hardwareMap);
+			resetStartTime();
 		} catch(Exception e) {
 			h.tErr("HardwareMap", e);
 			sleep(15_000);
@@ -53,22 +56,50 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		}
 	}
 
- /*Assisted Actions*/ // (To be removed)
- 	// Pick Up
- 	private void pickUp() {
- 		// Note: might think about combining this and AutoBase's pickUp() and drop() functions
+/*Assisted Actions*/
+	private void skystoneAlign() {
+		AutoBase.SepThreadMov sepThreadMov = a.new SepThreadMov();
+		double p = 0.8;
+		h.startStream();
+		sleep(800); // Time for stream to start up
+		Thread t = new Thread(sepThreadMov);
+		sepThreadMov.dir = 1; // 1 = right, 3 = left
+		sepThreadMov.p = p;
+		sepThreadMov.isRunning = true;
+		t.run(); h.tSub("Scanning " + sepThreadMov.dir);
+
+		double startTime = getRuntime();
+		boolean found = false;
+
+		while((h.sDetect.foundRectangle().area() < 7000 || h.sDetect.getScreenPosition().x < 79 || h.sDetect.getScreenPosition().x > 82) && getRuntime() - startTime < 6) {
+			h.tCaminfo();
+			idle();
+
+			if(getRuntime() - startTime == 2) {
+				sepThreadMov.dir = 3;
+			}
+
+		} h.tSub("End of Scan");
+		found = getRuntime() - startTime < 6 ? true : false;
+		if(found) {
+			a.movF(1.0, 1.0);
+		}
+		sepThreadMov.isRunning = false;
+		h.stopStream();
 	}
- 	// Drop
-	private void drop() { }
 
 /*Update*/
  	// Detect Action
 	private void detectAction() {
-		/*
-		if b then pickup
-		if y then drop
-		etc.
-		 */
+		if(h._button_x && !(h.lSlide_l.isBusy() || h.lSlide_r.isBusy())) {
+			a.pickUp();
+		}
+		if(h._button_y && !(h.lSlide_l.isBusy() || h.lSlide_r.isBusy())) {
+			a.drop();
+		}
+		if(h._button_b && !(a.drive_isBusy())) {
+			skystoneAlign();
+		}
 	}
 	// Update Auxilary Motors
 	private void updateAux() {
@@ -86,14 +117,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
 	}
 	// Update Servos
-	private boolean a = true; // Toggle (actual value doesn't matter)
+	private boolean fHookT = true; // Toggle (actual value doesn't matter)
 	private void updateServos() {
 		h.tSub("Updating Servos");
 		// Sets f-hook positions
 		if (h.button_b) {
-			h.fHook_l.setPosition(a ? 1.0 : 0.0);
-			h.fHook_r.setPosition(a ? 0.0 : 1.0);
-			a = !a;
+			h.fHook_l.setPosition(fHookT ? 1.0 : 0.0);
+			h.fHook_r.setPosition(fHookT ? 0.0 : 1.0);
+			fHookT = !fHookT;
 			sleep(300);
 		}
 	}
