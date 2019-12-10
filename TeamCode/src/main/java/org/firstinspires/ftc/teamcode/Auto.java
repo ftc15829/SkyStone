@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	private Hardware h = new Hardware(tele, this);
 	private AutoBase a = new AutoBase(h, this);
 //	private AutoBase.AutoTelemetry tUpdate = a.new AutoTelemetry(); // Depreciated
-	private AutoBase.SepThreadMov sepThreadMov = a.new SepThreadMov();
 
 	// Runs when initialized
 	@Override
@@ -20,7 +19,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			h.init(hardwareMap);
 			h.initAuto(hardwareMap);
-			h.startStream();
 			/*// Start telemetry thread // Depreciated
 			Thread t = new Thread(tUpdate);
 			t.start();*/
@@ -37,13 +35,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			h.tStatus("Running");
 /*Instructions*/
 			// Red Skystone
-			a.movF(3,1); h.tStatus("Finding Skystone");
-			a.findSkystone(sepThreadMov, 3);
+			a.movF(3.0,1); h.tStatus("Finding Skystone");
+			a.findSkystone(3,0.6);
 			a.pickUp(); h.tStatus("Moving to Foundation");
-			a.movB(3, 1);
-			a.movR(20, 1);
+			a.movB(3.0, 1);
+			a.movR(20.0, 1);
 			a.drop(); h.tSub("Moving under Bridge");
-			a.movL(10, 1); h.tStatus("Done!");
+			a.movL(10.0, 1); h.tStatus("Done!");
 
 /*End*/
 		// Catches exceptions as plain-text

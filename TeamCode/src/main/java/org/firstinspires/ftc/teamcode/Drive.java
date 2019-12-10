@@ -57,49 +57,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	}
 
 /*Assisted Actions*/
-	private void skystoneAlign() {
-		AutoBase.SepThreadMov sepThreadMov = a.new SepThreadMov();
-		double p = 0.8;
-		h.startStream();
-		sleep(800); // Time for stream to start up
-		Thread t = new Thread(sepThreadMov);
-		sepThreadMov.dir = 1; // 1 = right, 3 = left
-		sepThreadMov.p = p;
-		sepThreadMov.isRunning = true;
-		t.run(); h.tSub("Scanning " + sepThreadMov.dir);
-
-		double startTime = getRuntime();
-		boolean found = false;
-
-		while((h.sDetect.foundRectangle().area() < 7000 || h.sDetect.getScreenPosition().x < 79 || h.sDetect.getScreenPosition().x > 82) && getRuntime() - startTime < 6) {
-			h.tCaminfo();
-			idle();
-
-			if(getRuntime() - startTime == 2) {
-				sepThreadMov.dir = 3;
-			}
-
-		} h.tSub("End of Scan");
-		found = getRuntime() - startTime < 6 ? true : false;
-		if(found) {
-			a.movF(1.0, 1.0);
-		}
-		sepThreadMov.isRunning = false;
-		h.stopStream();
-	}
 
 /*Update*/
  	// Detect Action
 	private void detectAction() {
-		if(h._button_x && !(h.lSlide_l.isBusy() || h.lSlide_r.isBusy())) {
-			a.pickUp();
-		}
-		if(h._button_y && !(h.lSlide_l.isBusy() || h.lSlide_r.isBusy())) {
-			a.drop();
-		}
-		if(h._button_b && !(a.drive_isBusy())) {
-			skystoneAlign();
-		}
+
 	}
 	// Update Auxilary Motors
 	private void updateAux() {
