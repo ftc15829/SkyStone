@@ -11,8 +11,8 @@ public class AutoBase {
 
 	/*Actions*/
 	void findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
+		mov(3, 0.6);
 		while(h.sDetect.foundRectangle().area() < 7000 || h.sDetect.getScreenPosition().y < 27 || h.sDetect.getScreenPosition().y > 147) {
-//			movL(.1,1);
 			h.tSub("Scanning");
 			h.tCaminfo();
 			opmode.idle();

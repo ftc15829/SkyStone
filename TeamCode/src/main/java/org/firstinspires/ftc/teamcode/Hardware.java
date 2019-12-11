@@ -84,8 +84,8 @@ public class Hardware {
 	void tDrivePower() {
 		t.addData("Main Drive Power",
 				String.format("\n| %.2f | %.2f |\n| %.2f | %.2f |",
-						drive_lf.getPower(), drive_rf.getPower(),
-						drive_rb.getPower(), drive_lb.getPower()));
+						(float)(drive_lf.getPower()), (float)(drive_rf.getPower()),
+						(float)(drive_rb.getPower()), (float)(drive_lb.getPower())));
 		t.update();
 	}
 	void tErr(String msg, Exception e) {
@@ -94,8 +94,8 @@ public class Hardware {
 	}
 	void tDrivePos() {
 		t.addData("Main Drive Position", String.format("\n| %.2f | %.2f |\n| %.2f | %.2f |",
-				drive_lf.getCurrentPosition() / 560, drive_rf.getCurrentPosition() / 560,
-				drive_lb.getCurrentPosition() / 560, drive_rb.getCurrentPosition() / 560));
+				(float)(drive_lf.getCurrentPosition() / 560), (float)(drive_rf.getCurrentPosition() / 560),
+				(float)(drive_lb.getCurrentPosition() / 560), (float)(drive_rb.getCurrentPosition() / 560)));
 		t.update();
 	}
 	void tPos(DcMotor motor) {
@@ -118,6 +118,13 @@ public class Hardware {
 	void tCaminfo() {
 		t.addData("Area", sDetect.foundRectangle().area());
 		t.addData("Y", sDetect.getScreenPosition().y);
+		t.update();
+	}
+	void tDebug() {
+		t.addData("F1", drive_lf.getMode());
+		t.addData("F1", drive_lf.getCurrentPosition());
+		t.addData("F1", drive_lf.getTargetPosition());
+		t.addData("F1", drive_lf.getConnectionInfo());
 		t.update();
 	}
 
