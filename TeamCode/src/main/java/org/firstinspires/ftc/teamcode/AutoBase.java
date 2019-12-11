@@ -11,8 +11,9 @@ public class AutoBase {
 
 	/*Actions*/
 	void findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
-		mov(dir, p); h.tSub("Scanning " + dir);
-		while(h.sDetect.foundRectangle().area() < 6000 || h.sDetect.getScreenPosition().y < 27 || h.sDetect.getScreenPosition().y > 147) {
+		while(h.sDetect.foundRectangle().area() < 7000 || h.sDetect.getScreenPosition().y < 27 || h.sDetect.getScreenPosition().y > 147) {
+//			movL(.1,1);
+			h.tSub("Scanning");
 			h.tCaminfo();
 			opmode.idle();
 		} h.tSub("Found! Engaging!");
@@ -46,6 +47,14 @@ public class AutoBase {
 	void driveModeSRE() { // Sets drive motors to SRE
 		h.drive_lf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); h.drive_rf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 		h.drive_lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); h.drive_rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+	}
+	void driveModeRUE() { // Sets drive motors to RTP
+		h.drive_lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER); h.drive_rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		h.drive_lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER); h.drive_rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+	}
+	void driveModeRWE() { // Sets drive motors to RTP
+		h.drive_lf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); h.drive_rf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		h.drive_lb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); h.drive_rb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 	void drivePower(double plf, double prf, double plb, double prb) { // Sets drive motors to given powers
 		h.drive_lf.setPower(plf); h.drive_rf.setPower(prf);

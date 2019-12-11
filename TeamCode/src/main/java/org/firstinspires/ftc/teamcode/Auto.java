@@ -35,7 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			h.tStatus("Running");
 /*Instructions*/
 			// Red Skystone
-			a.movF(3.0,1); h.tStatus("Finding Skystone");
+			a.movF(3.0, 1);
+			a.mov(3, 0.6);
 			a.findSkystone(3,0.6);
 			a.pickUp(); h.tStatus("Moving to Foundation");
 			a.movB(3.0, 1);

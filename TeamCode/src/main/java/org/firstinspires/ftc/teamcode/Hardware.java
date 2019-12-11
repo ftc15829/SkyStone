@@ -40,7 +40,7 @@ public class Hardware {
 	/*Init Functions*/
 	void init(HardwareMap hardwareMap) {
 		// Telemetry Configuration
-		t.setAutoClear(false);
+//		t.setAutoClear(false);
 		// Defines drive motors
 		drive_lf = hardwareMap.dcMotor.get("leftFront");
 		drive_rb = hardwareMap.dcMotor.get("rightBack");
