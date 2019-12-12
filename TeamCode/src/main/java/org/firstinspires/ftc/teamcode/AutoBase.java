@@ -11,8 +11,9 @@ public class AutoBase {
 
 	/*Actions*/
 	void findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
-		mov(3, 0.6);
-		while(h.sDetect.foundRectangle().area() < 7000 || h.sDetect.getScreenPosition().y < 27 || h.sDetect.getScreenPosition().y > 147) {
+		driveModeRWE();
+		mov(3, 0.6); // move left
+		while(h.sDetect.foundRectangle().area() < 5000 || h.sDetect.getScreenPosition().y < 78) {
 			h.tSub("Scanning");
 			h.tCaminfo();
 			opmode.idle();
@@ -22,20 +23,21 @@ public class AutoBase {
 	}
 
 	void pickUp() { h.tSub("Picking up Block"); // Will extend platform, attempt to grab a block, then retract the platform
-		platform(10, 0.7);
+		platform(3, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
-		platform(-10, 0.7); h.tSub("");
+		opmode.sleep(400);
+		platform(-3, 0.6); h.tSub("");
 	}
 	void drop() { h.tSub("Dropping Block"); // Will extend platform, release any held block, then retract the platform
-		platform(10, 0.7);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
-		platform(-10, 0.7); h.tSub("");
+		opmode.sleep(400);
 	}
 
 	/*Helper*/
 	// Drive Specific
+
 	void driveTargetPos(double revlf, double revrf, double revlb, double revrb) { // Sets drive's target position
 		h.drive_lf.setTargetPosition((int)(revlf * 28 * 20)); h.drive_rf.setTargetPosition((int)(revrf * 28 * 20));
 		h.drive_lb.setTargetPosition((int)(revlb * 28 * 20)); h.drive_rb.setTargetPosition((int)(revrb * 28 * 20));
@@ -67,16 +69,25 @@ public class AutoBase {
 	boolean drive_isBusy() { // Will return True if any drive motor is busy
 		return h.drive_lf.isBusy() || h.drive_rf.isBusy() || h.drive_lb.isBusy() || h.drive_rb.isBusy();
 	}
+
 	// General
+
 	void modeSRE(DcMotor motor) {
 		motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 	}
 	void modeRTP(DcMotor motor) {
 		motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
-	void targetPos(DcMotor motor, double rev) {
+	void targetPos(DcMotor motor, double rev, int a) {
 		// Note: goBuilda and Tetrix will have diff values which is not accounted for here.
-		motor.setTargetPosition((int)(rev * 28));
+		switch (a)
+		{
+			case 0:
+				motor.setTargetPosition((int)(rev * 28));break;
+			case 1:
+				motor.setTargetPosition((int)(rev * 1440));break;
+		}
+
 	}
 	void power(DcMotor motor, double p) {
 		motor.setPower(p);
@@ -101,9 +112,10 @@ public class AutoBase {
 	}
 
 	/*Auxilary Movement*/
+
 	void platform(double rev, double p) {
 		modeSRE(h.lSlide_l); modeSRE(h.lSlide_r); // Change lSlide mode to SRE
-		targetPos(h.lSlide_l, rev); targetPos(h.lSlide_r, rev); // Set lSlide's target Pos
+		targetPos(h.lSlide_l, rev,1); targetPos(h.lSlide_r, -rev,1); // Set lSlide's target Pos
 		modeRTP(h.lSlide_l); modeRTP(h.lSlide_r); // Change lSlide mode to RTP
 		power(h.lSlide_l, p); power(h.lSlide_r, p); // Set lSlide's power to p
 		while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) {
@@ -114,6 +126,7 @@ public class AutoBase {
 	}
 
 	/*Encoder Based Movement*/
+
 	void movF(double rev, double p) {
 		driveModeSRE();
 		driveTargetPos(rev, rev, rev, rev);
@@ -123,7 +136,7 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);
+		halt(0);driveModeRWE();
 	}
 	void movL(double rev, double p) {
 		driveModeSRE();
@@ -134,7 +147,7 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);
+		halt(0);driveModeRWE();
 	}
 	void movR(double rev, double p) {
 		driveModeSRE();
@@ -145,7 +158,7 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);
+		halt(0);driveModeRWE();
 	}
 	void movB(double rev, double p) {
 		driveModeSRE();
@@ -156,7 +169,7 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);
+		halt(0);driveModeRWE();
 	}
 	void trnL(double rev, double p) {
 		rev *= 5.0;
@@ -168,7 +181,7 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);
+		halt(0);driveModeRWE();
 	}
 	void trnR(double rev, double p) {
 		rev *= 5.0;
@@ -180,7 +193,7 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);
+		halt(0);driveModeRWE();
 	}
 
 	/*Time Based Movement*/

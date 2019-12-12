@@ -75,8 +75,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	private void updateCrServos() {
 		h.tSub("Updating CRServos");
 		// Sets grabber positions
-		h.grab_l.setPower(h._rTrigger != 0.0 ? 1.0 : (h._lTrigger != 0.0 ? -1.0 : 0.0));
-		h.grab_r.setPower(h._rTrigger != 0.0 ? -1.0 : (h._lTrigger != 0.0 ? 1.0 : 0.0));
+		double p = 0.3;
+		h.grab_l.setPower(h._rTrigger != 0.0 ? p : (h._lTrigger != 0.0 ? -p : 0.0));
+		h.grab_r.setPower(h._rTrigger != 0.0 ? -p : (h._lTrigger != 0.0 ? p : 0.0));
 	}
 	// Update Servos
 	private boolean fHookT = true; // Toggle (actual value doesn't matter)

@@ -16,12 +16,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	@Override
 	public void runOpMode() {
 		// Initiate hardware
+		waitForStart();
 		try {
 			h.init(hardwareMap);
 			h.initAuto(hardwareMap);
-			/*// Start telemetry thread // Depreciated
-			Thread t = new Thread(tUpdate);
-			t.start();*/
+//			h.tDebug();
 		} catch (Exception e) {
 			h.tStatus("Error");
 			h.tErr("HardwareMap", e);
@@ -35,13 +34,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			h.tStatus("Running");
 /*Instructions*/
 			// Red Skystone
-			a.movF(3.0, 1);
+			a.movF(3.3, 1);
 			a.findSkystone(3,0.6);
 			a.pickUp(); h.tStatus("Moving to Foundation");
-			a.movB(3.0, 1);
-			a.movR(20.0, 1);
+			a.trnR(1.0,0.9);
+			a.movF(12.0, 1);
 			a.drop(); h.tSub("Moving under Bridge");
-			a.movL(10.0, 1); h.tStatus("Done!");
+			a.movB(4.0, 1); h.tStatus("Done!");
 
 /*End*/
 		// Catches exceptions as plain-text

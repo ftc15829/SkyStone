@@ -121,11 +121,9 @@ public class Hardware {
 		t.update();
 	}
 	void tDebug() {
-		t.addData("F1", drive_lf.getMode());
-		t.addData("F1", drive_lf.getCurrentPosition());
-		t.addData("F1", drive_lf.getTargetPosition());
-		t.addData("F1", drive_lf.getConnectionInfo());
-		t.update();
+		while(opmode.opModeIsActive()) {
+			tCaminfo();
+		}
 	}
 
 	/*Update Gamepad Values*/
