@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 	@Override
 	public void runOpMode() {
 		// Initiate hardware
-		waitForStart();
 		try {
 			h.init(hardwareMap);
 			h.initAuto(hardwareMap);
@@ -29,18 +28,34 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		}
 		h.tStatus("Ready");
 		waitForStart();
-
+		resetStartTime();
 		try {
 			h.tStatus("Running");
 /*Instructions*/
 			// Red Skystone
-			a.movF(3.3, 1);
-			a.findSkystone(3,0.6);
+
+			a.movF(3.1, 1);
+			double sTime = a.findSkystone(3,0.6);//4.2 far stone 3.7 middle 2.2 end
 			a.pickUp(); h.tStatus("Moving to Foundation");
+			a.movB(.5,1);
 			a.trnR(1.0,0.9);
-			a.movF(12.0, 1);
+			boolean egg = false;
+			if (sTime > 3.5 && sTime < 5)
+				a.movF(12.0, 1);
+			else if (sTime < 3.5)
+				a.movF(11.0,1);
+			else if (sTime > 5)
+				a.movF(14,1);
+			else {
+				a.movF(11.5, 1);
+				egg = true;
+			}
 			a.drop(); h.tSub("Moving under Bridge");
-			a.movB(4.0, 1); h.tStatus("Done!");
+			a.movB(4.0, 1);
+			if (egg) {
+				a.trnL(0.1, 1);
+			}
+			h.tStatus("Done!");
 
 /*End*/
 		// Catches exceptions as plain-text
