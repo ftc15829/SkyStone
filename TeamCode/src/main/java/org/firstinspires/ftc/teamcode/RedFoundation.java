@@ -33,10 +33,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			h.tStatus("Running");
 			/*Instructions*/
 			// Red Foundation
-			a.movF(.5,1);
-			a.trnR(2,1);
-			a.movL(10,1);
-			a.movB(5,1);
+			a.movF(0.5, 1);
+			a.trnR(2.0, 1);
+			a.movL(7.0, 1);
+			a.movB(5.0, 1);
+			a.latch();
+			a.movF(6.0, 1);
+			a.movL(4.0, 1);
+			a.unlatch();
 			h.tStatus("Done!");
 			/*End*/
 			// Catches exceptions as plain-text

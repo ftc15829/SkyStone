@@ -37,6 +37,17 @@ public class AutoBase {
 		opmode.sleep(400);
 	}
 
+	void latch() {
+		h.fHook_l.setPosition(1.0);
+		h.fHook_r.setPosition(0.0);
+		opmode.sleep(400);
+	}
+	void unlatch() {
+		h.fHook_l.setPosition(0.0);
+		h.fHook_r.setPosition(1.0);
+		opmode.sleep(400);
+	}
+
 	/*Helper*/
 	// Drive Specific
 

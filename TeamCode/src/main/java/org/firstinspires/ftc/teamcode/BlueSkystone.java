@@ -32,7 +32,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			h.tStatus("Running");
 			/*Instructions*/
-			// Red Skystone
+			// Blue Skystone
 			a.movF(3.1, 1);
 			double sTime = a.findSkystone(1,0.6);//4.2 far stone 3.7 middle 2.2 end
 			a.movF(3.0, 1);
