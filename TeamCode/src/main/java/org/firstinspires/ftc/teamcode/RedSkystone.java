@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 //@Disabled
-@Autonomous(name="Red Foundation") public class RedFoundation extends LinearOpMode {
+@Autonomous(name="Red Skystone") public class RedSkystone extends LinearOpMode {
 	/*Initializations*/
 	private Telemetry tele = telemetry;
 	private Hardware h = new Hardware(tele, this);
@@ -32,14 +32,38 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			h.tStatus("Running");
 			/*Instructions*/
-			// Red Foundation
-			a.movF(.5,1);
-			a.trnR(2,1);
-			a.movL(10,1);
-			a.movB(5,1);
+			// Red Skystone
+			a.movF(3.1, 1);
+			double sTime = a.findSkystone(3,0.6);//4.2 far stone 3.7 middle 2.2 end
+			a.movF(3.0, 1);
+			a.pickUp();
+
+			h.tStatus("Moving to Foundation");
+			a.movB(.5,1);
+			a.trnR(1.0,0.9);
+
+			boolean egg = false;
+			if (sTime > 3.5 && sTime < 5)
+				a.movF(12.0, 1);
+			else if (sTime < 3.5)
+				a.movF(11.0,1);
+			else if (sTime > 5)
+				a.movF(14,1);
+			else {
+				a.movF(11.5, 1);
+				egg = true;
+			}
+
+			a.drop();
+
+			h.tSub("Moving under Bridge");
+			a.movB(4.0, 1);
+			if (egg) {
+				a.trnL(0.1, 1);
+			}
 			h.tStatus("Done!");
 			/*End*/
-			// Catches exceptions as plain-text
+				// Catches exceptions as plain-text
 		} catch (Exception e) {
 			h.tStatus("Error");
 			h.tErr("Auto Runtime", e);

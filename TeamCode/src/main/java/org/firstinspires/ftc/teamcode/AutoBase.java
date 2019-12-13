@@ -20,10 +20,8 @@ public class AutoBase {
 			h.tRunTime();
 			opmode.idle();
 		} h.tSub("Found! Engaging!");
-		x=opmode.getRuntime();
 		halt(0);
-		movF(3.0, 1); h.tSub("");
-		return x;
+		return opmode.getRuntime();
 	}
 
 	void pickUp() { h.tSub("Picking up Block"); // Will extend platform, attempt to grab a block, then retract the platform
