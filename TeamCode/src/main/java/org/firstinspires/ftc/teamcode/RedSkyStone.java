@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 //@Disabled
-@Autonomous(name="Auto") public class Auto extends LinearOpMode {
-/*Initializations*/
+@Autonomous(name="Red Skystone") public class RedSkyStone extends LinearOpMode {
+	/*Initializations*/
 	private Telemetry tele = telemetry;
 	private Hardware h = new Hardware(tele, this);
 	private AutoBase a = new AutoBase(h, this);
@@ -31,7 +31,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		resetStartTime();
 		try {
 			h.tStatus("Running");
-/*Instructions*/
+			/*Instructions*/
 			// Red Skystone
 
 			a.movF(3.1, 1);
@@ -56,9 +56,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 				a.trnL(0.1, 1);
 			}
 			h.tStatus("Done!");
-
-/*End*/
-		// Catches exceptions as plain-text
+			/*End*/
+				// Catches exceptions as plain-text
 		} catch (Exception e) {
 			h.tStatus("Error");
 			h.tErr("Auto Runtime", e);

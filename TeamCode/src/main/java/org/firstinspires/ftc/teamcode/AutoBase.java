@@ -10,24 +10,28 @@ public class AutoBase {
 	LinearOpMode opmode;
 
 	/*Actions*/
-	void findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
+	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
 		driveModeRWE();
-		mov(3, 0.6); // move left
-		while(h.sDetect.foundRectangle().area() < 5000 || h.sDetect.getScreenPosition().y < 78) {
-			h.tSub("Scanning");
+		double x;
+		mov(3, 0.5); // move left
+		h.tSub("Scanning");
+		while(h.sDetect.foundRectangle().area() < 6000 || h.sDetect.getScreenPosition().y < 78) {
 			h.tCaminfo();
+			h.tRunTime();
 			opmode.idle();
 		} h.tSub("Found! Engaging!");
+		x=opmode.getRuntime();
 		halt(0);
 		movF(3.0, 1); h.tSub("");
+		return x;
 	}
 
 	void pickUp() { h.tSub("Picking up Block"); // Will extend platform, attempt to grab a block, then retract the platform
-		platform(3, 0.6);
+		platform(2.5, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		opmode.sleep(400);
-		platform(-3, 0.6); h.tSub("");
+		platform(-2.5, 0.6); h.tSub("");
 	}
 	void drop() { h.tSub("Dropping Block"); // Will extend platform, release any held block, then retract the platform
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);

@@ -118,6 +118,10 @@ public class Hardware {
 	void tCaminfo() {
 		t.addData("Area", sDetect.foundRectangle().area());
 		t.addData("Y", sDetect.getScreenPosition().y);
+//		t.update();
+	}
+	void tRunTime() {
+		t.addData("Time", opmode.getRuntime());
 		t.update();
 	}
 	void tDebug() {
