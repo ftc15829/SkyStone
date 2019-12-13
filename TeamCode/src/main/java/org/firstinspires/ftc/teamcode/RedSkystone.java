@@ -41,26 +41,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 			h.tStatus("Moving to Foundation");
 			a.movB(.5,1);
 			a.trnR(1.0,0.9);
-
-			boolean egg = false;
-			if (sTime > 3.5 && sTime < 5)
-				a.movF(12.0, 1);
-			else if (sTime < 3.5)
-				a.movF(11.0,1);
-			else if (sTime > 5)
-				a.movF(14,1);
-			else {
-				a.movF(11.5, 1);
-				egg = true;
-			}
-
+			a.movF(sTime > 3.5 ? 12.0 : 11.0, 1)
 			a.drop();
 
 			h.tSub("Moving under Bridge");
 			a.movB(4.0, 1);
-			if (egg) {
-				a.trnL(0.1, 1);
-			}
+			
 			h.tStatus("Done!");
 			/*End*/
 				// Catches exceptions as plain-text
