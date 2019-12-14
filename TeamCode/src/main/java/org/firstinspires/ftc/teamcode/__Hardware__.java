@@ -1,43 +1,49 @@
 package org.firstinspires.ftc.teamcode;
+import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
+import com.disnodeteam.dogecv.detectors.skystone.StoneDetector;
+import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.opencv.core.Mat;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 import static java.lang.Math.round;
 
-public class Hardware {
-	/*Initializations*/
-	public Hardware(Telemetry telemetry, LinearOpMode linearOpMode) { t = telemetry; opmode = linearOpMode; }
+public class __Hardware__ {
+	/* Initializations */
+	public __Hardware__(Telemetry telemetry, LinearOpMode linearOpMode) { t = telemetry; opmode = linearOpMode; }
 	LinearOpMode opmode;
 	Telemetry t;
+
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
+
 	// Initialize visual detection
 	OpenCvCamera phoneCam;
 	int screenWidth = 320;
 	int screenHeight = 240;
-	SkystoneDetector sDetect;
+	SkystoneDetector ssDetect;
+
 	// Initialize gamepad values
 	double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
 	boolean lBumper, rBumper, button_a, button_b, button_x, button_y;
 	double _lStick_x, _lStick_y, _rStick_x, _rStick_y, _lTrigger, _rTrigger; // Gamepad 2
 	boolean _lBumper, _rBumper, _button_a, _button_b, _button_x, _button_y;
 
-	/*Init Functions*/
+	/* Init Functions */
 	void init(HardwareMap hardwareMap) {
 		// Telemetry Configuration
 //		t.setAutoClear(false);
@@ -65,13 +71,13 @@ public class Hardware {
 		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		phoneCam = new OpenCvWebcam(webcamName, cameraMonitorViewId);
 		phoneCam.openCameraDevice();
-		sDetect = new SkystoneDetector();
-		phoneCam.setPipeline(sDetect);
-		sDetect.useDefaults();
+		ssDetect = new SkystoneDetector();
+		phoneCam.setPipeline(ssDetect);
+		ssDetect.useDefaults();
         startStream();
 	}
 
-	/*Camera*/
+	/* Camera */
 	void startStream() {
 		OpenCvCameraRotation direction = OpenCvCameraRotation.SIDEWAYS_LEFT;
 		phoneCam.startStreaming(screenWidth, screenHeight, direction);
@@ -80,7 +86,7 @@ public class Hardware {
 		phoneCam.stopStreaming();
 	}
 
-	/*Telemetry*/
+	/* Telemetry */
 	void tDrivePower() {
 		t.addData("Main Drive Power",
 				String.format("\n| %.2f | %.2f |\n| %.2f | %.2f |",
@@ -111,26 +117,21 @@ public class Hardware {
 		t.update();
 	}
 	void tWebcam() {
-		t.addData("Stone Position X", sDetect.getScreenPosition().x);
-		t.addData("Stone Position Y", sDetect.getScreenPosition().y);
+		t.addData("Stone Position X", ssDetect.getScreenPosition().x);
+		t.addData("Stone Position Y", ssDetect.getScreenPosition().y);
 		t.update();
 	}
 	void tCaminfo() {
-		t.addData("Area", sDetect.foundRectangle().area());
-		t.addData("Y", sDetect.getScreenPosition().y);
+		t.addData("Area", ssDetect.foundRectangle().area());
+		t.addData("Y", ssDetect.getScreenPosition().y);
 //		t.update();
 	}
 	void tRunTime() {
 		t.addData("Time", opmode.getRuntime());
 		t.update();
 	}
-	void tDebug() {
-		while(opmode.opModeIsActive()) {
-			tCaminfo();
-		}
-	}
 
-	/*Update Gamepad Values*/
+	/* Update Gamepad Values */
 	void updateGamepad(Gamepad gamepad1, Gamepad gamepad2) {
 		// Gamepad1
 		lStick_x = -gamepad1.left_stick_x;

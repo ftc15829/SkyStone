@@ -2,15 +2,14 @@ package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 //@Disabled
 @TeleOp(name="Drive") public class Drive extends LinearOpMode {
 
 /*Initializations*/
 	private Telemetry t = telemetry;
-	private Hardware h = new Hardware(t, this);
-	private AutoBase a = new AutoBase(h, this);
+	private __Hardware__ h = new __Hardware__(t, this);
+	private __AutoBase__ a = new __AutoBase__(h, this);
 
 /*Main*/
 	// Runs when initialized
@@ -56,9 +55,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		}
 	}
 
-/*Assisted Actions*/
+/* Assisted Actions */
 
-/*Update*/
+/* Update */
  	// Detect Action
 	private void detectAction() {
 

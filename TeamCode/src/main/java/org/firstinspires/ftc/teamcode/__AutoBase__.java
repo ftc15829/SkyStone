@@ -1,25 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 
-public class AutoBase {
+public class __AutoBase__ {
 	/*Initializations*/
-	AutoBase(Hardware hardware, LinearOpMode linearOpMode) { h = hardware; opmode = linearOpMode; }
-	Hardware h;
+	__AutoBase__(__Hardware__ hardware, LinearOpMode linearOpMode) { h = hardware; opmode = linearOpMode; }
+	__Hardware__ h;
 	LinearOpMode opmode;
 
 	/*Actions*/
 	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
-		driveModeRWE();
-		double x;
-		mov(3, 0.5); // move left
+		mov(dir, p); // move left
 		h.tSub("Scanning");
-		while(h.sDetect.foundRectangle().area() < 6000 || h.sDetect.getScreenPosition().y < 78) {
+		while(h.ssDetect.foundRectangle().area() < 5500 || (dir == 3 ? h.ssDetect.getScreenPosition().y < 67 : h.ssDetect.getScreenPosition().y > 120)) {
 			h.tCaminfo();
 			h.tRunTime();
 			opmode.idle();
-		} h.tSub("Found! Engaging!");
+		}
 		halt(0);
 		return opmode.getRuntime();
 	}
@@ -29,7 +26,7 @@ public class AutoBase {
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		opmode.sleep(400);
-		platform(-2.5, 0.6); h.tSub("");
+		platform(-2.3, 0.6); h.tSub("");
 	}
 	void drop() { h.tSub("Dropping Block"); // Will extend platform, release any held block, then retract the platform
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
@@ -38,13 +35,13 @@ public class AutoBase {
 	}
 
 	void latch() {
-		h.fHook_l.setPosition(1.0);
-		h.fHook_r.setPosition(0.0);
+		h.fHook_l.setPosition(0.0);
+		h.fHook_r.setPosition(1.0);
 		opmode.sleep(400);
 	}
 	void unlatch() {
-		h.fHook_l.setPosition(0.0);
-		h.fHook_r.setPosition(1.0);
+		h.fHook_l.setPosition(1.0);
+		h.fHook_r.setPosition(0.0);
 		opmode.sleep(400);
 	}
 
@@ -123,7 +120,22 @@ public class AutoBase {
 				break;
 		}
 	}
-
+	boolean cDrive_isBusy(double rev) {
+		double target = Math.abs(rev * 20 * 28);
+		int diff = 20;
+		if (h.drive_rf.getCurrentPosition() >= target-diff || h.drive_lf.getCurrentPosition() >= target-diff || h.drive_rb.getCurrentPosition() >= target-diff || h.drive_lb.getCurrentPosition() >= target-diff) {
+			return true;
+		}
+		return false;
+	}
+	boolean cMotor_isBusy(double rev, DcMotor motor) {
+		double target = Math.abs(rev * 20 * 28);
+		int diff = 20;
+		if (motor.getCurrentPosition() >= target-diff) {
+			return true;
+		}
+		return false;
+	}
 	/*Auxilary Movement*/
 
 	void platform(double rev, double p) {
@@ -148,8 +160,11 @@ public class AutoBase {
 		while (drive_isBusy()) {
 			h.tDrivePos();
 			opmode.idle();
+			if (cDrive_isBusy(rev))
+				break;
 		}
-		halt(0);driveModeRWE();
+		halt(0);
+		driveModeRWE();
 	}
 	void movL(double rev, double p) {
 		driveModeSRE();
@@ -159,8 +174,11 @@ public class AutoBase {
 		while (drive_isBusy()) {
 			h.tDrivePos();
 			opmode.idle();
+			if (cDrive_isBusy(rev))
+				break;
 		}
-		halt(0);driveModeRWE();
+		halt(0);
+		driveModeRWE();
 	}
 	void movR(double rev, double p) {
 		driveModeSRE();
@@ -170,8 +188,11 @@ public class AutoBase {
 		while (drive_isBusy()) {
 			h.tDrivePos();
 			opmode.idle();
+			if (cDrive_isBusy(rev))
+				break;
 		}
-		halt(0);driveModeRWE();
+		halt(0);
+		driveModeRWE();
 	}
 	void movB(double rev, double p) {
 		driveModeSRE();
@@ -181,8 +202,11 @@ public class AutoBase {
 		while (drive_isBusy()) {
 			h.tDrivePos();
 			opmode.idle();
+			if (cDrive_isBusy(rev))
+				break;
 		}
-		halt(0);driveModeRWE();
+		halt(0);
+		driveModeRWE();
 	}
 	void trnL(double rev, double p) {
 		rev *= 5.0;
@@ -194,7 +218,8 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);driveModeRWE();
+		halt(0);
+		driveModeRWE();
 	}
 	void trnR(double rev, double p) {
 		rev *= 5.0;
@@ -206,7 +231,8 @@ public class AutoBase {
 			h.tDrivePos();
 			opmode.idle();
 		}
-		halt(0);driveModeRWE();
+		halt(0);
+		driveModeRWE();
 	}
 
 	/*Time Based Movement*/

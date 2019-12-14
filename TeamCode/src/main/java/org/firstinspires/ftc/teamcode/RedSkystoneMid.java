@@ -2,15 +2,14 @@ package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 //@Disabled
-@Autonomous(name="Red Foundation") public class RedFoundation extends LinearOpMode {
+@Autonomous(name="Red Skystone Mid") public class RedSkystoneMid extends LinearOpMode {
 	/*Initializations*/
 	private Telemetry tele = telemetry;
-	private Hardware h = new Hardware(tele, this);
-	private AutoBase a = new AutoBase(h, this);
-//	private AutoBase.AutoTelemetry tUpdate = a.new AutoTelemetry(); // Depreciated
+	private __Hardware__ h = new __Hardware__(tele, this);
+	private __AutoBase__ a = new __AutoBase__(h, this);
+	private __Skystone__ s = new __Skystone__();
 
 	// Runs when initialized
 	@Override
@@ -19,7 +18,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		try {
 			h.init(hardwareMap);
 			h.initAuto(hardwareMap);
-//			h.tDebug();
 		} catch (Exception e) {
 			h.tStatus("Error");
 			h.tErr("HardwareMap", e);
@@ -31,20 +29,24 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 		resetStartTime();
 		try {
 			h.tStatus("Running");
-			/*Instructions*/
-			// Red Foundation
-			a.movF(0.5, 1);
-			a.trnR(2.0, 1);
-			a.movL(7.0, 1);
-			a.movB(5.0, 1);
-			a.latch();
-			a.movF(6.0, 1);
-			a.movL(4.0, 1);
-			a.unlatch();
+			/* Instructions - Red SkyStone Mid */
+			a.movF(s.movF1, s.p1);
+			double sTime = a.findSkystone(3, s.pS);//4.2 far stone 3.7 middle 2.2 end
+			a.movF(s.movF2, s.p2);
+			a.pickUp();
+
+			h.tStatus("Moving to Foundation");
+			a.movB(s.movB3,s.p3);
+			a.trnR(s.trnH4,s.p4);
+			a.movF(sTime > 3.5 ? s.movT5 : s.movF5, s.p5);
+			a.drop();
+
+			h.tSub("Moving under Bridge");
+			a.movB(s.movB7, s.p7);
+			
 			h.tStatus("Done!");
-			/*End*/
-			// Catches exceptions as plain-text
-		} catch (Exception e) {
+			/* End */
+		} catch (Exception e) { // Catches exceptions as plain-text
 			h.tStatus("Error");
 			h.tErr("Auto Runtime", e);
 			sleep(15_000);
