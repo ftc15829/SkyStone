@@ -6,8 +6,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 import static java.lang.Math.round;
 
@@ -21,6 +27,17 @@ public class __Hardware__ {
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
+
+	private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+	private static final String LABEL_FIRST_ELEMENT = "Stone";
+	private static final String LABEL_SECOND_ELEMENT = "Skystone";
+
+	float SkystoneLoc;
+	List<Recognition> updatedRecognitions;
+	VuforiaLocalizer vuforia;
+	TFObjectDetector tfDetect;
+	private static final String VUFORIA_KEY =
+			"ARmB8mr/////AAABmZmt2tlP7EgjixU1JYYoSncNXqoxBId990GbqOpAfBytywT8tnE7y51UQmExhGdE3ctKQ5oiMU2LqcaxxW9zPp4+8x4XDsQbYlNwT8uhOE3X+QlME2xhn7unPHRKS9v8bK7R/P+/kmNfzPPDZuPvHSRAYICg6wkLVArTiKP59oP5UN4NZVm7TqE+2bqB3RR9wg9ItU9E8ufs20T8uJpBEzIOk+CMCGvpalbjz+gIv1NDEci9m/z2KMGcmA1bt+XpozDvNEPznZ9enhB9yS3qTDUkNoO/CUndqvMHEfKaTAGnN0oj5ixI3R4fzBx+Xl2LRdUvmav/7CPdnQqt02867My6dezcLg3ovxXMfrtTGgbn";
 
 	// Initialize gamepad values
 	double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
@@ -52,8 +69,30 @@ public class __Hardware__ {
 		grab_r = hardwareMap.crservo.get("block2");
 	}
 	void initAuto(HardwareMap hardwareMap) {
-		WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
-		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		/* Initiate Vuforia */
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+		parameters.vuforiaLicenseKey = VUFORIA_KEY;
+		parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+		vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+		/* Initiate TensorFlow Object Detection */
+		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+		tfodParameters.minimumConfidence = 0.8;
+		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+		tfDetect.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+
+		if (tfDetect != null) tfDetect.activate();
+
+	}
+
+	void updateTfDetect() {
+		updatedRecognitions = tfDetect.getUpdatedRecognitions();
+		if (updatedRecognitions != null && updatedRecognitions.get(0).getLabel() == "Skystone") {
+			float objectRight = updatedRecognitions.get(0).getRight();
+			float objectLeft = updatedRecognitions.get(0).getLeft();
+			SkystoneLoc =  round(100 * ((objectRight - objectLeft) / 2)) / 100;
+		}
 	}
 
 	/* Telemetry */

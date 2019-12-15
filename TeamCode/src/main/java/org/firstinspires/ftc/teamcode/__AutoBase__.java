@@ -12,11 +12,12 @@ public class __AutoBase__ {
 	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
 		mov(dir, p); // move left
 		h.tSub("Scanning");
-		/*while() {
+		do {
+			if (h.tfDetect != null) h.updateTfDetect();
 			h.tCaminfo();
 			h.tRunTime();
 			opmode.idle();
-		}*/
+		} while (h.SkystoneLoc > 100 && h.SkystoneLoc < 200 && opmode.opModeIsActive());
 		halt(0);
 		return opmode.getRuntime();
 	}
