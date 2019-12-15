@@ -34,6 +34,7 @@ public class __Hardware__ {
 	// Initialize visual detection
 	OpenCvCamera phoneCam;
 	int screenWidth = 320;
+
 	int screenHeight = 240;
 	SkystoneDetector ssDetect;
 
@@ -73,7 +74,8 @@ public class __Hardware__ {
 		phoneCam.openCameraDevice();
 		ssDetect = new SkystoneDetector();
 		phoneCam.setPipeline(ssDetect);
-		ssDetect.useDefaults();
+//		ssDetect.useDefaults();
+		ssDetect.speed = DogeCV.DetectionSpeed.VERY_SLOW;
         startStream();
 	}
 
@@ -124,7 +126,7 @@ public class __Hardware__ {
 	void tCaminfo() {
 		t.addData("Area", ssDetect.foundRectangle().area());
 		t.addData("Y", ssDetect.getScreenPosition().y);
-//		t.update();
+		t.update();
 	}
 	void tRunTime() {
 		t.addData("Time", opmode.getRuntime());

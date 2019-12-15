@@ -12,7 +12,7 @@ public class __AutoBase__ {
 	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
 		mov(dir, p); // move left
 		h.tSub("Scanning");
-		while(h.ssDetect.foundRectangle().area() < 5500 || (dir == 3 ? h.ssDetect.getScreenPosition().y < 67 : h.ssDetect.getScreenPosition().y > 120)) {
+		while(h.ssDetect.foundRectangle().area() < 5500 || (dir == 3 ? h.ssDetect.getScreenPosition().y < 73 : h.ssDetect.getScreenPosition().y > 160)) {
 			h.tCaminfo();
 			h.tRunTime();
 			opmode.idle();
