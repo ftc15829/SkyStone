@@ -28,10 +28,6 @@ public class __Hardware__ {
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
 
-	private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
-	private static final String LABEL_FIRST_ELEMENT = "Stone";
-	private static final String LABEL_SECOND_ELEMENT = "Skystone";
-
 	float SkystoneLoc;
 	List<Recognition> updatedRecognitions;
 	VuforiaLocalizer vuforia;
@@ -80,7 +76,7 @@ public class __Hardware__ {
 		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
 		tfodParameters.minimumConfidence = 0.8;
 		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-		tfDetect.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+		tfDetect.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
 
 		if (tfDetect != null) tfDetect.activate();
 
