@@ -1,8 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
-import com.disnodeteam.dogecv.detectors.skystone.StoneDetector;
-import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,10 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.opencv.core.Mat;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 import static java.lang.Math.round;
 
@@ -24,18 +16,11 @@ public class __Hardware__ {
 	public __Hardware__(Telemetry telemetry, LinearOpMode linearOpMode) { t = telemetry; opmode = linearOpMode; }
 	LinearOpMode opmode;
 	Telemetry t;
-
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
-
-	// Initialize visual detection
-	OpenCvCamera phoneCam;
-	int screenWidth = 320;
-	int screenHeight = 240;
-	SkystoneDetector ssDetect;
 
 	// Initialize gamepad values
 	double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
@@ -69,21 +54,6 @@ public class __Hardware__ {
 	void initAuto(HardwareMap hardwareMap) {
 		WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-		phoneCam = new OpenCvWebcam(webcamName, cameraMonitorViewId);
-		phoneCam.openCameraDevice();
-		ssDetect = new SkystoneDetector();
-		phoneCam.setPipeline(ssDetect);
-		ssDetect.useDefaults();
-        startStream();
-	}
-
-	/* Camera */
-	void startStream() {
-		OpenCvCameraRotation direction = OpenCvCameraRotation.SIDEWAYS_LEFT;
-		phoneCam.startStreaming(screenWidth, screenHeight, direction);
-	}
-	void stopStream() {
-		phoneCam.stopStreaming();
 	}
 
 	/* Telemetry */
@@ -117,14 +87,10 @@ public class __Hardware__ {
 		t.update();
 	}
 	void tWebcam() {
-		t.addData("Stone Position X", ssDetect.getScreenPosition().x);
-		t.addData("Stone Position Y", ssDetect.getScreenPosition().y);
-		t.update();
+
 	}
 	void tCaminfo() {
-		t.addData("Area", ssDetect.foundRectangle().area());
-		t.addData("Y", ssDetect.getScreenPosition().y);
-//		t.update();
+
 	}
 	void tRunTime() {
 		t.addData("Time", opmode.getRuntime());
