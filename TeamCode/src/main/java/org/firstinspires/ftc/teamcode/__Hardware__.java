@@ -29,6 +29,8 @@ public class __Hardware__ {
 	CRServo grab_l, grab_r;
 
 	float SkystonePos;
+	float SkystoneLeft;
+	float SkystoneRight;
 	int SkystoneArea;
 	double SkystoneConfidence;
 	List<Recognition> updatedRecognitions;
@@ -101,7 +103,9 @@ public class __Hardware__ {
 				float objectHeight = updatedRecognitions.get(i).getHeight();
 				float objectWidth = updatedRecognitions.get(i).getWidth();
 				float objectConfidence = updatedRecognitions.get(i).getConfidence();
-				SkystonePos = round(100 * ((objectRight - objectLeft) / 2)) / 100;
+
+				SkystoneLeft = objectLeft; SkystoneRight = objectRight;
+				SkystonePos = objectLeft + (round(100 * ((objectWidth) / 2)) / 100);
 				SkystoneArea = round(objectWidth * objectHeight * 100) / 100;
 				SkystoneConfidence = objectConfidence; // Currently only returns 0.87890625
 			}
@@ -144,6 +148,8 @@ public class __Hardware__ {
 	}
 	void tCaminfo() {
 		t.addData("Pos", SkystonePos);
+		t.addData("left", SkystoneLeft);
+		t.addData("right", SkystoneRight);
 		t.addData("Area", SkystoneArea);
 		t.addData("Confidence", SkystoneConfidence);
 		t.update();

@@ -17,7 +17,7 @@ public class __AutoBase__ {
 			h.tCaminfo();
 			h.tRunTime();
 			opmode.idle();
-		} while ((dir == 3 ? h.SkystonePos < 100 : h.SkystonePos > 200) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
+		} while ((dir == 3 ? h.SkystonePos < 320 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
 		halt(0);
 		return opmode.getRuntime();
 	}
