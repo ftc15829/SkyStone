@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 	public void runOpMode() {
 		// Initiate hardware
 		try {
-			h.init(hardwareMap);
+//			h.init(hardwareMap);
 			h.initAuto(hardwareMap);
 		} catch (Exception e) {
 			h.tStatus("Error");
@@ -30,6 +30,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 			h.tStatus("Running");
 			/* Instructions - Debug */
 			while(opModeIsActive()) {
+				h.updateTfDetect();
 				h.tCaminfo();
 			}
 			/* End */

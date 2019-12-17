@@ -28,7 +28,9 @@ public class __Hardware__ {
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
 
-	float SkystoneLoc;
+	float SkystonePos;
+	int SkystoneArea;
+	double SkystoneConfidence;
 	List<Recognition> updatedRecognitions;
 	VuforiaLocalizer vuforia;
 	TFObjectDetector tfDetect;
@@ -84,10 +86,29 @@ public class __Hardware__ {
 
 	void updateTfDetect() {
 		updatedRecognitions = tfDetect.getUpdatedRecognitions();
-		if (updatedRecognitions != null && updatedRecognitions.get(0).getLabel() == "Skystone") {
-			float objectRight = updatedRecognitions.get(0).getRight();
-			float objectLeft = updatedRecognitions.get(0).getLeft();
-			SkystoneLoc =  round(100 * ((objectRight - objectLeft) / 2)) / 100;
+		if (updatedRecognitions == null) return;
+		if (updatedRecognitions.size() > 0) {
+			int i = 0;
+			for (int j = 0; j < updatedRecognitions.size(); j++) {
+				if (updatedRecognitions.get(j).getLabel() == "Skystone") {
+					i = j;
+					break;
+				}
+			}
+			if (updatedRecognitions.get(i).getLabel() == "Skystone") {
+				float objectRight = updatedRecognitions.get(i).getRight();
+				float objectLeft = updatedRecognitions.get(i).getLeft();
+				float objectHeight = updatedRecognitions.get(i).getHeight();
+				float objectWidth = updatedRecognitions.get(i).getWidth();
+				float objectConfidence = updatedRecognitions.get(i).getConfidence();
+				SkystonePos = round(100 * ((objectRight - objectLeft) / 2)) / 100;
+				SkystoneArea = round(objectWidth * objectHeight * 100) / 100;
+				SkystoneConfidence = objectConfidence; // Currently only returns 0.87890625
+			}
+		} else if (updatedRecognitions.size() == 0) {
+			SkystonePos = 0;
+			SkystoneArea = 0;
+			SkystoneConfidence = 0;
 		}
 	}
 
@@ -121,11 +142,11 @@ public class __Hardware__ {
 		t.addData("Sub", sub);
 		t.update();
 	}
-	void tWebcam() {
-
-	}
 	void tCaminfo() {
-
+		t.addData("Pos", SkystonePos);
+		t.addData("Area", SkystoneArea);
+		t.addData("Confidence", SkystoneConfidence);
+		t.update();
 	}
 	void tRunTime() {
 		t.addData("Time", opmode.getRuntime());
