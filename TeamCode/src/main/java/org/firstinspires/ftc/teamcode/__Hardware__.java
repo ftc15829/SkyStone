@@ -83,7 +83,6 @@ public class __Hardware__ {
 		tfDetect.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
 
 		if (tfDetect != null) tfDetect.activate();
-
 	}
 
 	void updateTfDetect() {
