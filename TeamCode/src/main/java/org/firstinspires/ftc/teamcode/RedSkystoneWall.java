@@ -30,21 +30,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 		try {
 			h.tStatus("Running");
 			/* Instructions - Red SkyStone Wall */
-			a.movF(s.movF1, s.p1);
-			double sTime = a.findSkystone(3, s.pS);//4.2 far stone 3.7 middle 2.2 end
-			a.movF(s.movF2, s.p2);
+			a.movF(3.1, 1.0);
+			double sTime = a.findSkystone(3, 0.6);//4.2 far stone 3.7 middle 2.2 end
+			a.movF(3.0, 1.0);
 			a.pickUp();
 
 			h.tStatus("Moving to Foundation");
-			a.movB(s.movB3, s.p3);
-			a.trnR(s.trnH4,s.p4);
-			a.movR(s.movH6, s.p6);
-			a.movF(sTime > 3.5 ? s.movT5 : s.movF5, s.p5);
+			a.movB(0.5, 1.0);
+			a.trnR(1.0,0.9);
+			a.movR(6.0, 1.0);
+			a.movF(sTime > 3.5 ? 12.7 : 10.0, 0.4);
 			a.drop();
 
 			h.tSub("Moving under Bridge");
 
-			a.movB(s.movB7, s.p7);
+			a.movB(4.0, 1.0);
 
 			h.tStatus("Done!");
 			/* End */

@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 	private Telemetry tele = telemetry;
 	private __Hardware__ h = new __Hardware__(tele, this);
 	private __AutoBase__ a = new __AutoBase__(h, this);
-	private __Foundation__ f = new __Foundation__();
 
 	// Runs when initialized
 	@Override
@@ -30,21 +29,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 			h.tStatus("Running");
 			/* Instructions - Blue Foundation Mid */
 			h.tStatus("Latching");
-			a.movB(f.movB1, f.p1);
-			a.movR(f.movH2, f.p2);
-			a.movB(f.movB3, f.p3);
-			a.movB(f.movB4, f.p4);
+			a.movB(1.0, 1.0);
+			a.movR(9.0, 1.0);
+			a.movB(6.0, 1.0);
+			a.movB(0.8, 0.5);
 			a.latch();
 
 			h.tStatus("Unlatching");
-			a.movF(f.movF5, f.p5);
-			a.movF(f.movF6, f.p6);
+			a.movF(7.0, 1.0);
+			a.movF(1.4, 0.5);
 			a.unlatch();
 
 			h.tStatus("Line");
-			a.movL(f.movH7, f.p7);
-			a.movB(f.movB8, f.p8);
-			a.movL(f.movH9, f.p9);
+			a.movL(8.0, 1.0);
+			a.movB(5.5, 1.0);
+			a.movL(5.0, 1.0);
 
 			h.tStatus("Done!");
 			/* End */

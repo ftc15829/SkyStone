@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 	private Telemetry tele = telemetry;
 	private __Hardware__ h = new __Hardware__(tele, this);
 	private __AutoBase__ a = new __AutoBase__(h, this);
-	private __Foundation__ f = new __Foundation__();
 
 	// Runs when initialized
 	@Override
