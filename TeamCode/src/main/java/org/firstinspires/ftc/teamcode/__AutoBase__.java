@@ -10,13 +10,14 @@ public class __AutoBase__ {
 
 	/*Actions*/
 	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
-		mov(dir, p); // move left
+		mov(dir, p); // move left(3) or right(1)
 		h.tSub("Scanning");
-		while(h.ssDetect.foundRectangle().area() < 5500 || (dir == 3 ? h.ssDetect.getScreenPosition().y < 67 : h.ssDetect.getScreenPosition().y > 120)) {
+		do {
+			if (h.tfDetect != null) h.updateTfDetect();
 			h.tCaminfo();
 			h.tRunTime();
 			opmode.idle();
-		}
+		} while ((dir == 3 ? h.SkystonePos < 320 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
 		halt(0);
 		return opmode.getRuntime();
 	}
@@ -252,17 +253,5 @@ public class __AutoBase__ {
 		opmode.sleep(time);
 		h.drive_lf.setPower(0); h.drive_rf.setPower(0);
 		h.drive_lb.setPower(0); h.drive_rb.setPower(0);
-	}
-
-	/*Utility Classes*/
-	public class AutoTelemetry implements Runnable { // Depreciated
-		public boolean sDetector_xy = false;
-
-		@Override public void run() {
-			while (!opmode.isStopRequested()) {
-				if (sDetector_xy) h.tWebcam();
-				opmode.idle();
-			}
-		}
 	}
 }

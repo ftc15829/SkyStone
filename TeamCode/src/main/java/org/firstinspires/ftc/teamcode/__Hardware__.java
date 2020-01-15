@@ -1,8 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.skystone.SkystoneDetector;
-import com.disnodeteam.dogecv.detectors.skystone.StoneDetector;
-import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,12 +6,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.opencv.core.Mat;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
 
 import static java.lang.Math.round;
 
@@ -24,18 +22,22 @@ public class __Hardware__ {
 	public __Hardware__(Telemetry telemetry, LinearOpMode linearOpMode) { t = telemetry; opmode = linearOpMode; }
 	LinearOpMode opmode;
 	Telemetry t;
-
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
 
-	// Initialize visual detection
-	OpenCvCamera phoneCam;
-	int screenWidth = 320;
-	int screenHeight = 240;
-	SkystoneDetector ssDetect;
+	float SkystonePos;
+	float SkystoneLeft;
+	float SkystoneRight;
+	int SkystoneArea;
+	double SkystoneConfidence;
+	List<Recognition> updatedRecognitions;
+	VuforiaLocalizer vuforia;
+	TFObjectDetector tfDetect;
+	private static final String VUFORIA_KEY =
+			"ARmB8mr/////AAABmZmt2tlP7EgjixU1JYYoSncNXqoxBId990GbqOpAfBytywT8tnE7y51UQmExhGdE3ctKQ5oiMU2LqcaxxW9zPp4+8x4XDsQbYlNwT8uhOE3X+QlME2xhn7unPHRKS9v8bK7R/P+/kmNfzPPDZuPvHSRAYICg6wkLVArTiKP59oP5UN4NZVm7TqE+2bqB3RR9wg9ItU9E8ufs20T8uJpBEzIOk+CMCGvpalbjz+gIv1NDEci9m/z2KMGcmA1bt+XpozDvNEPznZ9enhB9yS3qTDUkNoO/CUndqvMHEfKaTAGnN0oj5ixI3R4fzBx+Xl2LRdUvmav/7CPdnQqt02867My6dezcLg3ovxXMfrtTGgbn";
 
 	// Initialize gamepad values
 	double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
@@ -67,23 +69,50 @@ public class __Hardware__ {
 		grab_r = hardwareMap.crservo.get("block2");
 	}
 	void initAuto(HardwareMap hardwareMap) {
-		WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
-		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-		phoneCam = new OpenCvWebcam(webcamName, cameraMonitorViewId);
-		phoneCam.openCameraDevice();
-		ssDetect = new SkystoneDetector();
-		phoneCam.setPipeline(ssDetect);
-		ssDetect.useDefaults();
-        startStream();
+		/* Initiate Vuforia */
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+		parameters.vuforiaLicenseKey = VUFORIA_KEY;
+		parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+		vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+		/* Initiate TensorFlow Object Detection */
+		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+		tfodParameters.minimumConfidence = 0.8;
+		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+		tfDetect.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
+
+		if (tfDetect != null) tfDetect.activate();
 	}
 
-	/* Camera */
-	void startStream() {
-		OpenCvCameraRotation direction = OpenCvCameraRotation.SIDEWAYS_LEFT;
-		phoneCam.startStreaming(screenWidth, screenHeight, direction);
-	}
-	void stopStream() {
-		phoneCam.stopStreaming();
+	void updateTfDetect() {
+		updatedRecognitions = tfDetect.getUpdatedRecognitions();
+		if (updatedRecognitions == null) return;
+		if (updatedRecognitions.size() > 0) {
+			int i = 0;
+			for (int j = 0; j < updatedRecognitions.size(); j++) {
+				if (updatedRecognitions.get(j).getLabel() == "Skystone") {
+					i = j;
+					break;
+				}
+			}
+			if (updatedRecognitions.get(i).getLabel() == "Skystone") {
+				float objectRight = updatedRecognitions.get(i).getRight();
+				float objectLeft = updatedRecognitions.get(i).getLeft();
+				float objectHeight = updatedRecognitions.get(i).getHeight();
+				float objectWidth = updatedRecognitions.get(i).getWidth();
+				float objectConfidence = updatedRecognitions.get(i).getConfidence();
+
+				SkystoneLeft = objectLeft; SkystoneRight = objectRight;
+				SkystonePos = objectLeft + (round(100 * ((objectWidth) / 2)) / 100);
+				SkystoneArea = round(objectWidth * objectHeight * 100) / 100;
+				SkystoneConfidence = objectConfidence; // Currently only returns 0.87890625
+			}
+		} else if (updatedRecognitions.size() == 0) {
+			SkystonePos = 0;
+			SkystoneArea = 0;
+			SkystoneConfidence = 0;
+		}
 	}
 
 	/* Telemetry */
@@ -116,15 +145,13 @@ public class __Hardware__ {
 		t.addData("Sub", sub);
 		t.update();
 	}
-	void tWebcam() {
-		t.addData("Stone Position X", ssDetect.getScreenPosition().x);
-		t.addData("Stone Position Y", ssDetect.getScreenPosition().y);
-		t.update();
-	}
 	void tCaminfo() {
-		t.addData("Area", ssDetect.foundRectangle().area());
-		t.addData("Y", ssDetect.getScreenPosition().y);
-//		t.update();
+		t.addData("Pos", SkystonePos);
+		t.addData("left", SkystoneLeft);
+		t.addData("right", SkystoneRight);
+		t.addData("Area", SkystoneArea);
+		t.addData("Confidence", SkystoneConfidence);
+		t.update();
 	}
 	void tRunTime() {
 		t.addData("Time", opmode.getRuntime());
