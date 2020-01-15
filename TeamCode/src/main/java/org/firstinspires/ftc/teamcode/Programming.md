@@ -1,4 +1,6 @@
-# Programming
+[TOC]
+
+# Programming - Code Outline
 
 This section will explain and lay out the process the software development team went through in writing our current codebase. All the way from the first meet to now.
 
@@ -9,6 +11,8 @@ Last season, which was our first year as a team, we were unable to abstract out 
 ### Drive Class
 
 Once we got the hardware class sorted out, we got to work on the drive function. Now that we had one year under our belt, we were able to organize our code with a little more foresight. Our drive function, for example, consisted mainly of update functions in the game loop. We separated them based on motor type, `updateAuxMotors`, `updateCrServos`, `updateServos`, and `updateDrive`. The last of which had a helper function `getDrivePower`. These will be outlined below.
+
+#### `runOpMode`
 
 Our `runOpMode` function is shown below. `h` is the name of our abstracted hardware class which will be laid out later on. `h` also handles telemetry (prefixed with `t`) &#8212; `h.tErr` and `h.tDrivePower` in this case. For now, we will focus on the code under the comment "Updates hardware," which are local functions.
 
@@ -49,7 +53,7 @@ Our `runOpMode` function is shown below. `h` is the name of our abstracted hardw
 
 Before that, regarding the try/catch blocks. This season, we vowed to use error handling for once, evident by the two try/catch blocks wrapping the majority of our code. Although it is rudimentary, it was a good start. Later on, we plan to advance our error handling into something more beneficial, especially during autonomous periods.
 
----
+#### `updateServos`
 
 Without getting into Hardware's &mdash; the abstracted hardware class &mdash; territory, the functions included (`update*`) are all housed within the same class. `updateServos` is shown below. It simply toggles the position of the servos we use to latch on to the foundation
 
@@ -66,7 +70,7 @@ private void updateServos() {
 }
 ```
 
----
+#### `updateCrServos`
 
 Next is `updateCrServos`. This turns the servos clockwise or counterclockwise depending on the side. It uses nested ternary operators, which could probably be a little more readable. However, the resulting operation is relatively simple so we have not had issues on that front.
 
@@ -78,7 +82,7 @@ private void updateCrServos() {
 }
 ```
 
----
+#### `updateAuxMotors`
 
 Now, `updateAuxMotors`. We have two auxiliary motor sets, one is to move the robots top platform forward and back, `h.lSlide_l` and `h.lSlide_r`, the other moves the scissor contraption up and down, `h.scissor`.
 
@@ -91,7 +95,7 @@ private void updateAuxMotors() {
 }
 ```
 
----
+#### `updateDrive` `getDrivePower`
 
 The final one, `updateDrive`, is the most involved. It uses a helper function called `getDrivePower`. They are shown below.
 
@@ -153,7 +157,7 @@ double _lStick_y, _rStick_y; // Gamepad 2
 
 A big reason we were able to make this, is because we finally began to understand how to interact with objects, hence the `Telemetry` and `LinearOpMode` objects passed via the constructor. In our first year, we never would have thought to do that. Below the constructor are the other global variables assigned to null values.
 
----
+#### `init` `initAuto`
 
 We include two separate initialization functions, `init` and `initAuto`.
 
@@ -197,7 +201,7 @@ void initAuto(HardwareMap hardwareMap) {
 
 The `init` function includes basic configuration of our hardware devices. `initAuto` presents a good opportunity to credit where we got the majority of out vision related code from, DogeCV. While we do eventually move to using TensorFlow, DogeCV was our main vision library for all of last season and early this season. So, to be honest, `initAuto`, aside from straightforward commands like "startStreaming," was beyond us. None of us have ever used OpenCV or any kind of video stream processing, so our only hope was to rely on DogeCV. We never end up getting this vision detection method working reliably (problems with lighting and no clue how to fix it), so this is simply a mention of the fact that it existed, and we tried...
 
----
+#### `updateGamepad`
 
 The rest of the hardware class consists of many telemetry function, which we will not go over here, and a function to update the gamepad values. `updateGamepad` is shown below.
 
@@ -291,6 +295,8 @@ We will explain what exactly `AutoBase` and `mov*_` are next.
 
 `AutoBase` is definitely the class we spend our most time in. It's purpose is to abstract out as many instructions as possible, this makes our autonomous instruction sets incredibly simple. This is important for in-the-field adjustments. First, we will go over the helper functions. We have many individual functions, but they fall into only a few templates. We will go over those.
 
+#### `driveTargetPos` etc.
+
 The first ones are drive-specific helper functions. These are things like `driveTargetPos` which is simply shorthand for setting the position of all the drive motors.
 
 ```java
@@ -343,7 +349,7 @@ void halt(long t) {
 }
 ```
 
----
+#### `mov*`
 
 Now onto the stuff we actually use in the instruction sets, that is, `mov*` and `mov*_`. `movF` and `movF_` are shown here.
 
@@ -395,3 +401,143 @@ void movL_(long t, double p) {
 
 ## League Meet Two
 
+Here, we will outline changes from League Meet One to League Meet Two. The `Drive` class didn't actually change, so we will be starting from `Hardware`.
+
+### Hardware Class
+
+#### `initAuto` `startStream` `stopStream`
+
+At this point, we are starting to understand the DogeCV library to the point where we can personalize some of the code.
+
+```java
+void initAuto(HardwareMap hardwareMap) {
+    WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    phoneCam = new OpenCvWebcam(webcamName, cameraMonitorViewId);
+    phoneCam.openCameraDevice();
+    ssDetect = new SkystoneDetector();
+    phoneCam.setPipeline(ssDetect);
+    
+    ssDetect.useDefaults();
+    startStream();
+}
+```
+
+The majority of the `initAuto` function remains the same, aside from some variable name changes and `userDefaults`. We understand the code a lot better now though, where as before, we didn't understand what most of the code was for or why it was necessary. We also added some quality-of-life functions shown below.
+
+```java
+void startStream() {
+    OpenCvCameraRotation direction = OpenCvCameraRotation.SIDEWAYS_LEFT;
+    phoneCam.startStreaming(screenWidth, screenHeight, direction);
+}
+```
+
+```java
+void stopStream() {
+    phoneCam.stopStreaming();
+}
+```
+
+---
+
+Aside from this, we added many more telemetry functions for debug purposes, but those will not be outlines here.
+
+### AutoBase Class
+
+`AutoBase` had a ton of work put into it. We finally got our encoders working properly. We also, finally, added vision functionality.
+
+#### `findSkystone`
+
+`findSkystone` was a big step for us, now that we understood DogeCV a little more, we were able to create this algorithm to detect the skystone. We just use one function for this and have a parameter to change the direction it searches in. It is shown below.
+
+```java
+double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When it finds one, it will move towards it
+    mov(dir, p); // move left(3) or right(1)
+    h.tSub("Scanning");
+    while(h.ssDetect.foundRectangle().area() < 5500 || (dir == 3 ? h.ssDetect.getScreenPosition().y < 73 : h.ssDetect.getScreenPosition().y > 160)) {
+        h.tCaminfo();
+        h.tRunTime();
+        opmode.idle();
+    }
+    halt(0);
+    return opmode.getRuntime();
+}
+```
+
+The reason it returns the runtime, is because we chose to use that to determine which configuration the stones were placed; the more time it took, the closer the Skystone was to the wall.
+
+#### `pickUp` `drop`
+
+Now that we were able to find the Skystone, we needed a way to pick it up and drop it. We created two functions, `pickUp` and `drop`, to handle that. They are shown below.
+
+```java
+void pickUp() { // Will extend platform, attempt to grab a block, then retract the platform
+    h.tSub("Picking up Block"); 
+    platform(2.5, 0.6);
+    h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
+    h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
+    opmode.sleep(400);
+    platform(-2.3, 0.6); h.tSub("");
+}
+```
+
+```java
+void drop() { // Will extend platform, release any held block, then retract the platform
+    h.tSub("Dropping Block");
+    h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
+    h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
+    opmode.sleep(400);
+}
+```
+
+They are relatively simple. Just some communication with `Hardware`. We had troubles figuring out how to interact with a CR servo as though it were a regular servo, but figured it out eventually.
+
+#### `latch` `unlatch`
+
+In order to grab the foundation in autonomous, we created `latch` and `unlatch`. As with `pickUp` and `drop`. We simply interacted with `Hardware` a bit.
+
+```java
+void latch() {
+    h.fHook_l.setPosition(0.0);
+    h.fHook_r.setPosition(1.0);
+    opmode.sleep(400);
+}
+```
+
+```java
+void unlatch() {
+    h.fHook_l.setPosition(1.0);
+    h.fHook_r.setPosition(0.0);
+    opmode.sleep(400);
+}
+```
+
+---
+
+We also added some more helper functions, in preparation for better error handling and what not, but they generally follow the same format as League Meet One's section on helper functions.
+
+### Auto Classes
+
+Notice the plural. We finally have multiple Autonomous classes! Very exciting! How many do we have? Eight! We will only go over two though, of course. The eight classes were derived using this flow chart.
+
+```mermaid
+graph LR
+1-- Yes ---B[Do you end near the middle or near the wall?]
+2-- No ---B
+3-- Yes ---C[Do you end near the middle or near the wall?]
+4-- No ---C
+B-- Red ---A[Red or Blue team?]
+C-- Blue ---A
+A-- Red ---D[Do you end near the middle or near the wall?]
+A-- Blue ---E[Do you end near the middle or near the wall?]
+D-- Yes ---5
+D-- No ---6
+E-- Yes ---7
+E-- No ---8
+```
+
+
+
+---
+
+The specific classes shown will be `RedFoundationWall` and `RedSkystoneMid`.
