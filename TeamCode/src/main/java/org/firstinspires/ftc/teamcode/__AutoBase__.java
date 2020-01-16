@@ -23,11 +23,11 @@ public class __AutoBase__ {
 	}
 
 	void pickUp() { h.tSub("Picking up Block"); // Will extend platform, attempt to grab a block, then retract the platform
-		platform(2.5, 0.6);
+		platform(2.7, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		opmode.sleep(400);
-		platform(-2.3, 0.6); h.tSub("");
+		platform(-2.7, 0.6); h.tSub("");
 	}
 	void drop() { h.tSub("Dropping Block"); // Will extend platform, release any held block, then retract the platform
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
@@ -38,12 +38,12 @@ public class __AutoBase__ {
 	void latch() {
 		h.fHook_l.setPosition(0.0);
 		h.fHook_r.setPosition(1.0);
-		opmode.sleep(400);
+		opmode.sleep(1000);
 	}
 	void unlatch() {
 		h.fHook_l.setPosition(1.0);
 		h.fHook_r.setPosition(0.0);
-		opmode.sleep(400);
+		opmode.sleep(1300);
 	}
 
 	/*Helper*/
@@ -123,7 +123,7 @@ public class __AutoBase__ {
 	}
 	boolean cDrive_isBusy(double rev) {
 		double target = Math.abs(rev * 20 * 28);
-		int diff = 20;
+		int diff = 500;
 		if (h.drive_rf.getCurrentPosition() >= target-diff || h.drive_lf.getCurrentPosition() >= target-diff || h.drive_rb.getCurrentPosition() >= target-diff || h.drive_lb.getCurrentPosition() >= target-diff) {
 			return true;
 		}
@@ -131,7 +131,7 @@ public class __AutoBase__ {
 	}
 	boolean cMotor_isBusy(double rev, DcMotor motor) {
 		double target = Math.abs(rev * 20 * 28);
-		int diff = 20;
+		int diff = 500;
 		if (motor.getCurrentPosition() >= target-diff) {
 			return true;
 		}
@@ -153,82 +153,92 @@ public class __AutoBase__ {
 
 	/*Encoder Based Movement*/
 
-	void movF(double rev, double p) {
+	void movF(double rev, double p) { movF(rev, p, 0); }
+	void movL(double rev, double p) { movL(rev, p, 0); }
+	void movR(double rev, double p) { movR(rev, p, 0); }
+	void movB(double rev, double p) { movB(rev, p, 0); }
+	void trnL(double rev, double p) { trnL(rev, p, 0); }
+	void trnR(double rev, double p) { trnR(rev, p, 0); }
+
+	void movF(double rev, double p, double t) {
+		double startTime = opmode.getRuntime();
 		driveModeSRE();
 		driveTargetPos(rev, rev, rev, rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy()) {
+		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
-			if (cDrive_isBusy(rev))
-				break;
+//			if (cDrive_isBusy(rev)) {
+//				halt(0);driveModeSRE();
+//				break;
+//			}
+
 		}
 		halt(0);
 		driveModeRWE();
 	}
-	void movL(double rev, double p) {
+	void movL(double rev, double p, double t) {
+		double startTime = opmode.getRuntime();
 		driveModeSRE();
 		driveTargetPos(-rev, rev, rev, -rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy()) {
+		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
-			if (cDrive_isBusy(rev))
-				break;
 		}
 		halt(0);
 		driveModeRWE();
 	}
-	void movR(double rev, double p) {
+	void movR(double rev, double p, double t) {
+		double startTime = opmode.getRuntime();
 		driveModeSRE();
 		driveTargetPos(rev, -rev, -rev, rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy()) {
+		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
-			if (cDrive_isBusy(rev))
-				break;
 		}
 		halt(0);
 		driveModeRWE();
 	}
-	void movB(double rev, double p) {
+	void movB(double rev, double p, double t) {
+		double startTime = opmode.getRuntime();
 		driveModeSRE();
 		driveTargetPos(-rev, -rev, -rev, -rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy()) {
+		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
-			if (cDrive_isBusy(rev))
-				break;
 		}
 		halt(0);
 		driveModeRWE();
 	}
-	void trnL(double rev, double p) {
+	void trnL(double rev, double p, double t) {
+		double startTime = opmode.getRuntime();
 		rev *= 5.0;
 		driveModeSRE();
 		driveTargetPos(-rev, rev, -rev, rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy()) {
+		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}
 		halt(0);
 		driveModeRWE();
 	}
-	void trnR(double rev, double p) {
+	void trnR(double rev, double p, double t){
+		double startTime = opmode.getRuntime();
 		rev *= 5.0;
 		driveModeSRE();
 		driveTargetPos(rev, -rev, rev, -rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy()) {
+		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}

@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 		// Initiate hardware
 		try {
 			h.init(hardwareMap);
+			a.unlatch();
 		} catch (Exception e) {
 			h.tStatus("Error");
 			h.tErr("HardwareMap", e);
@@ -28,16 +29,22 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 		try {
 			h.tStatus("Running");
 			/* Instructions - New Red Foundation Wall */
-			a.movL(3,1);
-			a.movB(3,1);
+			a.movB(1.0,0.9, 0.8);
+			a.movL(11.5,0.9, 3.8);
+			a.movB(5.2,0.9,2.5);
+			a.movB(1.0,0.5, 1.2);
 			a.latch();
-			a.drivePower(1,.5,1,.5);
-			sleep(1500);
+
+			a.drivePower(1.0,0.3,1.0,0.3);
+			sleep(3400);
 			a.drivePower(0);
-			a.movB(2,1);
+			a.driveModeSRE();
+
+			a.movB(3.8,1, 1.8);
 			a.unlatch();
-			a.movL(1.5,1);
-			a.movF(2.5,1);
+			a.movF(1.0,1,.8);
+			a.movL(2.0,1, 1.5);
+			a.movF(9.0,1, 3.5);
 			h.tStatus("Done!");
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text
