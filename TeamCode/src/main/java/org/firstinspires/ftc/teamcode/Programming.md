@@ -518,26 +518,126 @@ We also added some more helper functions, in preparation for better error handli
 
 ### Auto Classes
 
-Notice the plural. We finally have multiple Autonomous classes! Very exciting! How many do we have? Eight! We will only go over two though, of course. The eight classes were derived using this flow chart.
+Notice the plural. We finally have multiple Autonomous classes! Very exciting! How many do we have? Eight! We will only go over two though. The eight classes were derived using this flow chart.
 
-```mermaid
-graph LR
-1-- Yes ---B[Do you end near the middle or near the wall?]
-2-- No ---B
-3-- Yes ---C[Do you end near the middle or near the wall?]
-4-- No ---C
-B-- Red ---A[Red or Blue team?]
-C-- Blue ---A
-A-- Red ---D[Do you end near the middle or near the wall?]
-A-- Blue ---E[Do you end near the middle or near the wall?]
-D-- Yes ---5
-D-- No ---6
-E-- Yes ---7
-E-- No ---8
-```
+[![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggTFJcblQoVGVhbT8pXG5HbChHb2FsPyk7R3IoR29hbD8pXG5FbDEoRW5kPyk7RWwyKEVuZD8pO0VyMShFbmQ_KTtFcjIoRW5kPylcbjEoUmVkU2t5c3RvbmVXYWxsKTsyKFJlZFNreXN0b25lTWlkKTszKFJlZEZvdW5kYXRpb25XYWxsKTs0KFJlZEZvdW5kYXRpb25NaWQpXG41KEJsdWVTa3lzdG9uZVdhbGwpOzYoQmx1ZVNreXN0b25lTWlkKTs3KEJsdWVGb3VuZGF0aW9uV2FsbCk7OChCbHVlRm91bmRhdGlvbk1pZClcblxuMS0tLXxXYWxsfEVsMS0tLXxTa3lzdG9uZXxHbC0tLXxSZWR8VFxuMi0tLXxNaWR8RWwxXG4zLS0tfFdhbGx8RWwyLS0tfEZvdW5kYXRpb258R2xcbjQtLS18TWlkfEVsMlxuXG5ULS0tfEJsdWV8R3ItLS18U2t5c3RvbmV8RXIxLS0tfFdhbGx8NVxuRXIxLS0tfE1pZHw2XG5Hci0tLXxGb3VuZGF0aW9ufEVyMi0tLXxXYWxsfDdcbkVyMi0tLXxNaWR8OFxuIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifX0)](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggTFJcblQoVGVhbT8pXG5HbChHb2FsPyk7R3IoR29hbD8pXG5FbDEoRW5kPyk7RWwyKEVuZD8pO0VyMShFbmQ_KTtFcjIoRW5kPylcbjEoUmVkU2t5c3RvbmVXYWxsKTsyKFJlZFNreXN0b25lTWlkKTszKFJlZEZvdW5kYXRpb25XYWxsKTs0KFJlZEZvdW5kYXRpb25NaWQpXG41KEJsdWVTa3lzdG9uZVdhbGwpOzYoQmx1ZVNreXN0b25lTWlkKTs3KEJsdWVGb3VuZGF0aW9uV2FsbCk7OChCbHVlRm91bmRhdGlvbk1pZClcblxuMS0tLXxXYWxsfEVsMS0tLXxTa3lzdG9uZXxHbC0tLXxSZWR8VFxuMi0tLXxNaWR8RWwxXG4zLS0tfFdhbGx8RWwyLS0tfEZvdW5kYXRpb258R2xcbjQtLS18TWlkfEVsMlxuXG5ULS0tfEJsdWV8R3ItLS18U2t5c3RvbmV8RXIxLS0tfFdhbGx8NVxuRXIxLS0tfE1pZHw2XG5Hci0tLXxGb3VuZGF0aW9ufEVyMi0tLXxXYWxsfDdcbkVyMi0tLXxNaWR8OFxuIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifX0)
 
 
 
 ---
 
-The specific classes shown will be `RedFoundationWall` and `RedSkystoneMid`.
+The specific classes shown will be `RedSkystoneWall` and `BlueFoundationMid`. By `Wall` and `Mid`, we mean ending the game on the tape close to the middle or close the wall. They are quite similar to the original template, but, of course, with instructions this time.
+
+```java
+@Autonomous(name="Blue Foundation Mid") public class BlueFoundationMid extends LinearOpMode {
+    /*Initializations*/
+    private Telemetry tele = telemetry;
+    private __Hardware__ h = new __Hardware__(tele, this);
+    private __AutoBase__ a = new __AutoBase__(h, this);
+
+    // Runs when initialized
+    @Override
+    public void runOpMode() {
+        // Initiate hardware
+        try {
+            h.init(hardwareMap);
+        } catch (Exception e) {
+            h.tStatus("Error");
+            h.tErr("HardwareMap", e);
+            sleep(15_000);
+            stop();
+        }
+        h.tStatus("Ready");
+        waitForStart();
+        resetStartTime();
+        try {
+            h.tStatus("Running");
+            /* Instructions - Blue Foundation Mid */
+            h.tStatus("Latching");
+            a.movB(1.0, 1.0);
+            a.movR(9.0, 1.0);
+            a.movB(6.0, 1.0);
+            a.movB(0.8, 0.5);
+            a.latch();
+
+            h.tStatus("Unlatching");
+            a.movF(7.0, 1.0);
+            a.movF(1.4, 0.5);
+            a.unlatch();
+
+            h.tStatus("Line");
+            a.movL(8.0, 1.0);
+            a.movB(5.5, 1.0);
+            a.movL(5.0, 1.0);
+
+            h.tStatus("Done!");
+            /* End */
+        } catch (Exception e) { // Catches exceptions as plain-text
+            h.tStatus("Error");
+            h.tErr("Auto Runtime", e);
+            sleep(15_000);
+            stop();
+        }
+    }
+}
+```
+
+```java
+@Autonomous(name="Red Skystone Wall") public class RedSkystoneWall extends LinearOpMode {
+	/*Initializations*/
+	private Telemetry tele = telemetry;
+	private __Hardware__ h = new __Hardware__(tele, this);
+	private __AutoBase__ a = new __AutoBase__(h, this);
+	private __Skystone__ s = new __Skystone__();
+
+	// Runs when initialized
+	@Override
+	public void runOpMode() {
+		// Initiate hardware
+		try {
+			h.init(hardwareMap);
+			h.initAuto(hardwareMap);
+		} catch (Exception e) {
+			h.tStatus("Error");
+			h.tErr("HardwareMap", e);
+			sleep(15_000);
+			stop();
+		}
+		h.tStatus("Ready");
+		waitForStart();
+		resetStartTime();
+		try {
+			h.tStatus("Running");
+			/* Instructions - Red SkyStone Wall */
+			a.movF(3.1, 1.0);
+			double sTime = a.findSkystone(3, 0.6);//4.2 far stone 3.7 middle 2.2 end
+			a.movF(3.0, 1.0);
+			a.pickUp();
+
+			h.tStatus("Moving to Foundation");
+			a.movB(0.5, 1.0);
+			a.trnR(1.0, 0.9);
+			a.movR(6.0, 1.0);
+			a.movF(sTime > 3.5 ? 12.7 : 10.0, 0.4);
+			a.drop();
+
+			h.tSub("Moving under Bridge");
+
+			a.movB(4.0, 1.0);
+
+			h.tStatus("Done!");
+			/* End */
+		} catch (Exception e) { // Catches exceptions as plain-text
+			h.tStatus("Error");
+			h.tErr("Auto Runtime", e);
+			sleep(15_000);
+			stop();
+		}
+	}
+}
+```
+
+These numbers were all derived via trial and error. The foundation side instruction set is pretty simple, just instructions. The skystone side, however, has some variability in the form of `a.findSkystone` and `sTime`. Looking at the line utilizing `sTime`, `a.movF`, you can see that instead of three possible values (one per possible skystone position), there are two. We were able to get away with this by overlapping two of the. Since it uses time for the calculation, it is already pretty imprecise, so adding to that couldn't hurt. Sadly we had issues with lighting and were not able to test that theory. Other than that, the foundation autonomous' performed wonderfully. Aside from some hardware issues, there wasn't one instances that the foundation autonomous failed due to programming or imprecision. Which is kind of necessary for all autonomous', so we were happy to see such a success.
+
+## League Meet Three
+
