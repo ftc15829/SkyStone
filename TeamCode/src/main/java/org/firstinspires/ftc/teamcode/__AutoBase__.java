@@ -26,13 +26,13 @@ public class __AutoBase__ {
 		platform(2.7, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
-		opmode.sleep(400);
+		opmode.sleep(600);
 		platform(-2.7, 0.6); h.tSub("");
 	}
 	void drop() { h.tSub("Dropping Block"); // Will extend platform, release any held block, then retract the platform
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
-		opmode.sleep(400);
+		opmode.sleep(600);
 	}
 
 	void latch() {
