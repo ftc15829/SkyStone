@@ -38,7 +38,7 @@ public class __AutoBase__ {
 	void latch() {
 		h.fHook_l.setPosition(0.0);
 		h.fHook_r.setPosition(1.0);
-		opmode.sleep(1000);
+		opmode.sleep(1300);
 	}
 	void unlatch() {
 		h.fHook_l.setPosition(1.0);
@@ -121,22 +121,6 @@ public class __AutoBase__ {
 				break;
 		}
 	}
-	boolean cDrive_isBusy(double rev) {
-		double target = Math.abs(rev * 20 * 28);
-		int diff = 500;
-		if (h.drive_rf.getCurrentPosition() >= target-diff || h.drive_lf.getCurrentPosition() >= target-diff || h.drive_rb.getCurrentPosition() >= target-diff || h.drive_lb.getCurrentPosition() >= target-diff) {
-			return true;
-		}
-		return false;
-	}
-	boolean cMotor_isBusy(double rev, DcMotor motor) {
-		double target = Math.abs(rev * 20 * 28);
-		int diff = 500;
-		if (motor.getCurrentPosition() >= target-diff) {
-			return true;
-		}
-		return false;
-	}
 	/*Auxilary Movement*/
 
 	void platform(double rev, double p) {
@@ -169,11 +153,6 @@ public class __AutoBase__ {
 		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
-//			if (cDrive_isBusy(rev)) {
-//				halt(0);driveModeSRE();
-//				break;
-//			}
-
 		}
 		halt(0);
 		driveModeRWE();
@@ -244,6 +223,12 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
+	}
+
+	void customTrn(double leftPower, double rightPower, long t) {
+		drivePower(leftPower, rightPower, leftPower, rightPower);
+		opmode.sleep(t);
+		halt(0);
 	}
 
 	/*Time Based Movement*/

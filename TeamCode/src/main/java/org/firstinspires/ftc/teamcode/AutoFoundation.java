@@ -34,12 +34,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			a.movB(5.2,0.9,2.5);
 			a.movB(1.0,0.5, 1.2);
 			a.latch();
-
-			a.drivePower(0.3,1.0,0.3,1.0);
-			sleep(3400);
-			a.drivePower(0);
-			a.driveModeSRE();
-
+			a.customTrn(0.3, 1.0, 3400);
 			a.movB(3.8,1, 1.8);
 			a.unlatch();
 			a.movF(1.0,1,.8);
@@ -95,12 +90,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			a.movB(5.2,0.9,2.5);
 			a.movB(1.0,0.5, 1.2);
 			a.latch();
-
-			a.drivePower(0.3,1.0,0.3,1.0);
-			sleep(3400);
-			a.drivePower(0);
-			a.driveModeSRE();
-
+			a.customTrn(0.3, 1.0, 3400);
 			a.movB(3.8,1, 1.8);
 			a.unlatch();
 			a.movF(1.0,1,.8);
@@ -148,12 +138,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			a.movB(5.2, 0.9, 2.5);
 			a.movB(1.0, 0.5, 1.2);
 			a.latch();
-
-			a.drivePower(1.0, 0.3, 1.0, 0.3);
-			sleep(3400);
-			a.drivePower(0);
-			a.driveModeSRE();
-
+			a.customTrn(1.0, 0.3, 3400);
 			a.movB(3.8, 1, 1.8);
 			a.unlatch();
 			a.movF(1.0 ,1, 0.8);
@@ -201,12 +186,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			a.movB(5.2, 0.9, 2.5);
 			a.movB(1.0, 0.5, 1.2);
 			a.latch();
-
-			a.drivePower(1.0, 0.3, 1.0, 0.3);
-			sleep(3400);
-			a.drivePower(0);
-			a.driveModeSRE();
-
+			a.customTrn(1.0, 0.3, 3400);
 			a.movB(3.8, 1, 1.8);
 			a.unlatch();
 			a.movF(1.0 ,1, 0.8);

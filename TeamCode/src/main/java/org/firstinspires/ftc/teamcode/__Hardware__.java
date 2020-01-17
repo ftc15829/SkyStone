@@ -27,7 +27,7 @@ public class __Hardware__ {
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
-
+	// Initialize Vision
 	float SkystonePos;
 	float SkystoneLeft;
 	float SkystoneRight;
