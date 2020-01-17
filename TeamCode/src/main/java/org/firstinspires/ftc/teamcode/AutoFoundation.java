@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //@Disabled
-@Autonomous(name="Blue Foundation Mid") class BlueFoundationMid extends LinearOpMode {
+@Autonomous(name="Foundation-Mid", group="Blue") class BlueFoundationMid extends LinearOpMode {
 	/*Initializations*/
 	private Telemetry tele = telemetry;
 	private __Hardware__ h = new __Hardware__(tele, this);
@@ -52,7 +52,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 }
 
 //@Disabled
-@Autonomous(name="Blue Foundation Wall") class BlueFoundationWall extends LinearOpMode {
+@Autonomous(name="Foundation-Wall", group="Blue") class BlueFoundationWall extends LinearOpMode {
 	/*Initializations*/
 	private Telemetry tele = telemetry;
 	private __Hardware__ h = new __Hardware__(tele, this);
@@ -77,14 +77,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 		try {
 			h.tStatus("Running");
 			/* Instructions - Blue Foundation Wall */
-			{/*
-				|---------+              ^
-				|                        |
-				|\                    0----0
-				|  \                  |ROBO|
-				|    \                0----0
-				+------------------------------
-			*/}
 			a.movB(1.0,0.9, 0.8);
 			a.movR(11.5,0.9, 3.8);
 			a.movB(5.2,0.9,2.5);
@@ -108,7 +100,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 }
 
 //@Disabled
-@Autonomous(name="Red Foundation Mid") class RedFoundationMid extends LinearOpMode {
+@Autonomous(name="Foundation-Mid", group="Red") class RedFoundationMid extends LinearOpMode {
 	/*Initializations*/
 	private Telemetry tele = telemetry;
 	private __Hardware__ h = new __Hardware__(tele, this);
@@ -156,7 +148,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 }
 
 //@Disabled
-@Autonomous(name="Red Foundation Wall") class RedFoundationWall extends LinearOpMode {
+@Autonomous(name="Foundation-Wall", group="Red") class RedFoundationWall extends LinearOpMode {
 	/*Initializations*/
 	private Telemetry tele = telemetry;
 	private __Hardware__ h = new __Hardware__(tele, this);
