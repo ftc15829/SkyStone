@@ -32,6 +32,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 			while(opModeIsActive()) {
 				h.updateTfDetect();
 				h.tCaminfo();
+//				h.tDrivePos();
 			}
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text

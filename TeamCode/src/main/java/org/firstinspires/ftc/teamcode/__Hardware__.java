@@ -128,7 +128,7 @@ public class __Hardware__ {
 		t.update();
 	}
 	void tDrivePos() {
-		t.addData("Main Drive Position", String.format("\n| %.2f | %.2f |\n| %.2f | %.2f |",
+		t.addData("Main Drive Position", String.format("\n| %.3f | %.3f |\n| %.3f | %.3f |",
 				(float)(drive_lf.getCurrentPosition() / 560), (float)(drive_rf.getCurrentPosition() / 560),
 				(float)(drive_lb.getCurrentPosition() / 560), (float)(drive_rb.getCurrentPosition() / 560)));
 		t.update();

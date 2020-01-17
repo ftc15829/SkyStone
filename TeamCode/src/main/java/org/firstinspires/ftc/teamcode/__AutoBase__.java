@@ -11,28 +11,32 @@ public class __AutoBase__ {
 
 	/*Actions*/
 	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
+		driveModeSRE();
+		driveModeRUE();
 		ElapsedTime elapsedTime = new ElapsedTime();
 		mov(dir, p); // move left(3) or right(1)
-		while (elapsedTime.seconds() < 1.8) {
+		while (elapsedTime.seconds() < 3.0) {
+			h.tRunTime(elapsedTime);
 			opmode.idle();
 		}
 		do {
 			if (h.tfDetect != null) h.updateTfDetect();
-			h.tCaminfo();
+//			h.tCaminfo();
+//			h.tDrivePos();
 			h.tRunTime(elapsedTime);
 			opmode.idle();
-			if (elapsedTime.seconds() > 3.5) {
+			if (elapsedTime.seconds() > 8.3) {
 				h.tStatus("Failed");
 				halt(0);
 				return -1.0;
 			}
 		} while ((dir == 3 ? h.SkystonePos < 460 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
 		halt(0);
-		return elapsedTime.seconds();
+		return Math.abs(h.drive_lf.getCurrentPosition() / 560);
 	}
 
 	void pickUp() { // Will extend platform, attempt to grab a block, then retract the platform
-		platform(2.7, 0.6);
+		platform(2.5, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		opmode.sleep(600);
@@ -42,7 +46,7 @@ public class __AutoBase__ {
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
 		opmode.sleep(600);
-		platform(-1.5, 0.6);
+		platform(-1.3, 0.6);
 	}
 
 	void latch() {
@@ -161,7 +165,6 @@ public class __AutoBase__ {
 		driveModeRTP();
 		drivePower(p);
 		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			h.tDrivePos();
 			opmode.idle();
 		}
 		halt(0);
@@ -174,7 +177,6 @@ public class __AutoBase__ {
 		driveModeRTP();
 		drivePower(p);
 		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			h.tDrivePos();
 			opmode.idle();
 		}
 		halt(0);
@@ -187,7 +189,6 @@ public class __AutoBase__ {
 		driveModeRTP();
 		drivePower(p);
 		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			h.tDrivePos();
 			opmode.idle();
 		}
 		halt(0);
@@ -200,7 +201,6 @@ public class __AutoBase__ {
 		driveModeRTP();
 		drivePower(p);
 		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			h.tDrivePos();
 			opmode.idle();
 		}
 		halt(0);
@@ -214,7 +214,6 @@ public class __AutoBase__ {
 		driveModeRTP();
 		drivePower(p);
 		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			h.tDrivePos();
 			opmode.idle();
 		}
 		halt(0);
@@ -228,7 +227,6 @@ public class __AutoBase__ {
 		driveModeRTP();
 		drivePower(p);
 		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			h.tDrivePos();
 			opmode.idle();
 		}
 		halt(0);
