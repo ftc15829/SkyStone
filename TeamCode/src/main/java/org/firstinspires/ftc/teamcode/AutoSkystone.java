@@ -32,9 +32,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			/* Instructions - Blue SkyStone Mid */
 			a.movF(3.1, 1.0);
 			double sTime = a.findSkystone(1, 0.6);//4.2 far stone 3.7 middle 2.2 end
-			a.movF(3.0, 1.0);
-			a.pickUp();
-			a.movB(0.5, 1.0);
+			if (sTime >= 0) {
+				a.movF(3.0, 1.0);
+				a.pickUp();
+				a.movB(0.5, 1.0);
+			} else {
+				a.movF(2.5, 1.0);
+			}
 			a.trnL(1.0, 0.9);
 			a.movF(sTime > 3.5 ? 12.7 : 10.0, 0.4);
 			a.drop();
@@ -79,9 +83,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			/* Instructions - Blue SkyStone Wall */
 			a.movF(3.1, 1.0);
 			double sTime = a.findSkystone(1, 0.6);//4.2 far stone 3.7 middle 2.2 end
-			a.movF(3.0, 1.0);
-			a.pickUp();
-			a.movB(0.5,1.0);
+			if (sTime >= 0) {
+				a.movF(3.0, 1.0);
+				a.pickUp();
+				a.movB(0.5, 1.0);
+			} else {
+				a.movF(2.5, 1.0);
+			}
 			a.trnL(1.0,0.9);
 			a.movL(6.0, 1.0);
 			a.movF(sTime > 3.5 ? 12.7 : 10.0, 0.4);
@@ -126,9 +134,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			/* Instructions - Red SkyStone Mid */
 			a.movF(3.1, 1.0);
 			double sTime = a.findSkystone(3, 0.6);//4.2 far stone 3.7 middle 2.2 end
-			a.movF(3.0, 1.0);
-			a.pickUp();
-			a.movB(0.5,1.0);
+			if (sTime >= 0) {
+				a.movF(3.0, 1.0);
+				a.pickUp();
+				a.movB(0.5, 1.0);
+			} else {
+				a.movF(2.5, 1.0);
+			}
 			a.trnR(1.0,0.9);
 			a.movF(sTime > 3.5 ? 12.7 : 10.0, 0.4);
 			a.drop();
@@ -172,9 +184,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			/* Instructions - Red SkyStone Wall */
 			a.movF(3.1, 1.0);
 			double sTime = a.findSkystone(3, 0.6);//4.2 far stone 3.7 middle 2.2 end
-			a.movF(3.0, 1.0);
-			a.pickUp();
-			a.movB(0.5, 1.0);
+			if (sTime >= 0) {
+				a.movF(3.0, 1.0);
+				a.pickUp();
+				a.movB(0.5, 1.0);
+			} else {
+				a.movF(2.5, 1.0);
+			}
 			a.trnR(1.0,0.9);
 			a.movR(6.0, 1.0);
 			a.movF(sTime > 3.5 ? 12.7 : 10.0, 0.4);

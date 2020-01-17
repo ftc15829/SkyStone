@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class __AutoBase__ {
 	/*Initializations*/
@@ -10,6 +11,7 @@ public class __AutoBase__ {
 
 	/*Actions*/
 	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
+		ElapsedTime elapsedTime = new ElapsedTime();
 		mov(dir, p); // move left(3) or right(1)
 		h.tSub("Scanning");
 		do {
@@ -17,9 +19,13 @@ public class __AutoBase__ {
 			h.tCaminfo();
 			h.tRunTime();
 			opmode.idle();
+			if (elapsedTime.seconds() > 5.0) {
+				halt(0);
+				return -1.0;
+			}
 		} while ((dir == 3 ? h.SkystonePos < 320 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
 		halt(0);
-		return opmode.getRuntime();
+		return elapsedTime.seconds();
 	}
 
 	void pickUp() { h.tSub("Picking up Block"); // Will extend platform, attempt to grab a block, then retract the platform
@@ -145,12 +151,12 @@ public class __AutoBase__ {
 	void trnR(double rev, double p) { trnR(rev, p, 0); }
 
 	void movF(double rev, double p, double t) {
-		double startTime = opmode.getRuntime();
+		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
 		driveTargetPos(rev, rev, rev, rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
+		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}
@@ -158,12 +164,12 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 	void movL(double rev, double p, double t) {
-		double startTime = opmode.getRuntime();
+		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
 		driveTargetPos(-rev, rev, rev, -rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
+		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}
@@ -171,12 +177,12 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 	void movR(double rev, double p, double t) {
-		double startTime = opmode.getRuntime();
+		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
 		driveTargetPos(rev, -rev, -rev, rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
+		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}
@@ -184,12 +190,12 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 	void movB(double rev, double p, double t) {
-		double startTime = opmode.getRuntime();
+		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
 		driveTargetPos(-rev, -rev, -rev, -rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
+		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}
@@ -197,13 +203,13 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 	void trnL(double rev, double p, double t) {
-		double startTime = opmode.getRuntime();
+		ElapsedTime elapsedTime = new ElapsedTime();
 		rev *= 5.0;
 		driveModeSRE();
 		driveTargetPos(-rev, rev, -rev, rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
+		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}
@@ -211,13 +217,13 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 	void trnR(double rev, double p, double t){
-		double startTime = opmode.getRuntime();
+		ElapsedTime elapsedTime = new ElapsedTime();
 		rev *= 5.0;
 		driveModeSRE();
 		driveTargetPos(rev, -rev, rev, -rev);
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy() && (opmode.getRuntime() < startTime + t || t == 0)) {
+		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
 			h.tDrivePos();
 			opmode.idle();
 		}
