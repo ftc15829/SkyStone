@@ -641,12 +641,26 @@ These numbers were all derived via trial and error. The foundation side instruct
 
 ## League Meet Three
 
-Here we will outline the most resent changes to our code for the current meet.
+Here we will outline the most recent changes to our code for the current meet.
 
-### `findSkystone`
+## Hardware
 
-The main change for this method was the switch to Tensorflow from DogeCV for finding the skystone. DogeCV was having a hard time finding the skystone in different lighting, making it unreliable in matches. Tensorflow, however, uses an AI system to find the skystones, making it easily adapt to changing conditions of the field.
+The main change was the switch to Tensorflow from DogeCV for finding the skystone. DogeCV was having a hard time finding the skystone in different lighting, making it unreliable in matches. Tensorflow, however, uses machine learning, removing the hurdles of coding in different lighting. Here is the new `initAuto` function and its related code.
 
-### Foundation Autonomous
+`initAuto`
+
+`updateTfDetect`
+
+`Vision Initializations`
+
+## Auto Classes
 
 The main change for our autonomous on foundation side was changing how the foundation is orientated at the end of autonomous. It used to be facing the same as it was when the round started, but now we have the robot put it up against the wall, giving our alliance more room to move on foundation side.
+
+## AutoBase Class
+
+`mov*`
+
+`findSkystone`
+
+`customTrn`
