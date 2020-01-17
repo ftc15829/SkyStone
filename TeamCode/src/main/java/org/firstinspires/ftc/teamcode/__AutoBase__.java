@@ -13,32 +13,36 @@ public class __AutoBase__ {
 	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
 		ElapsedTime elapsedTime = new ElapsedTime();
 		mov(dir, p); // move left(3) or right(1)
-		h.tSub("Scanning");
+		while (elapsedTime.seconds() < 1.8) {
+			opmode.idle();
+		}
 		do {
 			if (h.tfDetect != null) h.updateTfDetect();
 			h.tCaminfo();
-			h.tRunTime();
+			h.tRunTime(elapsedTime);
 			opmode.idle();
-			if (elapsedTime.seconds() > 5.0) {
+			if (elapsedTime.seconds() > 3.5) {
+				h.tStatus("Failed");
 				halt(0);
 				return -1.0;
 			}
-		} while ((dir == 3 ? h.SkystonePos < 320 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
+		} while ((dir == 3 ? h.SkystonePos < 460 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
 		halt(0);
 		return elapsedTime.seconds();
 	}
 
-	void pickUp() { h.tSub("Picking up Block"); // Will extend platform, attempt to grab a block, then retract the platform
+	void pickUp() { // Will extend platform, attempt to grab a block, then retract the platform
 		platform(2.7, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		opmode.sleep(600);
-		platform(-2.7, 0.6); h.tSub("");
+		platform(-1.2, 0.6);
 	}
-	void drop() { h.tSub("Dropping Block"); // Will extend platform, release any held block, then retract the platform
+	void drop() { // Will extend platform, release any held block, then retract the platform
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
 		opmode.sleep(600);
+		platform(-1.5, 0.6);
 	}
 
 	void latch() {
