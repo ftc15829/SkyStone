@@ -37,11 +37,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			a.movB(1.1, 0.5, 1.2);
 			a.latch();
 			a.customTrn(1.0, 0.3, 3400);
-			a.movB(3.8, 1, 1.8);
+			a.movB(3.8, 1.0, 1.8);
 			a.unlatch();
-			a.movF(1.0 ,1, 0.8);
-			a.movR(5.4, 1, 1.5);
-			a.movF(9.0, 1, 3.5);
+			a.movF(1.0, 1.0, 0.8);
+			a.movR(5.4, 1.0, 1.5);
+			a.movF(9.0, 1.0, 3.5);
 			h.tStatus("Done!");
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text

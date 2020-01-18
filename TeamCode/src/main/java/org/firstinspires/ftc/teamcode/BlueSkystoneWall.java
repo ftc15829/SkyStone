@@ -6,8 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 //@Disabled
 @Autonomous(name="Skystone-Wall B", group="Blue") public class BlueSkystoneWall extends LinearOpMode {
 	/*Initializations*/
-	private Telemetry tele = telemetry;
-	private __Hardware__ h = new __Hardware__(tele, this);
+	private __Hardware__ h = new __Hardware__(telemetry, this);
 	private __AutoBase__ a = new __AutoBase__(h, this);
 
 	// Runs when initialized
@@ -30,20 +29,22 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 		try {
 			h.tStatus("Running");
 			/* Instructions - Blue SkyStone Wall */
-			a.movF(3.1, 1.0);
-			double sTime = a.findSkystone(1, 0.6);//4.2 far stone 3.7 middle 2.2 end
-			if (sTime >= 0) {
-				a.movF(3.0, 1.0);
+			a.movF(3.5, 1.0, 2.4);
+			double sEnc = a.findSkystone(1,0.3);
+			if (sEnc >= 0) {
+				a.movF(3.2, 1.0, 1.5);
 				a.pickUp();
-				a.movB(0.5, 1.0);
+				a.movB(1.3, 1.0, 0.7);
 			} else {
-				a.movF(2.5, 1.0);
+				a.movF(2.0, 1.0, 1.5);
 			}
-			a.trnL(1.0,0.9);
+			a.trnL(1.0,0.9, 1.6);
 			a.movL(6.0, 1.0);
-			a.movF(sTime > 3.5 ? 12.7 : 10.0, 0.4);
-			a.drop();
-			a.movB(4.0, 1.0);
+			a.movF(sEnc > /*me*/4.5 ? ( sEnc > /*fm*/5.0 ?/*middle*/12.0 : /*far*/16.0) : /*end*/10.0, 1.0, 4.6);
+			if (sEnc >= 0) {
+				a.drop();
+				a.movB(3.6, 1.0);
+			}
 			h.tStatus("Done!");
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text

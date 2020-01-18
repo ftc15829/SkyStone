@@ -31,17 +31,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 		try {
 			h.tStatus("Running");
 			/* Instructions - Blue Foundation Mid */
-			a.movB(1.0,0.9, 0.8);
-			a.movR(11.5,0.9, 3.8);
-			a.movB(5.4,0.9,2.5);
-			a.movB(1.1,0.5, 1.2);
+			a.movB(1.0, 0.9, 0.8);
+			a.movR(11.5, 0.9, 3.8);
+			a.movB(5.4, 0.9, 2.5);
+			a.movB(1.1, 0.5, 1.2);
 			a.latch();
 			a.customTrn(0.3, 1.0, 3400);
-			a.movB(3.8,1, 1.8);
+			a.movB(3.8, 1.0, 1.8);
 			a.unlatch();
-			a.movF(1.0,1,.8);
-			a.movL(5.4,1, 1.5);
-			a.movF(9.0,1, 3.5);
+			a.movF(1.0, 1.0, 0.8);
+			a.movL(5.4, 1.0, 1.5);
+			a.movF(9.0, 1.0, 3.5);
 			h.tStatus("Done!");
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text
