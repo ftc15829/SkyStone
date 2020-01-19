@@ -39,7 +39,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 				a.movF(2.0, 1.0, 1.5);
 			}
 			a.trnL(1.0,0.9, 1.6);
-			a.movL(6.0, 1.0);
+			a.movL(6.0, 1.0, 2.6);
 			a.movF(sEnc > /*me*/4.5 ? ( sEnc > /*fm*/5.0 ?/*middle*/12.0 : /*far*/16.0) : /*end*/10.0, 1.0, 4.6);
 			if (sEnc >= 0) {
 				a.drop();

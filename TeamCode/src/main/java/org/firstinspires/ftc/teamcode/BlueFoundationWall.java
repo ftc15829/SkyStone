@@ -39,6 +39,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 			a.customTrn(0.3, 1.0, 3400);
 			a.movB(3.8, 1.0, 1.8);
 			a.unlatch();
+			sleep(4000);
 			a.movF(1.0, 1.0, 0.8);
 			a.movR(1.3, 1.0, 1.0);
 			a.movF(9.5, 1.0, 3.5);

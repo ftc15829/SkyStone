@@ -30,7 +30,7 @@ public class __AutoBase__ {
 				halt(0);
 				return -1.0;
 			}
-		} while ((dir == 3 ? h.SkystonePos < 460 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
+		} while ((dir == 3 ? h.SkystonePos < 460 : h.SkystonePos > 440) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
 		halt(0);
 		return Math.abs(h.drive_lf.getCurrentPosition() / 560);
 	}
