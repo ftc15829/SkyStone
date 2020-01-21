@@ -3,6 +3,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class __AutoBase__ {
 	/* Initializations */
 	__AutoBase__(__Hardware__ hardware, LinearOpMode linearOpMode) {
@@ -128,7 +131,7 @@ public class __AutoBase__ {
 		h.lSlide_l.setPower(0); h.lSlide_r.setPower(0); // Stop lSlide
 	}
 
-	/*Drive Movement*/
+	/* Drive Movement */
 	void mov(int dir, double p) {
 		switch(dir) {
 			case 0: // Forward
@@ -142,10 +145,10 @@ public class __AutoBase__ {
 		}
 	}
 
-	void movF(double rev, double p, double t) {
+	void movEncoder (List<Double> rev, double p, double t) {
 		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
-		driveTargetPos(rev, rev, rev, rev);
+		driveTargetPos(rev.get(0), rev.get(1), rev.get(2), rev.get(3));
 		driveModeRTP();
 		drivePower(p);
 		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
@@ -153,69 +156,31 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
-	} void movF(double rev, double p) { movF(rev, p, 0); }
-	void movL(double rev, double p, double t) {
-		ElapsedTime elapsedTime = new ElapsedTime();
-		driveModeSRE();
-		driveTargetPos(-rev, rev, rev, -rev);
-		driveModeRTP();
-		drivePower(p);
-		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			opmode.idle();
-		}
-		halt(0);
-		driveModeRWE();
-	} void movL(double rev, double p) { movL(rev, p, 0); }
-	void movR(double rev, double p, double t) {
-		ElapsedTime elapsedTime = new ElapsedTime();
-		driveModeSRE();
-		driveTargetPos(rev, -rev, -rev, rev);
-		driveModeRTP();
-		drivePower(p);
-		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			opmode.idle();
-		}
-		halt(0);
-		driveModeRWE();
-	} void movR(double rev, double p) { movR(rev, p, 0); }
-	void movB(double rev, double p, double t) {
-		ElapsedTime elapsedTime = new ElapsedTime();
-		driveModeSRE();
-		driveTargetPos(-rev, -rev, -rev, -rev);
-		driveModeRTP();
-		drivePower(p);
-		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			opmode.idle();
-		}
-		halt(0);
-		driveModeRWE();
-	} void movB(double rev, double p) { movB(rev, p, 0); }
+	}
+
+	void movF(double rev, double p, double t) { movEncoder(Arrays.asList(rev, rev, rev, rev), p, t); }
+	void movF(double rev, double p) { movF(rev, p, 0); }
+
+	void movL(double rev, double p, double t) { movEncoder(Arrays.asList(-rev, rev, rev, -rev), p, t); }
+	void movL(double rev, double p) { movL(rev, p, 0); }
+
+	void movR(double rev, double p, double t) { movEncoder(Arrays.asList(rev, -rev, -rev, rev), p, t); }
+	void movR(double rev, double p) { movR(rev, p, 0); }
+
+	void movB(double rev, double p, double t) { movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t); }
+	void movB(double rev, double p) { movB(rev, p, 0); }
+
 	void trnL(double rev, double p, double t) {
-		ElapsedTime elapsedTime = new ElapsedTime();
-		rev *= 5.0;
-		driveModeSRE();
-		driveTargetPos(-rev, rev, -rev, rev);
-		driveModeRTP();
-		drivePower(p);
-		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			opmode.idle();
-		}
-		halt(0);
-		driveModeRWE();
-	} void trnL(double rev, double p) { trnL(rev, p, 0); }
+		rev *= 5;
+		movEncoder(Arrays.asList(-rev, rev, -rev, rev), p, t);
+	}
+	void trnL(double rev, double p) { trnL(rev, p, 0); }
+
 	void trnR(double rev, double p, double t){
-		ElapsedTime elapsedTime = new ElapsedTime();
-		rev *= 5.0;
-		driveModeSRE();
-		driveTargetPos(rev, -rev, rev, -rev);
-		driveModeRTP();
-		drivePower(p);
-		while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
-			opmode.idle();
-		}
-		halt(0);
-		driveModeRWE();
-	} void trnR(double rev, double p) { trnR(rev, p, 0); }
+		rev *= 5;
+		movEncoder(Arrays.asList(rev, -rev, rev, -rev), p, t);
+	}
+	void trnR(double rev, double p) { trnR(rev, p, 0); }
 
 	void customTrn(double leftPower, double rightPower, long t) {
 		drivePower(leftPower, rightPower, leftPower, rightPower);
