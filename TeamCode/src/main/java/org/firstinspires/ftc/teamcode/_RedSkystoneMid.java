@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 //@Disabled
-@Autonomous(name="Skystone-Mid R", group="Red") public class _RedSkystoneMid extends LinearOpMode {
+@Autonomous(name="S-Mid R", group="Red") public class _RedSkystoneMid extends LinearOpMode {
 	private SkystoneBase base = new SkystoneBase(this);
 	@Override
 	public void runOpMode() {

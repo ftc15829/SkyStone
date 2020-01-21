@@ -31,7 +31,7 @@ public class SkystoneBase {
 
 			/* Instructions - SkyStone */
 			a.movF(3.5, 1.0, 2.4);
-			double sEnc = a.findSkystone(blue ? 1 : 3,0.3);
+			double sEnc = a.findSkystone(blue,0.3);
 			if (sEnc >= 0) {
 				a.movF(3.2, 1.0, 1.5);
 				a.pickUp();

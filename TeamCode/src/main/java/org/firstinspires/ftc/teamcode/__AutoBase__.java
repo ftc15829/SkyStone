@@ -4,17 +4,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class __AutoBase__ {
-	/*Initializations*/
-	__AutoBase__(__Hardware__ hardware, LinearOpMode linearOpMode) { h = hardware; opmode = linearOpMode; }
+	/* Initializations */
+	__AutoBase__(__Hardware__ hardware, LinearOpMode linearOpMode) {
+		h = hardware; opmode = linearOpMode;
+	}
 	__Hardware__ h;
 	LinearOpMode opmode;
 
-	/*Actions*/
-	double findSkystone(int dir, double p) { // Searches for a skystone in the given direction. When if finds one it will move towards it
+	/* Actions */
+	double findSkystone(boolean blue, double p) {
 		driveModeSRE();
 		driveModeRUE();
 		ElapsedTime elapsedTime = new ElapsedTime();
-		mov(dir, p); // move left(3) or right(1)
+		if (blue) mov(1, p);
+		else mov(3, p);
 		while (elapsedTime.seconds() < 3.0) {
 			h.tRunTime(elapsedTime);
 			opmode.idle();
@@ -30,7 +33,8 @@ public class __AutoBase__ {
 				halt(0);
 				return -1.0;
 			}
-		} while ((dir == 3 ? h.SkystonePos < 460 : h.SkystonePos > 440) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
+		} while ((blue ? h.SkystonePos > 440 : h.SkystonePos < 460) && h.SkystoneArea < 40_000 &&
+				h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
 		halt(0);
 		return Math.abs(h.drive_lf.getCurrentPosition() / 560);
 	}
@@ -60,103 +64,83 @@ public class __AutoBase__ {
 		opmode.sleep(1300);
 	}
 
-	/*Helper*/
-	// Drive Specific
-
-	void driveTargetPos(double revlf, double revrf, double revlb, double revrb) { // Sets drive's target position
-		h.drive_lf.setTargetPosition((int)(revlf * 28 * 20)); h.drive_rf.setTargetPosition((int)(revrf * 28 * 20));
-		h.drive_lb.setTargetPosition((int)(revlb * 28 * 20)); h.drive_rb.setTargetPosition((int)(revrb * 28 * 20));
-	}
+	/* Helper */
+	// MODE
 	void driveModeRTP() { // Sets drive motors to RTP
-		h.drive_lf.setMode(DcMotor.RunMode.RUN_TO_POSITION); h.drive_rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		h.drive_lb.setMode(DcMotor.RunMode.RUN_TO_POSITION); h.drive_rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-	}
+		modeRTP(h.drive_lf); modeRTP(h.drive_rf);
+		modeRTP(h.drive_lb); modeRTP(h.drive_rb);
+	} void modeRTP(DcMotor motor) { motor.setMode(DcMotor.RunMode.RUN_TO_POSITION); }
 	void driveModeSRE() { // Sets drive motors to SRE
-		h.drive_lf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); h.drive_rf.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-		h.drive_lb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); h.drive_rb.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-	}
+		modeSRE(h.drive_lf); modeSRE(h.drive_rf);
+		modeSRE(h.drive_lb); modeSRE(h.drive_rb);
+	} void modeSRE(DcMotor motor) { motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); }
 	void driveModeRUE() { // Sets drive motors to RTP
-		h.drive_lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER); h.drive_rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-		h.drive_lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER); h.drive_rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-	}
+		modeRUE(h.drive_lf); modeRUE(h.drive_rf);
+		modeRUE(h.drive_lb); modeRUE(h.drive_rb);
+	} void modeRUE(DcMotor motor) { motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); }
 	void driveModeRWE() { // Sets drive motors to RTP
-		h.drive_lf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); h.drive_rf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		h.drive_lb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); h.drive_rb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-	}
-	void drivePower(double plf, double prf, double plb, double prb) { // Sets drive motors to given powers
+		modeRWE(h.drive_lf); modeRWE(h.drive_rf);
+		modeRWE(h.drive_lb); modeRWE(h.drive_rb);
+	} void modeRWE(DcMotor motor) { motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); }
+
+	// POWER
+	void drivePower(double plf, double prf, double plb, double prb) {
+		// Sets drive motors to given powers
 		h.drive_lf.setPower(plf); h.drive_rf.setPower(prf);
 		h.drive_lb.setPower(plb); h.drive_rb.setPower(prb);
+	} void drivePower(double p) { // Sets all drive motors to p
+		drivePower(p, p, p, p);
 	}
-	void drivePower(double p) { // Sets all drive motors to p
-		h.drive_lf.setPower(p); h.drive_rf.setPower(p);
-		h.drive_lb.setPower(p); h.drive_rb.setPower(p);
+	void halt(long time) {
+		opmode.sleep(time);
+		drivePower(0);
 	}
+
+	// TARGET POSITION
+	void driveTargetPos(double revlf, double revrf, double revlb, double revrb) {
+		// Sets drive's target position
+		targetPos(h.drive_lf, revlf); targetPos(h.drive_rf, revrf);
+		targetPos(h.drive_lb, revlb); targetPos(h.drive_rb, revrb);
+	} void targetPos(DcMotor motor, double rev, int a) {
+		// NOTE: goBuilda and Tetrix have diff values which is accounted for here.
+		switch (a) {
+			case 0: motor.setTargetPosition((int)(rev * h.drive_ticks)); break;
+			case 1: motor.setTargetPosition((int)(rev * 1440)); break;
+		}
+	} void targetPos(DcMotor motor, double rev) { targetPos(motor, rev, 0); }
+
+	// BUSY
 	boolean drive_isBusy() { // Will return True if any drive motor is busy
-		return h.drive_lf.isBusy() || h.drive_rf.isBusy() || h.drive_lb.isBusy() || h.drive_rb.isBusy();
+		return h.drive_lf.isBusy() || h.drive_rf.isBusy() ||
+				h.drive_lb.isBusy() || h.drive_rb.isBusy();
 	}
 
-	// General
-
-	void modeSRE(DcMotor motor) {
-		motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-	}
-	void modeRTP(DcMotor motor) {
-		motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-	}
-	void targetPos(DcMotor motor, double rev, int a) {
-		// Note: goBuilda and Tetrix will have diff values which is not accounted for here.
-		switch (a)
-		{
-			case 0:
-				motor.setTargetPosition((int)(rev * 28));break;
-			case 1:
-				motor.setTargetPosition((int)(rev * 1440));break;
-		}
-
-	}
-	void power(DcMotor motor, double p) {
-		motor.setPower(p);
-	}
-	void mov(int dir, double p) {
-		switch(dir) {
-			case 0: // Forward
-				drivePower(p);
-				break;
-			case 1: // Right
-				drivePower(p, -p, -p, p);
-				break;
-			case 2: // Backward
-				drivePower(-p);
-				break;
-			case 3: // Left
-				drivePower(-p, p, p, -p);
-				break;
-			default:
-				break;
-		}
-	}
-	/*Auxilary Movement*/
-
+	/* Auxilary Movement */
 	void platform(double rev, double p) {
 		modeSRE(h.lSlide_l); modeSRE(h.lSlide_r); // Change lSlide mode to SRE
 		targetPos(h.lSlide_l, rev,1); targetPos(h.lSlide_r, -rev,1); // Set lSlide's target Pos
 		modeRTP(h.lSlide_l); modeRTP(h.lSlide_r); // Change lSlide mode to RTP
-		power(h.lSlide_l, p); power(h.lSlide_r, p); // Set lSlide's power to p
+		h.lSlide_l.setPower(p); h.lSlide_r.setPower(p); // Set lSlide's power to p
 		while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) {
 			h.tPos(h.lSlide_l); h.tPos(h.lSlide_r);
 			opmode.idle();
 		}
-		power(h.lSlide_l, 0); power(h.lSlide_r, 0); // Stop lSlide
+		h.lSlide_l.setPower(0); h.lSlide_r.setPower(0); // Stop lSlide
 	}
 
-	/*Encoder Based Movement*/
-
-	void movF(double rev, double p) { movF(rev, p, 0); }
-	void movL(double rev, double p) { movL(rev, p, 0); }
-	void movR(double rev, double p) { movR(rev, p, 0); }
-	void movB(double rev, double p) { movB(rev, p, 0); }
-	void trnL(double rev, double p) { trnL(rev, p, 0); }
-	void trnR(double rev, double p) { trnR(rev, p, 0); }
+	/*Drive Movement*/
+	void mov(int dir, double p) {
+		switch(dir) {
+			case 0: // Forward
+				drivePower(p); break;
+			case 1: // Right
+				drivePower(p, -p, -p, p); break;
+			case 2: // Backward
+				drivePower(-p); break;
+			case 3: // Left
+				drivePower(-p, p, p, -p); break;
+		}
+	}
 
 	void movF(double rev, double p, double t) {
 		ElapsedTime elapsedTime = new ElapsedTime();
@@ -169,7 +153,7 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
-	}
+	} void movF(double rev, double p) { movF(rev, p, 0); }
 	void movL(double rev, double p, double t) {
 		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
@@ -181,7 +165,7 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
-	}
+	} void movL(double rev, double p) { movL(rev, p, 0); }
 	void movR(double rev, double p, double t) {
 		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
@@ -193,7 +177,7 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
-	}
+	} void movR(double rev, double p) { movR(rev, p, 0); }
 	void movB(double rev, double p, double t) {
 		ElapsedTime elapsedTime = new ElapsedTime();
 		driveModeSRE();
@@ -205,7 +189,7 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
-	}
+	} void movB(double rev, double p) { movB(rev, p, 0); }
 	void trnL(double rev, double p, double t) {
 		ElapsedTime elapsedTime = new ElapsedTime();
 		rev *= 5.0;
@@ -218,7 +202,7 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
-	}
+	} void trnL(double rev, double p) { trnL(rev, p, 0); }
 	void trnR(double rev, double p, double t){
 		ElapsedTime elapsedTime = new ElapsedTime();
 		rev *= 5.0;
@@ -231,7 +215,7 @@ public class __AutoBase__ {
 		}
 		halt(0);
 		driveModeRWE();
-	}
+	} void trnR(double rev, double p) { trnR(rev, p, 0); }
 
 	void customTrn(double leftPower, double rightPower, long t) {
 		drivePower(leftPower, rightPower, leftPower, rightPower);
@@ -239,22 +223,10 @@ public class __AutoBase__ {
 		halt(0);
 	}
 
-	/*Time Based Movement*/
-	void movF(long time, double p) {
-		mov(0, p); halt(time); }
-	void movL(long time, double p) {
-		mov(3, p); halt(time); }
-	void movR(long time, double p) {
-		mov(1, p); halt(time); }
-	void movB(long time, double p) {
-		mov(2, p); halt(time); }
-	void trnL(long time, double p) {
-		drivePower(-p, p, -p, p); halt(time); }
-	void trnR(long time, double p) {
-		drivePower(p, -p, p, -p); halt(time); }
-	void halt(long time) {
-		opmode.sleep(time);
-		h.drive_lf.setPower(0); h.drive_rf.setPower(0);
-		h.drive_lb.setPower(0); h.drive_rb.setPower(0);
-	}
+	void movF(long time, double p) { mov(0, p); halt(time); }
+	void movL(long time, double p) { mov(3, p); halt(time); }
+	void movR(long time, double p) { mov(1, p); halt(time); }
+	void movB(long time, double p) { mov(2, p); halt(time); }
+	void trnL(long time, double p) { drivePower(-p, p, -p, p); halt(time); }
+	void trnR(long time, double p) { drivePower(p, -p, p, -p); halt(time); }
 }

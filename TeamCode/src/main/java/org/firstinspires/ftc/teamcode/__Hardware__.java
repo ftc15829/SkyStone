@@ -20,10 +20,11 @@ import static java.lang.Math.round;
 
 public class __Hardware__ {
 	/* Initializations */
-	public __Hardware__(LinearOpMode linearOpMode) { t = opmode.telemetry; opmode = linearOpMode; }
+	public __Hardware__(LinearOpMode linearOpMode) { opmode = linearOpMode; }
 	LinearOpMode opmode;
-	Telemetry t;
+	Telemetry t = opmode.telemetry;
 	// Initialize hardware
+	int drive_ticks = 20 * 28;
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;
@@ -129,8 +130,8 @@ public class __Hardware__ {
 	}
 	void tDrivePos() {
 		t.addData("Main Drive Position", String.format("\n| %.3f | %.3f |\n| %.3f | %.3f |",
-				(float)(drive_lf.getCurrentPosition() / 560), (float)(drive_rf.getCurrentPosition() / 560),
-				(float)(drive_lb.getCurrentPosition() / 560), (float)(drive_rb.getCurrentPosition() / 560)));
+				(float)(drive_lf.getCurrentPosition() / drive_ticks), (float)(drive_rf.getCurrentPosition() / drive_ticks),
+				(float)(drive_lb.getCurrentPosition() / drive_ticks), (float)(drive_rb.getCurrentPosition() / drive_ticks)));
 		t.update();
 	}
 	void tPos(DcMotor motor) {

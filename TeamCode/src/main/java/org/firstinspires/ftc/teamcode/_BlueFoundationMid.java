@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 //@Disabled
-@Autonomous(name="Foundation-Mid B", group="Blue") public class _BlueFoundationMid extends LinearOpMode {
+@Autonomous(name="F-Mid B", group="Blue") public class _BlueFoundationMid extends LinearOpMode {
 	private FoundationBase base = new FoundationBase(this);
 	@Override
 	public void runOpMode() {
