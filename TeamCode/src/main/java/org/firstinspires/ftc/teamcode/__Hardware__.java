@@ -20,7 +20,7 @@ import static java.lang.Math.round;
 
 public class __Hardware__ {
 	/* Initializations */
-	public __Hardware__(Telemetry telemetry, LinearOpMode linearOpMode) { t = telemetry; opmode = linearOpMode; }
+	public __Hardware__(LinearOpMode linearOpMode) { t = opmode.telemetry; opmode = linearOpMode; }
 	LinearOpMode opmode;
 	Telemetry t;
 	// Initialize hardware
