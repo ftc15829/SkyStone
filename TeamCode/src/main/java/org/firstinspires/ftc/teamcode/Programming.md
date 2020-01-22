@@ -1,8 +1,6 @@
-[TOC]
-
 # Programming - Code Outline
 
-This section will explain and lay out the process the software development team went through in writing our current codebase. All the way from the first meet to now.
+This section will explain and lay out the process the software development team went through in writing our current code base. All the way from the first meet to now.
 
 ## In The Beginning - League Meet One
 

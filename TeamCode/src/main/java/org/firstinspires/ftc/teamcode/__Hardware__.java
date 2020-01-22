@@ -20,9 +20,9 @@ import static java.lang.Math.round;
 
 public class __Hardware__ {
 	/* Initializations */
-	public __Hardware__(LinearOpMode linearOpMode) { opmode = linearOpMode; }
+	public __Hardware__(LinearOpMode linearOpMode, Telemetry telemetry) { opmode = linearOpMode; t = telemetry; }
 	LinearOpMode opmode;
-	Telemetry t = opmode.telemetry;
+	Telemetry t;
 	// Initialize hardware
 	int drive_ticks = 20 * 28;
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;

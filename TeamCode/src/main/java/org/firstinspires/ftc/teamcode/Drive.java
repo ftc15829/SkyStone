@@ -5,10 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //@Disabled
 @TeleOp(name="Drive") public class Drive extends LinearOpMode {
-
 /*Initializations*/
-	private Telemetry t = telemetry;
-	private __Hardware__ h = new __Hardware__(t, this);
+	private __Hardware__ h = new __Hardware__(this, telemetry);
 	private __AutoBase__ a = new __AutoBase__(h, this);
 
 /*Main*/
@@ -17,8 +15,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 		// Initiate hardware
 		try {
 			h.init(hardwareMap);
-			h.initAuto(hardwareMap);
-			resetStartTime();
 		} catch(Exception e) {
 			h.tErr("HardwareMap", e);
 			sleep(15_000);
@@ -26,7 +22,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 		}
 		h.tStatus("Ready");
 		waitForStart();
-
+		resetStartTime();
 		h.tStatus("Running");
 		try {
 

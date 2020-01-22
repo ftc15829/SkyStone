@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 //@Disabled
-@Autonomous(name="S-Wall B", group="Blue") public class _BlueSkystoneWall extends LinearOpMode {
-	private SkystoneBase base = new SkystoneBase(this);
+@Autonomous(name="B Skystone Wall", group="Skystone") public class _BlueSkystoneWall extends LinearOpMode {
+	private SkystoneBase base = new SkystoneBase(this, telemetry);
 	@Override
 	public void runOpMode() {
 		base.init();

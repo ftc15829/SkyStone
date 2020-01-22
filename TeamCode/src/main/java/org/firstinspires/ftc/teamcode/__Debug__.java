@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //@Disabled
 @Autonomous(name="Debug") public class __Debug__ extends LinearOpMode {
 	/*Initializations*/
-	private __Hardware__ h = new __Hardware__(this);
+	private __Hardware__ h = new __Hardware__(this, telemetry);
 	private __AutoBase__ a = new __AutoBase__(h, this);
 
 	// Runs when initialized

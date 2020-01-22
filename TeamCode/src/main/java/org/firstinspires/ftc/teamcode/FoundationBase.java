@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class FoundationBase {
-	FoundationBase(LinearOpMode opMode) { this.opmode = opMode; }
+	FoundationBase(LinearOpMode opMode, Telemetry telemetry) {
+		this.opmode = opMode;
+		h = new __Hardware__(opmode, telemetry);
+		a = new __AutoBase__(h, opmode);
+	}
 	LinearOpMode opmode;
-	__Hardware__ h = new __Hardware__(opmode);
-	__AutoBase__ a = new __AutoBase__(h, opmode);
+	__Hardware__ h;
+	__AutoBase__ a;
 
 	public void init() {
 		try {
