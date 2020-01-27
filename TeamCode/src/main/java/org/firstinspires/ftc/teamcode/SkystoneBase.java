@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SkystoneBase {
-	SkystoneBase(LinearOpMode opMode, Telemetry telemetry) {
-		this.opmode = opMode;
+	SkystoneBase(LinearOpMode linearOpMode, Telemetry telemetry) {
+		opmode = linearOpMode;
 		h = new __Hardware__(opmode, telemetry);
 		a = new __AutoBase__(h, opmode);
 	}
@@ -24,8 +24,11 @@ public class SkystoneBase {
 			opmode.sleep(15_000);
 			opmode.stop();
 		}
-		h.tStatus("Ready");
-		opmode.waitForStart();
+		h.tStatus("Ready | Skystone");
+		while (!opmode.isStarted()) {
+			h.tRunTime();
+			opmode.idle();
+		}
 		opmode.resetStartTime();
 	}
 

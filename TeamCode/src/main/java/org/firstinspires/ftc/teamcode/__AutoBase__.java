@@ -15,53 +15,55 @@ public class __AutoBase__ {
 	LinearOpMode opmode;
 
 	/* Actions */
-	double findSkystone(boolean blue, double p) {
+	double findSkystone(boolean blue, double p) { h.tSub("Finding Skystone");
 		driveModeSRE();
 		driveModeRUE();
 		ElapsedTime elapsedTime = new ElapsedTime();
 		if (blue) mov(1, p);
 		else mov(3, p);
 		while (elapsedTime.seconds() < 3.0) {
-			h.tRunTime(elapsedTime);
+			h.tRunTime(elapsedTime, 1);
 			opmode.idle();
 		}
 		do {
 			if (h.tfDetect != null) h.updateTfDetect();
-//			h.tCaminfo();
-//			h.tDrivePos();
 			h.tRunTime(elapsedTime);
+			h.tDrivePos();
+//			h.tCaminfo();
+			h.t.update();
 			opmode.idle();
 			if (elapsedTime.seconds() > 8.3) {
-				h.tStatus("Failed");
+				h.tSub("Failed");
 				halt(0);
 				return -1.0;
 			}
 		} while ((blue ? h.SkystonePos > 440 : h.SkystonePos < 460) && h.SkystoneArea < 40_000 &&
 				h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
+		h.tSub("Success");
 		halt(0);
 		return Math.abs(h.drive_lf.getCurrentPosition() / 560);
 	}
 
-	void pickUp() { // Will extend platform, attempt to grab a block, then retract the platform
+	void pickUp() { h.tSub("Picking up Stone");
 		platform(2.5, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		opmode.sleep(600);
 		platform(-1.2, 0.6);
 	}
-	void drop() { // Will extend platform, release any held block, then retract the platform
+	void drop() { h.tSub("Dropping Stone");
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
 		opmode.sleep(600);
 		platform(-1.3, 0.6);
 	}
 
-	void latch() {
+	void latch() { h.tSub("Latching");
 		h.fHook_l.setPosition(0.0);
 		h.fHook_r.setPosition(1.0);
 		opmode.sleep(1300);
 	}
-	void unlatch() {
+	void unlatch() { h.tSub("Unlatching");
 		h.fHook_l.setPosition(1.0);
 		h.fHook_r.setPosition(0.0);
 		opmode.sleep(1300);
@@ -125,7 +127,7 @@ public class __AutoBase__ {
 		modeRTP(h.lSlide_l); modeRTP(h.lSlide_r); // Change lSlide mode to RTP
 		h.lSlide_l.setPower(p); h.lSlide_r.setPower(p); // Set lSlide's power to p
 		while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) {
-			h.tPos(h.lSlide_l); h.tPos(h.lSlide_r);
+			h.tPos(h.lSlide_l); h.tPos(h.lSlide_r); h.t.update();
 			opmode.idle();
 		}
 		h.lSlide_l.setPower(0); h.lSlide_r.setPower(0); // Stop lSlide
@@ -158,31 +160,33 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 
-	void movF(double rev, double p, double t) { movEncoder(Arrays.asList(rev, rev, rev, rev), p, t); }
-	void movF(double rev, double p) { movF(rev, p, 0); }
+	void movF(double rev, double p, double t) { h.tSub("Moving Forward");
+		movEncoder(Arrays.asList(rev, rev, rev, rev), p, t);
+	} void movF(double rev, double p) { movF(rev, p, 0); }
 
-	void movL(double rev, double p, double t) { movEncoder(Arrays.asList(-rev, rev, rev, -rev), p, t); }
-	void movL(double rev, double p) { movL(rev, p, 0); }
+	void movL(double rev, double p, double t) { h.tSub("Moving Left");
+		movEncoder(Arrays.asList(-rev, rev, rev, -rev), p, t);
+	} void movL(double rev, double p) { movL(rev, p, 0); }
 
-	void movR(double rev, double p, double t) { movEncoder(Arrays.asList(rev, -rev, -rev, rev), p, t); }
-	void movR(double rev, double p) { movR(rev, p, 0); }
+	void movR(double rev, double p, double t) { h.tSub("Moving Right");
+		movEncoder(Arrays.asList(rev, -rev, -rev, rev), p, t);
+	} void movR(double rev, double p) { movR(rev, p, 0); }
 
-	void movB(double rev, double p, double t) { movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t); }
-	void movB(double rev, double p) { movB(rev, p, 0); }
+	void movB(double rev, double p, double t) { h.tSub("Moving Backward");
+		movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t);
+	} void movB(double rev, double p) { movB(rev, p, 0); }
 
-	void trnL(double rev, double p, double t) {
+	void trnL(double rev, double p, double t) { h.tSub("Turning Left");
 		rev *= 5;
 		movEncoder(Arrays.asList(-rev, rev, -rev, rev), p, t);
-	}
-	void trnL(double rev, double p) { trnL(rev, p, 0); }
+	} void trnL(double rev, double p) { trnL(rev, p, 0); }
 
-	void trnR(double rev, double p, double t){
+	void trnR(double rev, double p, double t){ h.tSub("Turning Right");
 		rev *= 5;
 		movEncoder(Arrays.asList(rev, -rev, rev, -rev), p, t);
-	}
-	void trnR(double rev, double p) { trnR(rev, p, 0); }
+	} void trnR(double rev, double p) { trnR(rev, p, 0); }
 
-	void customTrn(double leftPower, double rightPower, long t) {
+	void customTrn(double leftPower, double rightPower, long t) { h.tSub("Custom Turn");
 		drivePower(leftPower, rightPower, leftPower, rightPower);
 		opmode.sleep(t);
 		halt(0);

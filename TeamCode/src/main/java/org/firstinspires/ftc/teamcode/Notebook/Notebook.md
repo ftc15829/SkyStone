@@ -6,25 +6,29 @@
     }
     /* Photo Collage */
     #photos {
-        /* Prevent vertical gaps */
         line-height: 0;
-        -webkit-column-gap:   0px;
-        -moz-column-count:    5;
-        -moz-column-gap:      0px;
-        column-count:         5;
-        column-gap:           0px;  
+        -webkit-column-gap: 0px;
+        -moz-column-count: 5;
+        -moz-column-gap: 0px;
+        column-count: 5;
+        column-gap: 0px;  
     }
     #photos img {
-        /* Just in case there are inline attributes */
         width: 100% !important;
         height: auto !important;
-        padding: 2px;
+        padding: 3px;
+    }
+    #photos p {
+        color: grey;
+        font-size: 12px;
+        line-height: 14px;
+        margin: -15px 5px -8px 5px;
     }
     @media {
         #photos {
-            -moz-column-count:    3;
+            -moz-column-count: 3;
             -webkit-column-count: 3;
-            column-count:         3;
+            column-count: 3;
         }
     }
     /* Bio */
@@ -91,7 +95,6 @@
 ---
 
 <div id="pb">
-
 ---
 
 #### Emily Eagle Eye
@@ -115,7 +118,6 @@
 ---
 
 <div id="pb">
-
 ---
 
 #### Shark Zhao
@@ -139,7 +141,6 @@
 ---
 
 <div id="pb">
-
 ---
 
 #### Carson Turnbo
@@ -213,11 +214,20 @@ For our first meeting, we drove to Springfield to watch the launch videos with o
 
 <div id="photos">
     <img src="assets/meetings/Sep 7/WalitoLoot.jpg">
+    <p>
+        Description.
+    </p>
     <img src="assets/meetings/Sep 7/Carson1.jpg">
     <img src="assets/meetings/Sep 7/CarsonLoot.jpg">
+    <p>
+        Carson loot. ^
+    </p>
     <img src="assets/meetings/Sep 7/Ethan1.jpg">
     <img src="assets/meetings/Sep 7/JerrettLoot.jpg">
     <img src="assets/meetings/Sep 7/Team1.jpg">
+    <p>
+        Can't figure out how to elegantly describe a group of images.
+    </p>
     <img src="assets/meetings/Sep 7/Carson1.jpg">
     <img src="assets/meetings/Sep 7/WalitoLoot.jpg">
     <img src="assets/meetings/Sep 7/Ethan1.jpg">
@@ -232,7 +242,7 @@ For our first meeting, we drove to Springfield to watch the launch videos with o
 
 __Goals__
 
-- Establish members' roles
+- Establish roles
 - Discuss potential sponsors
 
 __Summary__

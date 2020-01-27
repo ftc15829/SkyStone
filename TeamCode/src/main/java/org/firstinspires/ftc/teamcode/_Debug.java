@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 //@Disabled
-@Autonomous(name="Debug") public class __Debug__ extends LinearOpMode {
+@Autonomous(name="Debug", group="Debug") public class _Debug extends LinearOpMode {
 	/*Initializations*/
 	private __Hardware__ h = new __Hardware__(this, telemetry);
 	private __AutoBase__ a = new __AutoBase__(h, this);
@@ -30,8 +30,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 			/* Instructions - Debug */
 			while(opModeIsActive()) {
 				h.updateTfDetect();
-				h.tCaminfo();
-//				h.tDrivePos();
+				h.tCaminfo(1);
+//				h.tDrivePos(1);
 			}
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text

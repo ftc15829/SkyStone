@@ -397,9 +397,9 @@ void movL_(long t, double p) {
 }
 ```
 
-## League Meet Two
+## League Meet Two/Three
 
-Here, we will outline changes from League Meet One to League Meet Two. The `Drive` class didn't actually change, so we will be starting from `Hardware`.
+Here, we will outline changes from League Meet One to League Meet Two/Three (League Meet Two and League Meet Three occurred on the same day). The `Drive` class didn't actually change, so we will be starting from `Hardware`.
 
 ### Hardware Class
 
@@ -637,13 +637,13 @@ The specific classes shown will be `RedSkystoneWall` and `BlueFoundationMid`. By
 
 These numbers were all derived via trial and error. The foundation side instruction set is pretty simple, just instructions. The skystone side, however, has some variability in the form of `a.findSkystone` and `sTime`. Looking at the line utilizing `sTime`, `a.movF`, you can see that instead of three possible values (one per possible skystone position), there are two. We were able to get away with this by overlapping two of the. Since it uses time for the calculation, it is already pretty imprecise, so adding to that couldn't hurt. Sadly we had issues with lighting and were not able to test that theory. Other than that, the foundation autonomous' performed wonderfully. Aside from some hardware issues, there wasn't one instances that the foundation autonomous failed due to programming or imprecision. Which is kind of necessary for all autonomous', so we were happy to see such a success.
 
-## League Meet Three
+## Qualifiers
 
-Here we will outline the most recent changes to our code for the current meet.
+Here we will outline the code used in the Qualifiers.
 
 ## Hardware
 
-The main change was the switch to Tensorflow from DogeCV for finding the skystone. DogeCV was having a hard time finding the skystone in different lighting, making it unreliable in matches. Tensorflow, however, uses machine learning, removing the hurdles of coding in different lighting. Here is the new `initAuto` function and its related code.
+The main change was the switch to Tensorflow from DogeCV for finding the skystone. DogeCV was having a hard time finding the skystone in different lighting, making it unreliable in matches. Tensorflow, however, uses machine learning, removing the hurdles of coding for different lighting. Here is the new `initAuto` function and its related code.
 
 `initAuto`
 

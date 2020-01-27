@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode;
+import android.sax.TextElementListener;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -43,8 +45,14 @@ public class __Hardware__ {
 	// Initialize gamepad values
 	double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
 	boolean lBumper, rBumper, button_a, button_b, button_x, button_y;
+	boolean dpad_u, dpad_d, dpad_l, dpad_r;
 	double _lStick_x, _lStick_y, _rStick_x, _rStick_y, _lTrigger, _rTrigger; // Gamepad 2
 	boolean _lBumper, _rBumper, _button_a, _button_b, _button_x, _button_y;
+	boolean _dpad_u, _dpad_d, _dpad_l, _dpad_r;
+
+	// Telemetry
+	Telemetry.Item status = t.addData("Status", "");
+	Telemetry.Item subStatus = t.addData("Sub", "");
 
 	/* Init Functions */
 	void init(HardwareMap hardwareMap) {
@@ -117,51 +125,74 @@ public class __Hardware__ {
 	}
 
 	/* Telemetry */
-	void tDrivePower() {
-		t.addData("Main Drive Power",
-				String.format("\n| %.2f | %.2f |\n| %.2f | %.2f |",
-						(float)(drive_lf.getPower()), (float)(drive_rf.getPower()),
-						(float)(drive_rb.getPower()), (float)(drive_lb.getPower())));
+	void tStatus(String value) {
+		status.setValue(value);
+		t.update();
+	}
+	void tSub(String value) {
+		subStatus.setValue(value);
 		t.update();
 	}
 	void tErr(String msg, Exception e) {
 		t.addData(msg + " Error", "\n" + e);
 		t.update();
 	}
-	void tDrivePos() {
-		t.addData("Main Drive Position", String.format("\n| %.3f | %.3f |\n| %.3f | %.3f |",
-				(float)(drive_lf.getCurrentPosition() / drive_ticks), (float)(drive_rf.getCurrentPosition() / drive_ticks),
-				(float)(drive_lb.getCurrentPosition() / drive_ticks), (float)(drive_rb.getCurrentPosition() / drive_ticks)));
+
+	void tRunTime(int update) {
+		t.addData("Runtime", opmode.getRuntime());
+		if (update == 1)
+			t.update();
+	} void tRunTime() { tRunTime(0); }
+
+	void tRunTime(ElapsedTime elapsedTime, int update) {
+		t.addData("Elapsed Time", elapsedTime.seconds());
+		if (update == 1)
+			t.update();
+	} void tRunTime(ElapsedTime elapsedTime) { tRunTime(elapsedTime, 0); }
+
+	void tSnapRuntime(ElapsedTime elapsedTime) {
+		Telemetry.Item runTimeCP = t.addData("RunTimeCP", elapsedTime.seconds());
 		t.update();
 	}
-	void tPos(DcMotor motor) {
+	void tSnapDrivePos() {
+		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %6d | %6d |\n| %6d | %6d |",
+				drive_lf.getCurrentPosition() / drive_ticks, drive_rf.getCurrentPosition() / drive_ticks,
+				drive_lb.getCurrentPosition() / drive_ticks, drive_rb.getCurrentPosition() / drive_ticks));
+		t.update();
+	}
+
+	void tDrivePower(int update) {
+		t.addData("Drive Power",
+				String.format("\n| %6d | %6d |\n| %6d | %6d |",
+						drive_lf.getPower(), drive_rf.getPower(),
+						drive_rb.getPower(), drive_lb.getPower()));
+		if (update == 1)
+			t.update();
+	} void tDrivePower() { tDrivePower(0); }
+
+	void tDrivePos(int update) {
+		t.addData("Drive Position", String.format("\n| %6d | %6d |\n| %6d | %6d |",
+				drive_lf.getCurrentPosition() / drive_ticks, drive_rf.getCurrentPosition() / drive_ticks,
+				drive_lb.getCurrentPosition() / drive_ticks, drive_rb.getCurrentPosition() / drive_ticks));
+		if (update == 1)
+			t.update();
+	} void tDrivePos() { tDrivePos(0); }
+
+	void tPos(DcMotor motor, int update) {
 		t.addData("Pos", motor.getCurrentPosition());
-		t.update();
-	}
-	void tStatus(String status) {
-		t.addData("Status", status);
-		t.update();
-	}
-	void tSub(String sub) {
-		t.addData("Sub", sub);
-		t.update();
-	}
-	void tCaminfo() {
+		if (update == 1)
+			t.update();
+	} void tPos(DcMotor motor) { tPos(motor, 0); }
+
+	void tCaminfo(int update) {
 		t.addData("Pos", SkystonePos);
 		t.addData("left", SkystoneLeft);
 		t.addData("right", SkystoneRight);
 		t.addData("Area", SkystoneArea);
 		t.addData("Confidence", SkystoneConfidence);
-		t.update();
-	}
-	void tRunTime() {
-		t.addData("Time", opmode.getRuntime());
-		t.update();
-	}
-	void tRunTime(ElapsedTime elapsedTime) {
-		t.addData("Time", elapsedTime.seconds());
-		t.update();
-	}
+		if (update == 1)
+			t.update();
+	} void tCaminfo() { tCaminfo(0); }
 
 	/* Update Gamepad Values */
 	void updateGamepad(Gamepad gamepad1, Gamepad gamepad2) {
@@ -170,6 +201,11 @@ public class __Hardware__ {
 		lStick_y = -gamepad1.left_stick_y;
 		rStick_x = -gamepad1.right_stick_x;
         rStick_y = gamepad1.right_stick_y;
+
+		dpad_u = gamepad1.dpad_up;
+		dpad_d = gamepad1.dpad_down;
+		dpad_l = gamepad1.dpad_left;
+		dpad_r = gamepad1.dpad_right;
 
 		lTrigger = gamepad1.left_trigger;
 		rTrigger = gamepad1.right_trigger;
@@ -187,6 +223,11 @@ public class __Hardware__ {
 		_lStick_y = gamepad2.left_stick_y;
         _rStick_x = gamepad2.right_stick_x;
 		_rStick_y = gamepad2.right_stick_y;
+
+		_dpad_u = gamepad2.dpad_up;
+		_dpad_u = gamepad2.dpad_down;
+		_dpad_u = gamepad2.dpad_left;
+		_dpad_u = gamepad2.dpad_right;
 
 		_lTrigger = gamepad2.left_trigger;
 		_rTrigger = gamepad2.right_trigger;

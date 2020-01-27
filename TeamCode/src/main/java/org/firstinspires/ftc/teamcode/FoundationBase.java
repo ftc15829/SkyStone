@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class FoundationBase {
-	FoundationBase(LinearOpMode opMode, Telemetry telemetry) {
-		this.opmode = opMode;
+	FoundationBase(LinearOpMode linearOpMode, Telemetry telemetry) {
+		opmode = linearOpMode;
 		h = new __Hardware__(opmode, telemetry);
 		a = new __AutoBase__(h, opmode);
 	}
@@ -23,8 +23,11 @@ public class FoundationBase {
 			opmode.sleep(15_000);
 			opmode.stop();
 		}
-		h.tStatus("Ready");
-		opmode.waitForStart();
+		h.tStatus("Ready | Foundation");
+		while (!opmode.isStarted()) {
+			h.tRunTime();
+			opmode.idle();
+		}
 		opmode.resetStartTime();
 	}
 
