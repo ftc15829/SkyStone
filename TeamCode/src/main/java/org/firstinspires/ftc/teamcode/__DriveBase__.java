@@ -67,7 +67,7 @@ public class __DriveBase__ {
 		updateServos();
 
 		// Telemetry
-		h.t.setAutoClear(false);
+//		h.t.setAutoClear(false);
 		if (h.button_y) {
 			h.t.addLine("Snapshot Taken");
 			h.tSnapRuntime(elapsedTime);

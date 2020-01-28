@@ -15,6 +15,5 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 		} catch(Exception e) {
 			d.except(e);
 		}
-
 	}
 }
