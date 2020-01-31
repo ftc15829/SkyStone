@@ -125,17 +125,17 @@ public class __DriveBase__ {
 	}
 	double getPower(int i) {
 		double power;
-		double mod = 0.6;
-		double MOD = 0.3;
+		double mod = 0.75;
+		double MOD = 0.25;
 		switch (i) {
-			case 0: power = h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_lf
-			case 1: power = h.lStick_y - h.lStick_x + h.rStick_x; break; // drive_rb
-			case 2: power = h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_lb
-			case 3: power = h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_rf
+			case 0: power = -h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_lf
+			case 1: power = -h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_rb
+			case 2: power = -h.lStick_y - h.lStick_x + h.rStick_x; break; // drive_lb
+			case 3: power = -h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_rf
 			default: power = 0; break;
 		}
+		power = h.lTrigger != 0 ? (h.lStick_x!=0 ? power*MOD*2 : power*mod) : (h.rTrigger != 0 ? power*mod : power);
 		power = power > 1 ? 1 : power;
-		power *= h.lTrigger != 0 ? MOD : (h.rTrigger != 0 ? mod : 1);
 		return power;
 	}
 }
