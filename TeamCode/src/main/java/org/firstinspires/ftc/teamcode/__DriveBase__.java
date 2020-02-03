@@ -126,7 +126,7 @@ public class __DriveBase__ {
 	double getPower(int i) {
 		double power;
 		double mod = 0.75;
-		double MOD = 0.25;
+		double MOD = 0.2;
 		switch (i) {
 			case 0: power = -h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_lf
 			case 1: power = -h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_rb
@@ -134,7 +134,7 @@ public class __DriveBase__ {
 			case 3: power = -h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_rf
 			default: power = 0; break;
 		}
-		power = h.lTrigger != 0 ? (h.lStick_x!=0 ? power*MOD*2 : power*mod) : (h.rTrigger != 0 ? power*mod : power);
+		power = h.lTrigger != 0 ? (h.lStick_x!=0 ? power*MOD*3 : power*MOD) : (h.rTrigger != 0 ? power*mod : power*.8);
 		power = power > 1 ? 1 : power;
 		return power;
 	}

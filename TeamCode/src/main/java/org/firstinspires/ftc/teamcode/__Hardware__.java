@@ -26,7 +26,8 @@ public class __Hardware__ {
 	LinearOpMode opmode;
 	Telemetry t;
 	// Initialize hardware
-	int drive_ticks = 20 * 28;
+	int drive_ticks = 108;
+	double powerbase = .36;
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;

@@ -91,9 +91,10 @@ public class __AutoBase__ {
 	// POWER
 	void drivePower(double plf, double prf, double plb, double prb) {
 		// Sets drive motors to given powers
-		h.drive_lf.setPower(plf); h.drive_rf.setPower(prf);
-		h.drive_lb.setPower(plb); h.drive_rb.setPower(prb);
-	} void drivePower(double p) { // Sets all drive motors to p
+		h.drive_lf.setPower(plf*h.powerbase); h.drive_rf.setPower(prf*h.powerbase);
+		h.drive_lb.setPower(plb*h.powerbase); h.drive_rb.setPower(prb*h.powerbase);
+	} void drivePower(double p
+	) { // Sets all drive motors to p
 		drivePower(p, p, p, p);
 	}
 	void halt(long time) {
@@ -135,6 +136,7 @@ public class __AutoBase__ {
 
 	/* Drive Movement */
 	void mov(int dir, double p) {
+		p=-p;
 		switch(dir) {
 			case 0: // Forward
 				drivePower(p); break;
@@ -161,33 +163,33 @@ public class __AutoBase__ {
 	}
 
 	void movF(double rev, double p, double t) { h.tSub("Moving Forward");
-		movEncoder(Arrays.asList(rev, rev, rev, rev), p, t);
+		movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t);
 	} void movF(double rev, double p) { movF(rev, p, 0); }
 
 	void movL(double rev, double p, double t) { h.tSub("Moving Left");
-		movEncoder(Arrays.asList(-rev, rev, rev, -rev), p, t);
+		movEncoder(Arrays.asList(rev, -rev, -rev, rev), p, t);
 	} void movL(double rev, double p) { movL(rev, p, 0); }
 
 	void movR(double rev, double p, double t) { h.tSub("Moving Right");
-		movEncoder(Arrays.asList(rev, -rev, -rev, rev), p, t);
+		movEncoder(Arrays.asList(-rev, rev, rev, -rev), p, t);
 	} void movR(double rev, double p) { movR(rev, p, 0); }
 
 	void movB(double rev, double p, double t) { h.tSub("Moving Backward");
-		movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t);
+		movEncoder(Arrays.asList(rev, rev, rev, rev), p, t);
 	} void movB(double rev, double p) { movB(rev, p, 0); }
 
 	void trnL(double rev, double p, double t) { h.tSub("Turning Left");
 		rev *= 5;
-		movEncoder(Arrays.asList(-rev, rev, -rev, rev), p, t);
+		movEncoder(Arrays.asList(rev, -rev, rev, -rev), p, t);
 	} void trnL(double rev, double p) { trnL(rev, p, 0); }
 
 	void trnR(double rev, double p, double t){ h.tSub("Turning Right");
 		rev *= 5;
-		movEncoder(Arrays.asList(rev, -rev, rev, -rev), p, t);
+		movEncoder(Arrays.asList(-rev, rev, -rev, rev), p, t);
 	} void trnR(double rev, double p) { trnR(rev, p, 0); }
 
 	void customTrn(double leftPower, double rightPower, long t) { h.tSub("Custom Turn");
-		drivePower(leftPower, rightPower, leftPower, rightPower);
+		drivePower(-leftPower*2, -rightPower*2, -leftPower*2, -rightPower*2);
 		opmode.sleep(t);
 		halt(0);
 	}
