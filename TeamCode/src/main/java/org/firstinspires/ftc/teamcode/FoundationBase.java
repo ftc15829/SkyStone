@@ -36,10 +36,10 @@ public class FoundationBase {
 			h.tStatus("Running");
 
 			/* Instructions - Foundation */
-			a.movB(1.0, 0.9, 0.8);
+			a.movB(1.0, 0.9);
 			if (blue) a.movR(11.5, 0.9, 3.8);
 			else a.movL(11.5, 0.9, 3.8);
-			a.movB(5.4, 0.9, 2.5);
+			a.movB(4.5, 0.9, 2.5);
 			a.movB(1.1, 0.5, 1.2);
 			a.latch();
 			if (blue) a.customTrn(0.3, 1.0, 3400);
