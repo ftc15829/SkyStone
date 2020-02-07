@@ -36,22 +36,22 @@ public class FoundationBase {
 			h.tStatus("Running");
 
 			/* Instructions - Foundation */
-			a.movB(1.0, 1.5);
-			if (blue) a.movR(10.5, 1.5, 3.8);
-			else a.movL(10.5, 1.5, 3.8);
+			a.movB(1.0, 1.5, 2.5);
+			if (blue) a.movR(1.5, 1.5, 3.8);
+			else a.movL(3.5, 1.5, 3.8); // 2.6
 			a.movB(2.8, 1.2, 3.5);
-			a.movB(2.5, 0.6, 3.6);
+			a.movB(2.8, 0.6, 3.6);
 			a.latch();
-			a.movL(1.0, 1.2, 2.0);
-			a.movF(3.7, 1.3, 3.0);
-			if (blue) a.customTrn(0.0, 1.2, 3400);
-			else a.customTrn(1.2, 0.0, 2300);
+			a.movF(2.8, 1.3, 3.0);
+			if (blue) a.customTrn(-0.5, 1.2, 3400);
+			else a.customTrn(1.2, -0.5, 2300);
 			a.movB(4.0, 1.0, 1.8);
 			a.unlatch();
 			a.movF(1.0, 1.0, 0.8);
 			if (blue == mid) a.movL(mid ? 5.7 : 1.3, 1.0, 1.5);
 			else if (blue != mid) a.movR(mid ? 0.0 : 1.3, 1.5, 1.5);
 			a.movF(mid ? 8.5 : 9.5, 1.0, 3.5);
+
 
 			h.tStatus("Done!");
 		} catch (Exception e) { // Catches exceptions as plain-text
