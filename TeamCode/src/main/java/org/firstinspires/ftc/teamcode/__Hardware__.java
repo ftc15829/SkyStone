@@ -26,7 +26,7 @@ public class __Hardware__ {
 	LinearOpMode opmode;
 	Telemetry t;
 	// Initialize hardware
-	int drive_ticks = 108;
+	int drive_ticks = 108; // Used to be 20 * 28 (560)
 	double powerbase = .36;
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
@@ -69,6 +69,11 @@ public class __Hardware__ {
 		drive_rb.setDirection(DcMotor.Direction.REVERSE);
 		drive_lb.setDirection(DcMotor.Direction.FORWARD);
 		drive_rf.setDirection(DcMotor.Direction.REVERSE);
+
+		drive_lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		drive_rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		drive_lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		drive_rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		// Defines scissor-lift hardware
 		scissor = hardwareMap.dcMotor.get("scissor");
 		lSlide_l = hardwareMap.dcMotor.get("slideL");
