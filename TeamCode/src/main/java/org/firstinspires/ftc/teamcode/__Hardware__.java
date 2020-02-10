@@ -25,8 +25,8 @@ public class __Hardware__ {
 	LinearOpMode opmode;
 	Telemetry t;
 	// Hardware Constants
-	static int GobRate = 108;
-	static int TetRate = 1440;
+	static double GobRate = 108.0; // Double to avoid integer division
+	static double TetRate = 1440.0;
 	static double PowerMod = .333; // Max power is 3.0
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
@@ -53,13 +53,13 @@ public class __Hardware__ {
 	boolean _dpad_u, _dpad_d, _dpad_l, _dpad_r;
 
 	// Telemetry
-//	Telemetry.Item status = t.addData("Status", "");
-//	Telemetry.Item subStatus = t.addData("Sub", "");
+	Telemetry.Item status = t.addData("Status", "");
+	Telemetry.Item subStatus = t.addData("Sub", "");
 
 	/* Init Functions */
 	void init(HardwareMap hardwareMap) {
 		// Telemetry Configuration
-//		t.setAutoClear(true);
+//		t.setAutoClear(false);
 		// Defines drive motors
 		drive_lf = hardwareMap.dcMotor.get("leftFront");
 		drive_rb = hardwareMap.dcMotor.get("rightBack");
@@ -89,23 +89,27 @@ public class __Hardware__ {
 		/* Initiate TensorFlow Object Detection */
 		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-		tfodParameters.minimumConfidence = 0.8;
+		tfodParameters.minimumConfidence = 0.75;
 		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
 		tfDetect.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
-
-		if (tfDetect != null) tfDetect.activate();
+		tfDetect.deactivate(); // FIXME: Might cause Error, if so, just remove it
 	}
 
 	void updateTfDetect() {
 		updatedRecognitions = tfDetect.getUpdatedRecognitions();
-		if (updatedRecognitions == null) return;
 		if (updatedRecognitions.size() > 0) {
-			int i = 0;
+			int i = -1;
 			for (int j = 0; j < updatedRecognitions.size(); j++) {
 				if (updatedRecognitions.get(j).getLabel() == "Skystone") {
 					i = j;
 					break;
 				}
+			}
+			if (i == -1) {
+				sPos = 0;
+				sArea = 0;
+				sConf = 0;
+				return;
 			}
 			if (updatedRecognitions.get(i).getLabel() == "Skystone") {
 				float objectRight = updatedRecognitions.get(i).getRight();
@@ -114,12 +118,13 @@ public class __Hardware__ {
 				float objectWidth = updatedRecognitions.get(i).getWidth();
 				float objectConfidence = updatedRecognitions.get(i).getConfidence();
 
-				sLeft = objectLeft; sRight = objectRight;
+				sLeft = objectLeft;
+				sRight = objectRight;
 				sPos = objectLeft + (round(100 * ((objectWidth) / 2)) / 100);
 				sArea = round(objectWidth * objectHeight * 100) / 100;
 				sConf = objectConfidence; // Currently only returns 0.87890625
 			}
-		} else if (updatedRecognitions.size() == 0) {
+		} else {
 			sPos = 0;
 			sArea = 0;
 			sConf = 0;
@@ -128,11 +133,11 @@ public class __Hardware__ {
 
 	/* Telemetry */
 	void tStatus(String value) {
-//		status.setValue(value);
+		status.setValue(value);
 		t.update();
 	}
 	void tSub(String value) {
-//		subStatus.setValue(value);
+		subStatus.setValue(value);
 		t.update();
 	}
 	void tErr(String msg, Exception e) {
@@ -157,25 +162,25 @@ public class __Hardware__ {
 		t.update();
 	}
 	void tSnapDrivePos() {
-//		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %6d | %6d |\n| %6d | %6d |",
-//				drive_lf.getCurrentPosition() / drive_ticks, drive_rf.getCurrentPosition() / drive_ticks,
-//				drive_lb.getCurrentPosition() / drive_ticks, drive_rb.getCurrentPosition() / drive_ticks));
+		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
+				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
+				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
 		t.update();
 	}
 
 	void tDrivePower(int update) {
-//		t.addData("Drive Power",
-//				String.format("\n| %6d | %6d |\n| %6d | %6d |",
-//						drive_lf.getPower(), drive_rf.getPower(),
-//						drive_rb.getPower(), drive_lb.getPower()));
+		t.addData("Drive Power",
+				String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
+						drive_lf.getPower(), drive_rf.getPower(),
+						drive_rb.getPower(), drive_lb.getPower()));
 		if (update == 1)
 			t.update();
 	} void tDrivePower() { tDrivePower(0); }
 
 	void tDrivePos(int update) {
-//		t.addData("Drive Position", String.format("\n| %6d | %6d |\n| %6d | %6d |",
-//				drive_lf.getCurrentPosition() / drive_ticks, drive_rf.getCurrentPosition() / drive_ticks,
-//				drive_lb.getCurrentPosition() / drive_ticks, drive_rb.getCurrentPosition() / drive_ticks));
+		t.addData("Drive Position", String.format("\n| %6d | %6d |\n| %6d | %6d |",
+				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
+				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
 		if (update == 1)
 			t.update();
 	} void tDrivePos() { tDrivePos(0); }

@@ -36,7 +36,7 @@ public class SkystoneBase {
 		try {
 			h.tStatus("Running");
 
-			/* Instructions - SkyStone */
+			/* Instructions - SkyStone *///FIXME
 			a.movF(3.5, 1.0, 2.4);
 			// Possible values found in findSkystone
 			double sPos = a.findSkystone(blue,0.6);

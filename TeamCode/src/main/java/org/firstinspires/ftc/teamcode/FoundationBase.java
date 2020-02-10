@@ -35,7 +35,7 @@ public class FoundationBase {
 		try {
 			h.tStatus("Running");
 
-			/* Instructions - Foundation */
+			/* Instructions - Foundation *///FIXME
 			a.movB(1.0, 0.9);
 			if (blue) a.movR(11.5, 0.9, 3.8);
 			else a.movL(11.5, 0.9, 3.8);

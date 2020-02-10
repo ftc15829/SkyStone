@@ -28,21 +28,24 @@ public class __AutoBase__ {
 		driveModeSRE();
 		for (int i = 1; i <= 3; i++) {
 			ElapsedTime elapsedTime = new ElapsedTime();
-			while (elapsedTime.seconds() < 4.0) {
-				if (h.tfDetect != null) h.updateTfDetect();
+			h.tfDetect.activate();
+			while (elapsedTime.seconds() < 4.0) {//FIXME
+				h.updateTfDetect();
 				h.tRunTime(elapsedTime);
 				h.tDrivePos();
 				// h.tCaminfo();
 				h.t.update();
-				if ((h.sPos > 400 && h.sPos < 500) && h.sArea > 40_000 && h.sConf > 0.75) {
+				if ((h.sPos > 400 && h.sPos < 500) && h.sArea > 40_000) {//FIXME
 					h.tSub("Success");
 					halt(0);
+					h.tfDetect.deactivate();
 					return i;
 				}
 				opmode.idle();
 			}
-			if (blue) movR(2.0, 1.5, 3.0);
-			else movL(2.0, 1.5, 3.0);
+			h.tfDetect.deactivate();
+			if (blue) movR(2.0, 1.5, 3.0);//FIXME
+			else movL(2.0, 1.5, 3.0);//FIXME
 		}
 		h.tSub("Failed");
 		halt(0);
