@@ -42,8 +42,8 @@ public class FoundationBase {
 			a.movB(4.5, 0.9, 2.5);
 			a.movB(1.1, 0.5, 1.2);
 			a.latch();
-			if (blue) a.customTrn(0.3, 1.0, 3400);
-			else a.customTrn(1.0, 0.3, 2200);
+			if (blue) a.customTrn(-0.6, -2.0, 3400);
+			else a.customTrn(-2.0, -0.6, 2200);
 			a.movB(3.8, 1.0, 1.8);
 			a.unlatch();
 			a.movF(1.0, 1.0, 0.8);

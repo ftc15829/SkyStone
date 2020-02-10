@@ -13,6 +13,7 @@ public class __DriveBase__ {
 	}
 	__Hardware__ h;
 	__AutoBase__ a;
+	__AutoBase__.Dir Dir;
 	LinearOpMode opmode;
 
 	ElapsedTime elapsedTime = new ElapsedTime();
@@ -106,13 +107,13 @@ public class __DriveBase__ {
 	// Update Drive
 	void updateDriveCardinal() { h.tSub("Updating Cardinal Drive");
 		if (h.dpad_u) {
-			a.mov(0, 1.0);
+			a.mov(Dir.UP, 1.0);
 		} else if (h.dpad_d) {
-			a.mov(2, 1.0);
+			a.mov(Dir.DOWN, 1.0);
 		} else if (h.dpad_l) {
-			a.mov(3, 1.0);
+			a.mov(Dir.LEFT, 1.0);
 		} else if (h.dpad_r) {
-			a.mov(1, 1.0);
+			a.mov(Dir.RIGHT, 1.0);
 		} else {
 			a.halt(0);
 		}

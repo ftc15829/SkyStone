@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-import android.sax.TextElementListener;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -25,22 +24,24 @@ public class __Hardware__ {
 	public __Hardware__(LinearOpMode linearOpMode, Telemetry telemetry) { opmode = linearOpMode; t = telemetry; }
 	LinearOpMode opmode;
 	Telemetry t;
+	// Hardware Constants
+	static int GobRate = 108;
+	static int TetRate = 1440;
+	static double PowerMod = .333; // Max power is 3.0
 	// Initialize hardware
-	int drive_ticks = 108;
-	double powerbase = .36;
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r;
 	CRServo grab_l, grab_r;
 	// Initialize Vision
-	float SkystonePos;
-	float SkystoneLeft;
-	float SkystoneRight;
-	int SkystoneArea;
-	double SkystoneConfidence;
-	List<Recognition> updatedRecognitions;
-	VuforiaLocalizer vuforia;
 	TFObjectDetector tfDetect;
+	float sPos;
+	float sLeft;
+	float sRight;
+	int sArea;
+	double sConf;
+	private List<Recognition> updatedRecognitions;
+	private VuforiaLocalizer vuforia;
 	private static final String VUFORIA_KEY =
 			"ARmB8mr/////AAABmZmt2tlP7EgjixU1JYYoSncNXqoxBId990GbqOpAfBytywT8tnE7y51UQmExhGdE3ctKQ5oiMU2LqcaxxW9zPp4+8x4XDsQbYlNwT8uhOE3X+QlME2xhn7unPHRKS9v8bK7R/P+/kmNfzPPDZuPvHSRAYICg6wkLVArTiKP59oP5UN4NZVm7TqE+2bqB3RR9wg9ItU9E8ufs20T8uJpBEzIOk+CMCGvpalbjz+gIv1NDEci9m/z2KMGcmA1bt+XpozDvNEPznZ9enhB9yS3qTDUkNoO/CUndqvMHEfKaTAGnN0oj5ixI3R4fzBx+Xl2LRdUvmav/7CPdnQqt02867My6dezcLg3ovxXMfrtTGgbn";
 	// Initialize gamepad values
@@ -113,15 +114,15 @@ public class __Hardware__ {
 				float objectWidth = updatedRecognitions.get(i).getWidth();
 				float objectConfidence = updatedRecognitions.get(i).getConfidence();
 
-				SkystoneLeft = objectLeft; SkystoneRight = objectRight;
-				SkystonePos = objectLeft + (round(100 * ((objectWidth) / 2)) / 100);
-				SkystoneArea = round(objectWidth * objectHeight * 100) / 100;
-				SkystoneConfidence = objectConfidence; // Currently only returns 0.87890625
+				sLeft = objectLeft; sRight = objectRight;
+				sPos = objectLeft + (round(100 * ((objectWidth) / 2)) / 100);
+				sArea = round(objectWidth * objectHeight * 100) / 100;
+				sConf = objectConfidence; // Currently only returns 0.87890625
 			}
 		} else if (updatedRecognitions.size() == 0) {
-			SkystonePos = 0;
-			SkystoneArea = 0;
-			SkystoneConfidence = 0;
+			sPos = 0;
+			sArea = 0;
+			sConf = 0;
 		}
 	}
 
@@ -186,11 +187,11 @@ public class __Hardware__ {
 	} void tPos(DcMotor motor) { tPos(motor, 0); }
 
 	void tCaminfo(int update) {
-		t.addData("Pos", SkystonePos);
-		t.addData("left", SkystoneLeft);
-		t.addData("right", SkystoneRight);
-		t.addData("Area", SkystoneArea);
-		t.addData("Confidence", SkystoneConfidence);
+		t.addData("Pos", sPos);
+		t.addData("left", sLeft);
+		t.addData("right", sRight);
+		t.addData("Area", sArea);
+		t.addData("Confidence", sConf);
 		if (update == 1)
 			t.update();
 	} void tCaminfo() { tCaminfo(0); }
