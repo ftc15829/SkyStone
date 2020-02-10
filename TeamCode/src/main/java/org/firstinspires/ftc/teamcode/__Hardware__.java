@@ -70,6 +70,11 @@ public class __Hardware__ {
 		drive_rb.setDirection(DcMotor.Direction.REVERSE);
 		drive_lb.setDirection(DcMotor.Direction.FORWARD);
 		drive_rf.setDirection(DcMotor.Direction.REVERSE);
+
+		drive_lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		drive_rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		drive_lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		drive_rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		// Defines scissor-lift hardware
 		scissor = hardwareMap.dcMotor.get("scissor");
 		lSlide_l = hardwareMap.dcMotor.get("slideL");
