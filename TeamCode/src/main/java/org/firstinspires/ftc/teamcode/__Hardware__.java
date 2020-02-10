@@ -53,8 +53,8 @@ public class __Hardware__ {
 	boolean _dpad_u, _dpad_d, _dpad_l, _dpad_r;
 
 	// Telemetry
-	Telemetry.Item status = t.addData("Status", "");
-	Telemetry.Item subStatus = t.addData("Sub", "");
+//	Telemetry.Item status = t.addData("Status", "");
+//	Telemetry.Item subStatus = t.addData("Sub", "");
 
 	/* Init Functions */
 	void init(HardwareMap hardwareMap) {
@@ -138,16 +138,16 @@ public class __Hardware__ {
 
 	/* Telemetry */
 	void tStatus(String value) {
-		status.setValue(value);
-		t.update();
+//		status.setValue(value);
+//		t.update();
 	}
 	void tSub(String value) {
-		subStatus.setValue(value);
-		t.update();
+//		subStatus.setValue(value);
+//		t.update();
 	}
 	void tErr(String msg, Exception e) {
-		t.addData(msg + " Error", "\n" + e);
-		t.update();
+//		t.addData(msg + " Error", "\n" + e);
+//		t.update();
 	}
 
 	void tRunTime(int update) {
@@ -167,25 +167,25 @@ public class __Hardware__ {
 		t.update();
 	}
 	void tSnapDrivePos() {
-		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
-				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
-				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
+//		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
+//				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
+//				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
 		t.update();
 	}
 
 	void tDrivePower(int update) {
-		t.addData("Drive Power",
-				String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
-						drive_lf.getPower(), drive_rf.getPower(),
-						drive_rb.getPower(), drive_lb.getPower()));
+//		t.addData("Drive Power",
+//				String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
+//						drive_lf.getPower(), drive_rf.getPower(),
+//						drive_rb.getPower(), drive_lb.getPower()));
 		if (update == 1)
 			t.update();
 	} void tDrivePower() { tDrivePower(0); }
 
 	void tDrivePos(int update) {
-		t.addData("Drive Position", String.format("\n| %6d | %6d |\n| %6d | %6d |",
-				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
-				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
+//		t.addData("Drive Position", String.format("\n| %6d | %6d |\n| %6d | %6d |",
+//				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
+//				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
 		if (update == 1)
 			t.update();
 	} void tDrivePos() { tDrivePos(0); }
