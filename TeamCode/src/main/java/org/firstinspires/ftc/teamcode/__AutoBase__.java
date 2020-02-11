@@ -29,13 +29,9 @@ public class __AutoBase__ {
 		for (int i = 1; i <= 3; i++) {
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
-			while (elapsedTime.seconds() < 4.0) {//FIXME
-				h.updateTfDetect();
-				h.tRunTime(elapsedTime);
-				h.tDrivePos();
-				// h.tCaminfo();
-				h.t.update();
-				if ((h.sPos > 400 && h.sPos < 500) && h.sArea > 40_000) {//FIXME
+			while (elapsedTime.seconds() < 4.0 && opmode.opModeIsActive()) {
+				h.tCaminfo(1);
+				if (h.sArea > 10_000) {
 					h.tSub("Success");
 					halt(0);
 					h.tfDetect.deactivate();
@@ -44,8 +40,13 @@ public class __AutoBase__ {
 				opmode.idle();
 			}
 			h.tfDetect.deactivate();
-			if (blue) movR(2.0, 1.5, 3.0);//FIXME
-			else movL(2.0, 1.5, 3.0);//FIXME
+			if (i == 3) {
+				h.tSub("Failed");
+				halt(0);
+				return -1.0;
+			}
+			if (blue) movR(2.4, 2.0, 3.0);
+			else movL(2.4, 2.0, 3.0);
 		}
 		h.tSub("Failed");
 		halt(0);

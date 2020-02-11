@@ -40,6 +40,7 @@ public class __Hardware__ {
 	float sRight;
 	int sArea;
 	double sConf;
+	boolean isSkystone = false;
 	private List<Recognition> updatedRecognitions;
 	private VuforiaLocalizer vuforia;
 	private static final String VUFORIA_KEY =
@@ -105,7 +106,7 @@ public class __Hardware__ {
 		if (updatedRecognitions.size() > 0) {
 			int i = -1;
 			for (int j = 0; j < updatedRecognitions.size(); j++) {
-				if (updatedRecognitions.get(j).getLabel() == "Skystone") {
+				if (updatedRecognitions.get(j).getLabel().equals("Skystone")) {
 					i = j;
 					break;
 				}
@@ -116,7 +117,7 @@ public class __Hardware__ {
 				sConf = 0;
 				return;
 			}
-			if (updatedRecognitions.get(i).getLabel() == "Skystone") {
+			if (updatedRecognitions.get(i).getLabel().equals("Skystone")) {
 				float objectRight = updatedRecognitions.get(i).getRight();
 				float objectLeft = updatedRecognitions.get(i).getLeft();
 				float objectHeight = updatedRecognitions.get(i).getHeight();
@@ -125,7 +126,7 @@ public class __Hardware__ {
 
 				sLeft = objectLeft;
 				sRight = objectRight;
-				sPos = objectLeft + (round(100 * ((objectWidth) / 2)) / 100);
+				sPos = objectLeft + (100 * ((objectWidth) / 2)) / 100;
 				sArea = round(objectWidth * objectHeight * 100) / 100;
 				sConf = objectConfidence; // Currently only returns 0.87890625
 			}
