@@ -29,7 +29,7 @@ public class __AutoBase__ {
 		for (int i = 1; i <= 3; i++) { if (!opmode.opModeIsActive()) return -1;
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
-			while (elapsedTime.seconds() < 4.0 && opmode.opModeIsActive()) {
+			while (elapsedTime.seconds() < 3.0 && opmode.opModeIsActive()) {
 				h.tCaminfo(1);
 				if (h.sArea > 10_000) {
 					h.tSub("Success");

@@ -39,25 +39,24 @@ public class SkystoneBase {
 
 			/* Instructions - SkyStone */
 			if (nobridge) a.movF(3.5, 1.0, 2.4);
-			// Possible values found in findSkystone
+
 			double sPos = a.findSkystone(blue,0.6);
-			// If findSkystone failed, don't try to grab skystone
+
 			if (sPos == -1) a.movF(1.7, 1.0, 1.5);
 			else {
 				a.movF(2.2, 1.0, 1.5);
 				a.pickUp();
 				a.movB(1.3, 1.0, 0.7);
 			}
-			// Will turn left if the team is Blue, right otherwise
+
 			if (blue) a.trnL(1.1, 1.0, 2.0);
 			else a.trnR(1.1, 1.0, 2.0);
-			// If end goal is wall
+
 			if (!mid) {
-				// Will turn left if the team is Blue, right otherwise
 				if (blue) a.movL(6.0, 1.0, 2.6);
 				else a.movR(6.0, 1.0, 2.6);
 			}
-			// 1 = farthest from wall
+			// 1 = farthest from wall, 3 = nearest
 			a.movF(sPos == 1 ? 5.5 : (sPos == 2 ? 7.5 : 9.5), 1.0, 4.6);
 			// Don't try to drop the skystone off if findSkystone failed
 			if (sPos != -1) {
@@ -74,6 +73,7 @@ public class SkystoneBase {
 		}
 	}
 
+	// Bridge from foundation to skystone
 	public void bridge(boolean blue, boolean mid) {
 		try {
 			h.tStatus("Running");
@@ -81,8 +81,10 @@ public class SkystoneBase {
 			/* Instructions - Bridge */
 			nobridge = false;
 			a.movF(3.0, 2.0, 4.0);
+
 			if (blue) a.trnL(1.0, 1.5, 2.0);
 			else a.trnR(1.0, 1.5, 2.0);
+
 			if (!mid) a.movF(3.0, 1.5, 3.0);
 
 			h.tStatus("Done!");
