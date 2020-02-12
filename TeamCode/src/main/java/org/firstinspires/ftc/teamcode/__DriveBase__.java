@@ -31,7 +31,7 @@ public class __DriveBase__ {
 		}
 
 		h.tStatus("Ready | Drive");
-		while (!opmode.isStarted()) {
+		while (!opmode.isStarted() && opmode.opModeIsActive()) {
 			h.tRunTime();
 			opmode.idle();
 		}
@@ -58,7 +58,8 @@ public class __DriveBase__ {
 	}
 
 /* AutoMaker */
-	void update(int isAlt) { h.tSub("Updating Auto Maker");
+	void update(int isAlt) { // DEPRECIATED
+		h.tSub("Updating Auto Maker");
 		a.driveModeRUE();
 
 		h.updateGamepad(opmode.gamepad1, opmode.gamepad2);
@@ -126,8 +127,6 @@ public class __DriveBase__ {
 	}
 	double getPower(int i) {
 		double power;
-		double mod = 0.65;
-		double MOD = 0.3;
 		switch (i) {
 			case 0: power = -h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_lf
 			case 1: power = -h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_rb
@@ -135,8 +134,11 @@ public class __DriveBase__ {
 			case 3: power = -h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_rf
 			default: power = 0; break;
 		}
-		power = h.lTrigger != 0 ? (h.lStick_x>=0.2||h.lStick_x<=-0.2 ? power*MOD*1.9 : power*MOD) : (h.rTrigger !=0? power*mod : power*.8);
-		power = power > 1 ? 1 : power;
+		// 0.2 is buffer, constants are speed modifiers for different situations
+		double mod1 = (h.lStick_x >= 0.2 || h.lStick_x <= -0.2) ? 0.3 * 1.9 : 0.3; // X : Y = U
+		double mod2 = h.rTrigger != 0 ? 0.65 : 0.8; // Z : W = V FIXME: U, V, W, X, Y, Z = ?
+		power *= h.lTrigger != 0 ? mod1 : mod2; // U : V -> (X : Y) : (Z : W)
+		if (power > 1) power = 1;
 		return power;
 	}
 }

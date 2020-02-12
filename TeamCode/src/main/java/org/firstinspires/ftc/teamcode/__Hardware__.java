@@ -21,14 +21,17 @@ import static java.lang.Math.round;
 
 public class __Hardware__ {
 	/* Initializations */
-	public __Hardware__(LinearOpMode linearOpMode, Telemetry telemetry) { opmode = linearOpMode; t = telemetry; }
+	public __Hardware__(LinearOpMode linearOpMode, Telemetry telemetry) {
+		opmode = linearOpMode;
+		t = telemetry;
+	}
 	LinearOpMode opmode;
 	Telemetry t;
 	// Hardware Constants
 	static double GobRate = 108.0; // Double to avoid integer division
 	static double TetRate = 1440.0;
 	static double PowerMod = .333; // Max power is 3.0
-	static double revolution = 0.2; // Distance robot move in feet after one revolution
+	static double revolution = 0.2; // Distance robot moves, in feet, after one revolution
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
@@ -41,11 +44,9 @@ public class __Hardware__ {
 	float sRight;
 	int sArea;
 	double sConf;
-	boolean isSkystone = false;
 	private List<Recognition> updatedRecognitions;
 	private VuforiaLocalizer vuforia;
-	private static final String VUFORIA_KEY =
-			"ARmB8mr/////AAABmZmt2tlP7EgjixU1JYYoSncNXqoxBId990GbqOpAfBytywT8tnE7y51UQmExhGdE3ctKQ5oiMU2LqcaxxW9zPp4+8x4XDsQbYlNwT8uhOE3X+QlME2xhn7unPHRKS9v8bK7R/P+/kmNfzPPDZuPvHSRAYICg6wkLVArTiKP59oP5UN4NZVm7TqE+2bqB3RR9wg9ItU9E8ufs20T8uJpBEzIOk+CMCGvpalbjz+gIv1NDEci9m/z2KMGcmA1bt+XpozDvNEPznZ9enhB9yS3qTDUkNoO/CUndqvMHEfKaTAGnN0oj5ixI3R4fzBx+Xl2LRdUvmav/7CPdnQqt02867My6dezcLg3ovxXMfrtTGgbn";
+	private static final String VUFORIA_KEY = "ARmB8mr/////AAABmZmt2tlP7EgjixU1JYYoSncNXqoxBId990GbqOpAfBytywT8tnE7y51UQmExhGdE3ctKQ5oiMU2LqcaxxW9zPp4+8x4XDsQbYlNwT8uhOE3X+QlME2xhn7unPHRKS9v8bK7R/P+/kmNfzPPDZuPvHSRAYICg6wkLVArTiKP59oP5UN4NZVm7TqE+2bqB3RR9wg9ItU9E8ufs20T8uJpBEzIOk+CMCGvpalbjz+gIv1NDEci9m/z2KMGcmA1bt+XpozDvNEPznZ9enhB9yS3qTDUkNoO/CUndqvMHEfKaTAGnN0oj5ixI3R4fzBx+Xl2LRdUvmav/7CPdnQqt02867My6dezcLg3ovxXMfrtTGgbn";
 	// Initialize gamepad values
 	double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
 	boolean lBumper, rBumper, button_a, button_b, button_x, button_y;
@@ -94,7 +95,8 @@ public class __Hardware__ {
 		vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
 		/* Initiate TensorFlow Object Detection */
-		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
 		tfodParameters.minimumConfidence = 0.75;
 		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
@@ -127,9 +129,7 @@ public class __Hardware__ {
 				sConf = objectConfidence; // Currently only returns 0.87890625
 			}
 		} else if (updatedRecognitions.size() == 0) {
-			sPos = 0;
-			sArea = 0;
-			sConf = 0;
+			sLeft = 0; sRight = 0; sPos = 0; sArea = 0; sConf = 0;
 		}
 	}
 

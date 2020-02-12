@@ -26,7 +26,7 @@ public class __AutoBase__ {
 		 */
 		h.tSub("Finding Skystone");
 		driveModeSRE();
-		for (int i = 1; i <= 3; i++) {
+		for (int i = 1; i <= 3; i++) { if (!opmode.opModeIsActive()) return -1;
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
 			while (elapsedTime.seconds() < 4.0 && opmode.opModeIsActive()) {
@@ -142,7 +142,7 @@ public class __AutoBase__ {
 		modeRTP(h.lSlide_r);
 		h.lSlide_l.setPower(p); // Set lSlide's power to p
 		h.lSlide_r.setPower(p);
-		while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) {
+		while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy() && opmode.opModeIsActive()) {
 			h.tPos(h.lSlide_l);
 			h.tPos(h.lSlide_r);
 			h.t.update();
@@ -173,7 +173,7 @@ public class __AutoBase__ {
 		driveTargetPos(rev.get(0), rev.get(1), rev.get(2), rev.get(3));
 		driveModeRTP();
 		drivePower(p);
-		while (drive_isBusy() && (elapsed.seconds() < t || t == 0)) {
+		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
 		if (elapsed.seconds() >= t) h.tSub("Timed Out");
@@ -220,8 +220,8 @@ public class __AutoBase__ {
 		halt(t);
 	}
 
-	void cTrnLTEST(double revR, double dist, int degrees, double p, double t) {
-		// FIXME: A good test is to make dist 0, degrees 90, and see if it pivots by 90 degrees
+	void cTrnL(double revR, double dist, int degrees, double p, double t) {
+		// TODO: A good test is to make dist 0, degrees 90, and see if it pivots by 90 degrees
 		h.tSub("Custom Turn Left");
 		ElapsedTime elapsed = new ElapsedTime();
 		driveModeSRE();
@@ -230,7 +230,7 @@ public class __AutoBase__ {
 		driveModeRTP();
 		double lP = (revL / revR) * p;
 		drivePower(lP, p, lP, p);
-		while (drive_isBusy() && (elapsed.seconds() < t || t == 0)) {
+		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
 		if (elapsed.seconds() >= t) h.tSub("Timed Out");
@@ -238,7 +238,7 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 
-	void cTrnRTEST(double revL, double dist, int degrees, double p, double t) {
+	void cTrnR(double revL, double dist, int degrees, double p, double t) {
 		h.tSub("Custom Turn Left");
 		ElapsedTime elapsed = new ElapsedTime();
 		driveModeSRE();
@@ -247,7 +247,7 @@ public class __AutoBase__ {
 		driveModeRTP();
 		double rP = (revR / revL) * p;
 		drivePower(p, rP, p, rP);
-		while (drive_isBusy() && (elapsed.seconds() < t || t == 0)) {
+		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
 		if (elapsed.seconds() >= t) h.tSub("Timed Out");

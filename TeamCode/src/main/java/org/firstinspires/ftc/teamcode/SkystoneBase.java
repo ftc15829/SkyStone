@@ -26,7 +26,7 @@ public class SkystoneBase {
 			opmode.stop();
 		}
 		h.tStatus("Ready | Skystone");
-		while (!opmode.isStarted()) {
+		while (!opmode.isStarted() && opmode.opModeIsActive()) {
 			h.tRunTime();
 			opmode.idle();
 		}

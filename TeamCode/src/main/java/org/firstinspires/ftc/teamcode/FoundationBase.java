@@ -24,7 +24,7 @@ public class FoundationBase {
 			opmode.stop();
 		}
 		h.tStatus("Ready | Foundation");
-		while (!opmode.isStarted()) {
+		while (!opmode.isStarted() && opmode.opModeIsActive()) {
 			h.tRunTime();
 			opmode.idle();
 		}
@@ -42,8 +42,8 @@ public class FoundationBase {
 			a.movB(2.8, 1.2, 3.5);
 			a.movB(2.8, 0.6, 3.6);
 			a.latch();
-			if (blue) a.cTrnLTEST(6.28, 9.42, 90, 1.0, 4.0);
-			else a.cTrnRTEST(9.42, 6.28, 90, 1.0, 4.0);
+			if (blue) a.cTrnL(6.28, 9.42, 90, 1.0, 4.0);
+			else a.cTrnR(9.42, 6.28, 90, 1.0, 4.0);
 //			if (blue) a.customTrn(-0.6, -2.4, 2900);
 //			else a.customTrn(-2.4, -0.6, 2900);
 			a.movB(7.4, 1.0, 1.8);
