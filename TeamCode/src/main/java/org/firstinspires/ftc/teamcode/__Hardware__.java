@@ -28,6 +28,7 @@ public class __Hardware__ {
 	static double GobRate = 108.0; // Double to avoid integer division
 	static double TetRate = 1440.0;
 	static double PowerMod = .333; // Max power is 3.0
+	static double revolution = 0.2; // Distance robot move in feet after one revolution
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;

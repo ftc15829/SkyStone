@@ -35,15 +35,15 @@ public class FoundationBase {
 		try {
 			h.tStatus("Running");
 
-			/* Instructions - Foundation *///FIXME
+			/* Instructions - Foundation */
 			a.movB(1.0, 1.5, 2.5);
 			if (blue) a.movR(3.5, 1.5, 3.8);
 			else a.movL(3.5, 1.5, 3.8); // 2.6
 			a.movB(2.8, 1.2, 3.5);
 			a.movB(2.8, 0.6, 3.6);
 			a.latch();
-			if (blue) a.customTrnLTEST(6.28, 9.42, 1.0, 4.0);
-			else a.customTrnRTEST(9.42, 6.28, 1.0, 4.0);
+			if (blue) a.cTrnLTEST(6.28, 9.42, 90, 1.0, 4.0);
+			else a.cTrnRTEST(9.42, 6.28, 90, 1.0, 4.0);
 //			if (blue) a.customTrn(-0.6, -2.4, 2900);
 //			else a.customTrn(-2.4, -0.6, 2900);
 			a.movB(7.4, 1.0, 1.8);

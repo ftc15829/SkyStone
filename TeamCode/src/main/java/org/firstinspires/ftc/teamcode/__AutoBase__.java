@@ -220,10 +220,12 @@ public class __AutoBase__ {
 		halt(t);
 	}
 
-	void customTrnLTEST(double revR, double revL, double p, double t) {
+	void cTrnLTEST(double revR, double dist, int degrees, double p, double t) {
+		// FIXME: A good test is to make dist 0, degrees 90, and see if it pivots by 90 degrees
 		h.tSub("Custom Turn Left");
 		ElapsedTime elapsed = new ElapsedTime();
 		driveModeSRE();
+		double revL = (dist * ((Math.PI / 180.0) * degrees)) / h.revolution;
 		driveTargetPos(revL, revR, revL, revR);
 		driveModeRTP();
 		double lP = (revL / revR) * p;
@@ -236,10 +238,11 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 
-	void customTrnRTEST(double revL, double revR, double p, double t) {
+	void cTrnRTEST(double revL, double dist, int degrees, double p, double t) {
 		h.tSub("Custom Turn Left");
 		ElapsedTime elapsed = new ElapsedTime();
 		driveModeSRE();
+		double revR = (dist * ((Math.PI / 180.0) * degrees)) / h.revolution;
 		driveTargetPos(revL, revR, revL, revR);
 		driveModeRTP();
 		double rP = (revR / revL) * p;
