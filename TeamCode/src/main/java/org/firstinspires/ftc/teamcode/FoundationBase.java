@@ -42,9 +42,10 @@ public class FoundationBase {
 			a.movB(2.8, 1.2, 3.5);
 			a.movB(2.8, 0.6, 3.6);
 			a.latch();
-//			a.movF(2.8, 1.3, 3.0);
-			if (blue) a.customTrn(-0.6, -2.4, 2900);
-			else a.customTrn(-2.4, -0.6, 2900);
+			if (blue) a.customTrnLTEST(6.28, 9.42, 1.0, 4.0);
+			else a.customTrnRTEST(9.42, 6.28, 1.0, 4.0);
+//			if (blue) a.customTrn(-0.6, -2.4, 2900);
+//			else a.customTrn(-2.4, -0.6, 2900);
 			a.movB(7.4, 1.0, 1.8);
 			a.unlatch();
 			a.movF(1.0, 1.0, 0.8);

@@ -98,24 +98,19 @@ public class __Hardware__ {
 		tfodParameters.minimumConfidence = 0.75;
 		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
 		tfDetect.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
-		tfDetect.deactivate(); // FIXME: Might cause Error, if so, just remove it
+		if (tfDetect != null) tfDetect.deactivate();
 	}
 
 	void updateTfDetect() {
 		updatedRecognitions = tfDetect.getUpdatedRecognitions();
+		if (updatedRecognitions == null) return;
 		if (updatedRecognitions.size() > 0) {
-			int i = -1;
+			int i = 0;
 			for (int j = 0; j < updatedRecognitions.size(); j++) {
 				if (updatedRecognitions.get(j).getLabel().equals("Skystone")) {
 					i = j;
 					break;
 				}
-			}
-			if (i == -1) {
-				sPos = 0;
-				sArea = 0;
-				sConf = 0;
-				return;
 			}
 			if (updatedRecognitions.get(i).getLabel().equals("Skystone")) {
 				float objectRight = updatedRecognitions.get(i).getRight();
@@ -130,7 +125,7 @@ public class __Hardware__ {
 				sArea = round(objectWidth * objectHeight * 100) / 100;
 				sConf = objectConfidence; // Currently only returns 0.87890625
 			}
-		} else {
+		} else if (updatedRecognitions.size() == 0) {
 			sPos = 0;
 			sArea = 0;
 			sConf = 0;

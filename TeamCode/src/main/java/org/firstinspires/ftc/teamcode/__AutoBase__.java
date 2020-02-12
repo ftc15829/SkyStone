@@ -220,6 +220,38 @@ public class __AutoBase__ {
 		halt(t);
 	}
 
+	void customTrnLTEST(double revR, double revL, double p, double t) {
+		h.tSub("Custom Turn Left");
+		ElapsedTime elapsed = new ElapsedTime();
+		driveModeSRE();
+		driveTargetPos(revL, revR, revL, revR);
+		driveModeRTP();
+		double lP = (revL / revR) * p;
+		drivePower(lP, p, lP, p);
+		while (drive_isBusy() && (elapsed.seconds() < t || t == 0)) {
+			opmode.idle();
+		}
+		if (elapsed.seconds() >= t) h.tSub("Timed Out");
+		halt(0);
+		driveModeRWE();
+	}
+
+	void customTrnRTEST(double revL, double revR, double p, double t) {
+		h.tSub("Custom Turn Left");
+		ElapsedTime elapsed = new ElapsedTime();
+		driveModeSRE();
+		driveTargetPos(revL, revR, revL, revR);
+		driveModeRTP();
+		double rP = (revR / revL) * p;
+		drivePower(p, rP, p, rP);
+		while (drive_isBusy() && (elapsed.seconds() < t || t == 0)) {
+			opmode.idle();
+		}
+		if (elapsed.seconds() >= t) h.tSub("Timed Out");
+		halt(0);
+		driveModeRWE();
+	}
+
 	void movF(long time, double p) {
 		mov(Dir.UP, p); halt(time);
 	}
