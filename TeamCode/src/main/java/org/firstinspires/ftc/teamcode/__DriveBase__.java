@@ -31,7 +31,7 @@ public class __DriveBase__ {
 		}
 
 		h.tStatus("Ready | Drive");
-		while (!opmode.isStarted() && opmode.opModeIsActive()) {
+		while (!opmode.isStarted()) {
 			h.tRunTime();
 			opmode.idle();
 		}
@@ -135,9 +135,9 @@ public class __DriveBase__ {
 			default: power = 0; break;
 		}
 		// 0.2 is buffer, constants are speed modifiers for different situations
-		double mod1 = (h.lStick_x >= 0.2 || h.lStick_x <= -0.2) ? 0.3 * 1.9 : 0.3; // X : Y = U
-		double mod2 = h.rTrigger != 0 ? 0.65 : 0.8; // Z : W = V FIXME: U, V, W, X, Y, Z = ?
-		power *= h.lTrigger != 0 ? mod1 : mod2; // U : V -> (X : Y) : (Z : W)
+		double SLOW = (h.lStick_x >= 0.2 || h.lStick_x <= -0.2) ? 0.3 * 1.9 : 0.3; // Crab : Normal Slow = SLOW
+		double slow = h.rTrigger != 0 ? 0.65 : 0.8; // not as slow : normal = slow
+		power *= h.lTrigger != 0 ? SLOW : slow;
 		if (power > 1) power = 1;
 		return power;
 	}

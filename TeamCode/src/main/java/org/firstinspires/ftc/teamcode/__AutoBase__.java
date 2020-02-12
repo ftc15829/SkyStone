@@ -45,8 +45,8 @@ public class __AutoBase__ {
 				halt(0);
 				return -1.0;
 			}
-			if (blue) movR(2.4, 2.0, 3.0);
-			else movL(2.4, 2.0, 3.0);
+			if (blue) movR(2.45, 2.0, 3.0);
+			else movL(2.45, 2.0, 3.0);
 		}
 		h.tSub("Failed");
 		halt(0);
@@ -220,16 +220,17 @@ public class __AutoBase__ {
 		halt(t);
 	}
 
-	void cTrnL(double revR, double radius, int degrees, double p, double t) {
-		// TODO: A good test is to make radius 0, degrees 90, and see if it pivots Left by 90 degrees
+	void cTrnL(double radius, int degrees, double p, double t) {
 		h.tSub("Custom Turn Left");
 		ElapsedTime elapsed = new ElapsedTime();
+		double mod = 6.6;
 		driveModeSRE();
-		// (radius * (degrees to radians)) / feet per revolution | (feet / (feet / rev)) -> rev
-		double revL = (radius * ((Math.PI / 180.0) * degrees)) / h.revolution;
-		driveTargetPos(revL, revR, revL, revR);
+		// (radius * (degrees to radians)) / feet per revolution | (feet / (feet / rev)) -> rev R2 over R1 smaller radius r1 over r2
+		double outerArc = radius * (Math.PI / 180) * degrees * mod;
+		double innerArc = (radius - 1.5) * ((Math.PI / 180.0) * degrees * mod);
+		driveTargetPos(-innerArc, -outerArc, -innerArc, -outerArc);
 		driveModeRTP();
-		double lP = (revL / revR) * p; // ((rev / rev) * power) -> power
+		double lP = (1 - (1.5 / radius)) * p;
 		drivePower(lP, p, lP, p);
 		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
@@ -239,15 +240,18 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 
-	void cTrnR(double revL, double radius, int degrees, double p, double t) {
+	void cTrnR(double radius, int degrees, double p, double t) {
 		h.tSub("Custom Turn Right");
 		ElapsedTime elapsed = new ElapsedTime();
+		double mod = 6.6;
 		driveModeSRE();
-		// (radius * (degrees to radians)) / feet per revolution | (feet / (feet / rev)) -> rev
-		double revR = (radius * ((Math.PI / 180.0) * degrees)) / h.revolution;
-		driveTargetPos(revL, revR, revL, revR);
+		// (radius * (degrees to radians)) / feet per revolution | (feet / (feet / rev)) -> rev R2 over R1 smaller radius r1 over r2
+		double outerArc = radius * (Math.PI / 180) * degrees * mod;
+		double innerArc = (radius - 1.5) * ((Math.PI / 180.0) * degrees * mod);
+		driveTargetPos(-outerArc, -innerArc, -outerArc, -innerArc);
 		driveModeRTP();
-		double rP = (revR / revL) * p; // ((rev / rev) * power) -> power
+		double rP = (1 - (1.5 / radius)) * p;
+//		double rP = (innerArc / outerArc) * p; // ((rev / rev) * power) -> power
 		drivePower(p, rP, p, rP);
 		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
