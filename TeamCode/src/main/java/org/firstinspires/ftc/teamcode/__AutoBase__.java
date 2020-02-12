@@ -103,8 +103,8 @@ public class __AutoBase__ {
 	// POWER
 	void drivePower(double plf, double prf, double plb, double prb) {
 		// Sets drive motors to given powers
-		h.drive_lf.setPower(plf*h.PowerMod); h.drive_rf.setPower(prf*h.PowerMod);
-		h.drive_lb.setPower(plb*h.PowerMod); h.drive_rb.setPower(prb*h.PowerMod);
+		h.drive_lf.setPower(plf * h.PowerMod); h.drive_rf.setPower(prf * h.PowerMod);
+		h.drive_lb.setPower(plb * h.PowerMod); h.drive_rb.setPower(prb * h.PowerMod);
 	} void drivePower(double p) { // Sets all drive motors to a power p
 		drivePower(p, p, p, p);
 	}
@@ -220,15 +220,16 @@ public class __AutoBase__ {
 		halt(t);
 	}
 
-	void cTrnL(double revR, double dist, int degrees, double p, double t) {
-		// TODO: A good test is to make dist 0, degrees 90, and see if it pivots by 90 degrees
+	void cTrnL(double revR, double radius, int degrees, double p, double t) {
+		// TODO: A good test is to make radius 0, degrees 90, and see if it pivots Left by 90 degrees
 		h.tSub("Custom Turn Left");
 		ElapsedTime elapsed = new ElapsedTime();
 		driveModeSRE();
-		double revL = (dist * ((Math.PI / 180.0) * degrees)) / h.revolution;
+		// (radius * (degrees to radians)) / feet per revolution | (feet / (feet / rev)) -> rev
+		double revL = (radius * ((Math.PI / 180.0) * degrees)) / h.revolution;
 		driveTargetPos(revL, revR, revL, revR);
 		driveModeRTP();
-		double lP = (revL / revR) * p;
+		double lP = (revL / revR) * p; // ((rev / rev) * power) -> power
 		drivePower(lP, p, lP, p);
 		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
@@ -238,14 +239,15 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 
-	void cTrnR(double revL, double dist, int degrees, double p, double t) {
-		h.tSub("Custom Turn Left");
+	void cTrnR(double revL, double radius, int degrees, double p, double t) {
+		h.tSub("Custom Turn Right");
 		ElapsedTime elapsed = new ElapsedTime();
 		driveModeSRE();
-		double revR = (dist * ((Math.PI / 180.0) * degrees)) / h.revolution;
+		// (radius * (degrees to radians)) / feet per revolution | (feet / (feet / rev)) -> rev
+		double revR = (radius * ((Math.PI / 180.0) * degrees)) / h.revolution;
 		driveTargetPos(revL, revR, revL, revR);
 		driveModeRTP();
-		double rP = (revR / revL) * p;
+		double rP = (revR / revL) * p; // ((rev / rev) * power) -> power
 		drivePower(p, rP, p, rP);
 		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();

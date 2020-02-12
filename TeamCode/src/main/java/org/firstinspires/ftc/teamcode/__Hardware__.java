@@ -31,7 +31,7 @@ public class __Hardware__ {
 	static double GobRate = 108.0; // Double to avoid integer division
 	static double TetRate = 1440.0;
 	static double PowerMod = .333; // Max power is 3.0
-	static double revolution = 0.2; // Distance robot moves, in feet, after one revolution
+	static double revolution = 0.2; // Distance robot moves, in feet, after one revolution FIXME
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
@@ -73,7 +73,6 @@ public class __Hardware__ {
 		drive_rb.setDirection(DcMotor.Direction.REVERSE);
 		drive_lb.setDirection(DcMotor.Direction.FORWARD);
 		drive_rf.setDirection(DcMotor.Direction.REVERSE);
-
 		drive_lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		drive_rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		drive_lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
