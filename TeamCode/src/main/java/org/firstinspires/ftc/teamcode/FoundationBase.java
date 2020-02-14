@@ -53,8 +53,8 @@ public class FoundationBase {
 			a.movF(1.0, 1.0, 0.7);
 
 			if (mid)
-				if (blue) a.movL(6.8, 1.5, 3);
-				else a.movR(6.8, 1.5, 3);
+				if (blue) a.movL(6.4, 1.5, 3);
+				else a.movR(6.4, 1.5, 3);
 
 			a.movF(8.5, 1.0, 3.5);
 

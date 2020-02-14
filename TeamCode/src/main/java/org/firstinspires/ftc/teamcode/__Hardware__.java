@@ -96,9 +96,10 @@ public class __Hardware__ {
 		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
 				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-		tfodParameters.minimumConfidence = 0.75;
+		tfodParameters.minimumConfidence = 0.7;
 		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
 		tfDetect.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
+
 		if (tfDetect != null) tfDetect.deactivate();
 	}
 
@@ -126,7 +127,7 @@ public class __Hardware__ {
 				sArea = round(objectWidth * objectHeight * 100) / 100;
 				sConf = objectConfidence; // Currently only returns 0.87890625
 			}
-		} else if (updatedRecognitions.size() == 0) {
+		} else {
 			sLeft = 0; sRight = 0; sPos = 0; sArea = 0; sConf = 0;
 		}
 	}

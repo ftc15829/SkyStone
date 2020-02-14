@@ -29,9 +29,10 @@ public class __AutoBase__ {
 		for (int i = 1; i <= 3; i++) { if (!opmode.opModeIsActive()) return -1;
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
-			while (elapsedTime.seconds() < 3.0 && opmode.opModeIsActive()) {
+			while (elapsedTime.seconds() < 2.5 && opmode.opModeIsActive()) {
+				h.updateTfDetect();
 				h.tCaminfo(1);
-				if (h.sArea > 10_000) {
+				if (h.sArea > 50_000) {
 					h.tSub("Success");
 					halt(0);
 					h.tfDetect.deactivate();
@@ -45,8 +46,8 @@ public class __AutoBase__ {
 				halt(0);
 				return -1.0;
 			}
-			if (blue) movR(2.45, 2.0, 3.0);
-			else movL(2.45, 2.0, 3.0);
+			if (blue) movR(2.55, 2.0, 2.0);
+			else movL(2.55, 2.0, 2.0);
 		}
 		h.tSub("Failed");
 		halt(0);
@@ -55,18 +56,18 @@ public class __AutoBase__ {
 
 	void pickUp() {
 		h.tSub("Picking up Stone");
-		platform(2.5, 0.6);
+		platform(2.8, 0.6);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		// Allows servos to settle
 		opmode.sleep(600);
-		platform(-1.2, 0.6);
+		platform(-1.1, 0.6);
 	}
 	void drop() { h.tSub("Dropping Stone");
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
 		opmode.sleep(600);
-		platform(-1.3, 0.6);
+		platform(-1.7, 0.6);
 	}
 
 	void latch() { h.tSub("Latching");

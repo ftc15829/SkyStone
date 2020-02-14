@@ -44,24 +44,24 @@ public class SkystoneBase {
 
 			if (sPos == -1) a.movF(1.7, 1.0, 1.5);
 			else {
-				a.movF(2.2, 1.0, 1.5);
+				a.movF(2.2, 1.2, 1.5);
 				a.pickUp();
-				a.movB(1.3, 1.0, 0.7);
+				a.movB(1.3, 1.2, 0.7);
 			}
 
-			if (blue) a.trnL(1.1, 1.0, 2.0);
-			else a.trnR(1.1, 1.0, 2.0);
+			if (blue) a.trnL(1.0, 2.0, 1.0);
+			else a.trnR(1.0, 2.0, 1.0);
 
 			if (!mid) {
-				if (blue) a.movL(6.0, 1.0, 2.6);
-				else a.movR(6.0, 1.0, 2.6);
+				if (blue) a.movL(6.2, 2.0, 2.4);
+				else a.movR(6.2, 2.0, 2.4);
 			}
 			// 1 = farthest from wall, 3 = nearest
-			a.movF(sPos == 1 ? 5.5 : (sPos == 2 ? 7.5 : 9.5), 1.0, 4.6);
+			a.movF(sPos == 1 ? 8.5 : (sPos == 2 ? 10.5 : 12.5), 3.0, 2.6);
 			// Don't try to drop the skystone off if findSkystone failed
 			if (sPos != -1) {
 				a.drop();
-				a.movB(3.6, 1.0);
+				a.movB(3.3, 3.0, 1.5);
 			}
 
 			h.tStatus("Done!");
@@ -74,7 +74,7 @@ public class SkystoneBase {
 	}
 
 	// Bridge from foundation to skystone
-	public void bridge(boolean blue, boolean mid) {
+	void bridge(boolean blue, boolean mid) {
 		try {
 			h.tStatus("Running");
 
@@ -86,6 +86,37 @@ public class SkystoneBase {
 			else a.trnR(1.0, 1.5, 2.0);
 
 			if (!mid) a.movF(3.0, 1.5, 3.0);
+
+			h.tStatus("Done!");
+		} catch (Exception e) { // Catches exceptions as plain-text
+			h.tStatus("Error");
+			h.tErr("Auto Runtime", e);
+			opmode.sleep(15_000);
+			opmode.stop();
+		}
+	}
+
+	void speed(boolean blue, boolean mid) {
+		try {
+			h.tStatus("Running");
+
+			/* Instructions - Speed */
+			a.movF(5.6, 1.0, 2.4);
+			a.pickUp();
+			a.movB(1.3, 1.2, 0.7);
+
+			if (blue) a.trnL(1.0, 2.0, 2.0);
+			else a.trnR(1.0, 2.0, 2.0);
+
+			if (!mid) {
+				if (blue) a.movL(6.0, 2.0, 2.6);
+				else a.movR(6.0, 2.0, 2.6);
+			}
+
+			a.movF(8.5, 1.0, 2.4);
+			a.drop();
+			a.movB(8.5, 1.0, 2.4);
+
 
 			h.tStatus("Done!");
 		} catch (Exception e) { // Catches exceptions as plain-text
