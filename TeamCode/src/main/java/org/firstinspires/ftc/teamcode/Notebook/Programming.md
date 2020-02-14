@@ -2,6 +2,42 @@
 
 This section will explain and lay out the process the software development team went through in writing our current code base. All the way from the first meet to now.
 
+#### Table of Contents:
+
+1. League Meet One:
+
+   
+
+2. League Meet Two/Three:
+
+   
+
+3. Qualifiers:
+
+   
+
+4. Super Qualifiers:
+
+
+
+#### Recent Changes:
+
+1. Skystone Detection Rewrite:
+
+   
+
+2. Encoder-based Movement Changes:
+
+   
+
+3. Custom Turning (follow a circle):
+
+   
+
+4. Autonomous Base Classes (Really Cool):
+
+   
+
 ## In The Beginning - League Meet One
 
 Last season, which was our first year as a team, we were unable to abstract out the hardware definitions and configuration into a separate class. This season, however, that was the first thing we did. Compared to trying to figure it out last season, it seemed much more straight forward. We were very excited to see how much we have grown compared to last year, so it was a good start to the season.
@@ -639,26 +675,380 @@ These numbers were all derived via trial and error. The foundation side instruct
 
 ## Qualifiers
 
-Here we will outline the code used in the Qualifiers.
+Here we will outline large changes in the code used in the Qualifying Tournament.
 
-## Hardware
+### Hardware
 
-The main change was the switch to Tensorflow from DogeCV for finding the skystone. DogeCV was having a hard time finding the skystone in different lighting, making it unreliable in matches. Tensorflow, however, uses machine learning, removing the hurdles of coding for different lighting. Here is the new `initAuto` function and its related code.
+The main change was the switch from DogeCV to TensorFlow in order to find the Skystone. DogeCV was extremely inconsistent in different lighting. Combined with our fundamentally unreliable movement algorithm made it too risky to use in matches. TensorFlow, however, uses machine learning, removing the hurdles of coding for different lighting. Here is the new `initAuto` function and its related code.
 
-`initAuto`
+```java
+// Initialize Vision
+float SkystonePos;
+float SkystoneLeft;
+float SkystoneRight;
+int SkystoneArea;
+double SkystoneConfidence;
+List<Recognition> updatedRecognitions;
+VuforiaLocalizer vuforia;
+TFObjectDetector tfDetect;
+private static final String VUFORIA_KEY;
+```
 
-`updateTfDetect`
+#### `initAuto`
 
-`Vision Initializations`
+```java
+void initAuto(HardwareMap hardwareMap) {
+    /* Initiate Vuforia */
+    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+    parameters.vuforiaLicenseKey = VUFORIA_KEY;
+    parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+    vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-## Auto Classes
+    /* Initiate TensorFlow Object Detection */
+    int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+    tfodParameters.minimumConfidence = 0.8;
+    tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+    tfDetect.loadModelFromAsset("Skystone.tflite", "Stone", "Skystone");
 
-The main change for our autonomous on foundation side was changing how the foundation is orientated at the end of autonomous. It used to be facing the same as it was when the round started, but now we have the robot put it up against the wall, giving our alliance more room to move on foundation side.
+    if (tfDetect != null) tfDetect.activate();
+}
+```
 
-## AutoBase Class
+#### `updateTfDetect`
 
-`mov*`
+```java
+void updateTfDetect() {
+    updatedRecognitions = tfDetect.getUpdatedRecognitions();
+    if (updatedRecognitions == null) return;
+    if (updatedRecognitions.size() > 0) {
+        int i = 0;
+        for (int j = 0; j < updatedRecognitions.size(); j++) {
+            if (updatedRecognitions.get(j).getLabel() == "Skystone") {
+                i = j;
+                break;
+            }
+        }
+        if (updatedRecognitions.get(i).getLabel() == "Skystone") {
+            float objectRight = updatedRecognitions.get(i).getRight();
+            float objectLeft = updatedRecognitions.get(i).getLeft();
+            float objectHeight = updatedRecognitions.get(i).getHeight();
+            float objectWidth = updatedRecognitions.get(i).getWidth();
+            float objectConfidence = updatedRecognitions.get(i).getConfidence();
 
-`findSkystone`
+            SkystoneLeft = objectLeft; SkystoneRight = objectRight;
+            SkystonePos = objectLeft + (round(100 * ((objectWidth) / 2)) / 100);
+            SkystoneArea = round(objectWidth * objectHeight * 100) / 100;
+            SkystoneConfidence = objectConfidence;
+        }
+    } else if (updatedRecognitions.size() == 0) {
+        SkystonePos = 0;
+        SkystoneArea = 0;
+        SkystoneConfidence = 0;
+    }
+}
+```
 
-`customTrn`
+
+
+### Auto Classes
+
+The main change to our foundation autonomous was switching the foundation's orientation at the end of autonomous. It used to be facing the same as it was when the round started, but now we have the robot put it up against the wall, giving our alliance more room to move on foundation side. We also added some handy comments to help navigate the instructions at a glance. ('-' = 1 revolution, '>' = 1/6 power, '=' = 1/3 power)
+
+#### Instructions for red-foundation-mid autonomous
+
+```java
+h.tStatus("Running");
+/* Instructions - Red Foundation Mid */
+a.movB(1.0, 0.9, 0.8); // Back -]
+a.movL(11.5, 0.9, 3.8); // Left -----------]
+a.movB(5.4, 0.9, 2.5); // Back -----]
+a.movB(1.1, 0.5, 1.2); // Back -)
+a.latch(); // Latch
+a.customTrn(1.0, 0.3, 3400); // Custom Turn
+a.movB(3.8, 1.0, 1.8); // Back ----)
+a.unlatch(); // Unlatch
+a.movF(1.0, 1.0, 0.8); // Forward -]
+a.movR(5.4, 1.0, 1.5); // Right ----]
+a.movF(9.0, 1.0, 3.5); // Forward ---------]
+h.tStatus("Done!");
+/* End */
+```
+
+
+
+### AutoBase Class
+
+Our encoder-based movements methods now require a time. This is used as a failsafe in case the motors are not able to completely reach the target distance.
+
+#### `mov*`
+
+```java
+void movF(double rev, double p, double t) {
+    ElapsedTime elapsedTime = new ElapsedTime();
+    driveModeSRE();
+    driveTargetPos(rev, rev, rev, rev);
+    driveModeRTP();
+    drivePower(p);
+    // While all the drive motors are busy and failsafe time is not reached
+    while (drive_isBusy() && (elapsedTime.seconds() < t || t == 0)) {
+        opmode.idle();
+    }
+    halt(0);
+    driveModeRWE();
+}
+```
+
+#### `findSkystone`
+
+```java
+double findSkystone(int dir, double p) {
+    /**Searches for a skystone in the given direction.
+     * When/if finds one, the robot will move towards it.
+     * Checks for Skystone based on the position on the screen,
+     * area, and confidence.
+     */
+    driveModeSRE();
+    driveModeRUE(); // Needed for returning encoder pos
+    ElapsedTime elapsedTime = new ElapsedTime();
+    mov(dir, p); // move left[3] or right[1]
+    // Three second buffer. Needed because 
+    while (elapsedTime.seconds() < 3.0) {
+        h.tRunTime(elapsedTime);
+        opmode.idle();
+    }
+    do {
+        if (h.tfDetect != null) h.updateTfDetect();
+        h.tRunTime(elapsedTime);
+        opmode.idle();
+        // Failsafe in case it doesn't detect anything
+        if (elapsedTime.seconds() > 8.3) {
+            h.tStatus("Failed");
+            halt(0);
+            return -1.0;
+        }
+    } while ((dir == 3 ? h.SkystonePos < 460 : h.SkystonePos > 420) && h.SkystoneArea < 40_000 && h.SkystoneConfidence < 0.75 && opmode.opModeIsActive());
+    halt(0);
+    return Math.abs(h.drive_lf.getCurrentPosition() / 560); // 560 = motor tick rate
+}
+```
+
+We also had to add a turn method that turns on a circle rather than turning in place. This is used when orientating the foundation. It uses time, which adds some error, but with just one instance of it, it is not too noticeable.
+
+#### `customTrn`
+
+```java
+void customTrn(double leftPower, double rightPower, long t) {
+    drivePower(leftPower, rightPower, leftPower, rightPower);
+    opmode.sleep(t);
+    halt(0);
+}
+```
+
+## Super Qualifiers
+
+For the Super Qualifying Tournament, we made some pretty substantial changes regarding code organization, core algorithms used to accomplish tasks, and improving reliability.
+
+### AutoBase
+
+First improvement was the algorithm used to detect the Skystone. In the Qualifiers we were not able to confidently say we could detect Skystones, so for the Super Qualifiers, it was top priority. First step was changing the core algorithm. Before, we had the robot start from the far Skystone and work it's was in at a slow and constant pace, tracking the position of any Skystones to make sure it is aligned. This was flawed in both these ways, so we got rid of both of them. Rather than a slow constant pace, detecting all the way through, we had the robot step from stone to stone in increments, only activating the Skystone detection when we are stopped. With this method, we were also able to get rid of trying to track the position, because the robot would always, consistently be aligned with the target stone through the use of encoders. The new algorithm is shown below.
+
+#### `findSkystone`
+
+```java
+double findSkystone(boolean blue, double p) {
+	/**Scans for the skystone, starting from the stone farthest from
+     * the wall and incrementally approaches the wall, stopping after
+     * scanning the third stone. Returns -1 if it didn't find a skystone.
+     * A value from {1, 2, 3} is returned if success, 1 corresponds to
+     * the farthest stone from the wall, 3 the third farthest.
+	 */
+    h.tSub("Finding Skystone");
+    driveModeSRE();
+    for (int i = 1; i <= 3; i++) {
+        if (!opmode.opModeIsActive()) return -1;
+        ElapsedTime elapsedTime = new ElapsedTime();
+        h.tfDetect.activate();
+        while (elapsedTime.seconds() < 2.5 && opmode.opModeIsActive()) {
+            h.updateTfDetect();
+            h.tCaminfo(1);
+            if (h.sArea > 50_000) {
+                h.tSub("Success");
+                halt(0);
+                h.tfDetect.deactivate();
+                return i;
+            }
+            opmode.idle();
+        }
+        h.tfDetect.deactivate();
+        if (i == 3) {
+            h.tSub("Failed");
+            halt(0);
+            return -1.0;
+        }
+        if (blue) movR(2.55, 2.0, 2.0);
+        else movL(2.55, 2.0, 2.0);
+    }
+    h.tSub("Failed");
+    halt(0);
+    return -1.0;
+}
+```
+
+We were also able to simply a lot of the common code, for instance, we refactored out the encoder-based movement algorithm to a single central function with necessary variables. This algorithm and `movF` which makes use of it is shown below.
+
+#### `movEncoder`
+
+```java
+void movEncoder (List<Double> rev, double p, double t) {
+    ElapsedTime elapsed = new ElapsedTime();
+    driveModeSRE();
+    driveTargetPos(rev.get(0), rev.get(1), rev.get(2), rev.get(3));
+    driveModeRTP();
+    drivePower(p);
+    while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
+        opmode.idle();
+    }
+    if (elapsed.seconds() >= t) h.tSub("Timed Out");
+    halt(0);
+    driveModeRWE();
+}
+```
+
+#### `mov*`
+
+```java
+void movF(double rev, double p, double t/*= 0*/) {
+    h.tSub("Moving Forward");
+    movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t);
+} void movF(double rev, double p) { movF(rev, p, 0); }
+```
+
+We also scrapped the time-based custom turn in favor of one that uses encoders. The main issue with this was figuring out the math involved, but after some research and trial-and-error, we derived a consistent algorithm. This algorithm is shown below.
+
+#### `cTrn*`
+
+```java
+void cTrnL(double radius, int degrees, double p, double t) {
+    h.tSub("Custom Turn Left");
+    ElapsedTime elapsed = new ElapsedTime();
+    double mod = 6.6;
+    driveModeSRE();
+    // (radius * [degrees to radians]) * constant
+    double outerArc = radius * (Math.PI / 180) * degrees * mod;
+    double innerArc = (radius - 1.5) * ((Math.PI / 180.0) * degrees * mod);
+    driveTargetPos(-innerArc, -outerArc, -innerArc, -outerArc);
+    driveModeRTP();
+    double lP = (1 - (1.5 / radius)) * p;
+    drivePower(lP, p, lP, p);
+    while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
+        opmode.idle();
+    }
+    if (elapsed.seconds() >= t) h.tSub("Timed Out");
+    halt(0);
+    driveModeRWE();
+}
+```
+
+Another case of refactoring we are very proud of, is the abstraction of all our autonomous into just two algorithms with just two boolean variables `blue` and `mid`. This let's us make our eight autonomous classes extremely short and all the values are located in just two places (Very exciting! No more changing the same value in 4 different places!). The relevant methods are shown below.
+
+#### `FoundationBase`
+
+```java
+/* Instructions - Foundation */
+a.movB(3.8, 1.2, 2.8); // Back ----]
+a.movB(2.8, 0.5, 3.6); // Back ---)
+a.latch(); // Latch
+
+if (blue) a.cTrnL(1.9, 90, 2.0, 3.5); // Blue: Custom Turn Left 90 degrees
+else a.cTrnR(1.9, 90, 2.0, 3.5); // Red: Custom Turn Right 90 degrees
+
+a.movB(8.0, 1.0, 2.9); // Back --------]
+a.unlatch(); // Unlatch
+a.movF(1.0, 1.0, 0.7); // Forward -]
+
+if (mid){
+    if (blue) a.movL(6.4, 1.5, 3); // Blue Mid: Left ------])
+	else a.movR(6.4, 1.5, 3); // Red Mid: Right ------])
+}
+
+a.movF(8.5, 1.0, 3.5); // Forward ---------]
+
+
+h.tStatus("Done!");
+```
+
+#### `SkystoneBase`
+
+```java
+/* Instructions - SkyStone */
+a.movF(3.5, 1.0, 2.4); // --]
+
+// sPos = Position of skystone, -1 if failed
+double sPos = a.findSkystone(blue, 0.6);
+
+if (sPos == -1) a.movF(1.7, 1.0, 1.5); // Failed: Forward --]
+else {
+    a.movF(2.2, 1.2, 1.5); // Success: Forward --]
+    a.pickUp(); // Success: Pick Up
+    a.movB(1.3, 1.2, 0.7); // Success: Back -]
+}
+
+if (blue) a.trnL(1.0, 2.0, 1.0); // Blue: Turn Left 90 degrees
+else a.trnR(1.0, 2.0, 1.0); // Red: Turn right 90 degrees
+
+if (!mid) {
+    if (blue) a.movL(6.2, 2.0, 2.4); // Blue Wall: Left ------]]
+    else a.movR(6.2, 2.0, 2.4); // Red Wall: Right ------]]
+}
+// 1 = farthest from wall, 3 = nearest
+a.movF(sPos == 1 ? /*1 =*/8.5 : (sPos == 2 ? /*1 =*/10.5 : /*1 =*/12.5), 3.0, 2.6);
+if (sPos != -1) {
+    a.drop(); // Success: Drop
+    a.movB(3.3, 3.0, 1.5); // Success: ---]]]
+}
+
+h.tStatus("Done!");
+```
+
+#### Autonomous Class Examples
+
+```java
+@Autonomous(name="B Found. Mid", group="Foundation")
+public class _BlueFoundationMid extends LinearOpMode {
+	private FoundationBase base = new FoundationBase(this, telemetry);
+	@Override
+    public void runOpMode() {
+		base.init();
+        // Runs Foundation instruction set
+		base.run(true, true); // Blue, Mid
+	}
+}
+```
+
+```java
+@Autonomous(name="R Skystone Mid", group="Skystone")
+public class _RedSkystoneMid extends LinearOpMode {
+	private SkystoneBase base = new SkystoneBase(this, telemetry);
+	@Override
+    public void runOpMode() {
+		base.init();
+        // Runs Skystone instruction set
+		base.run(false, true); // Red, Mid
+	}
+}
+```
+
+```java
+@Autonomous(name="R Found. Wall", group="Foundation")
+public class _RedFoundationWall extends LinearOpMode {
+	private FoundationBase base = new FoundationBase(this, telemetry);
+	@Override
+    public void runOpMode() {
+		base.init();
+        // Runs Foundation instruction set
+		base.run(false, false); // Red, Wall
+	}
+}
+```
+
