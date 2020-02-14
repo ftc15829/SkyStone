@@ -101,6 +101,7 @@ public class SkystoneBase {
 			h.tStatus("Running");
 
 			/* Instructions - Speed */
+			// block 1
 			a.movF(5.6, 1.0, 2.4);
 			a.pickUp();
 			a.movB(1.3, 1.2, 0.7);
@@ -115,8 +116,60 @@ public class SkystoneBase {
 
 			a.movF(8.5, 1.0, 2.4);
 			a.drop();
+			// block 2
+
 			a.movB(8.5, 1.0, 2.4);
 
+			if (!mid) {
+				if (blue) a.movR(6.0, 2.0, 2.6);
+				else a.movL(6.0, 2.0, 2.6);
+			}
+
+			if (blue) a.trnR(1.0, 2.0, 2.0);
+			else a.trnL(1.0, 2.0, 2.0);
+
+			a.movF(1.3, 1.2, 0.7);
+
+			a.pickUp();
+			a.movB(1.3, 1.2, 0.7);
+
+			if (blue) a.trnL(1.0, 2.0, 2.0);
+			else a.trnR(1.0, 2.0, 2.0);
+
+			if (!mid) {
+				if (blue) a.movL(6.0, 2.0, 2.6);
+				else a.movR(6.0, 2.0, 2.6);
+			}
+
+			a.movF(8.5, 1.0, 2.4);
+			a.drop();
+
+			// block 3
+			a.movB(8.5, 1.0, 2.4);
+
+			if (!mid) {
+				if (blue) a.movR(6.0, 2.0, 2.6);
+				else a.movL(6.0, 2.0, 2.6);
+			}
+
+			if (blue) a.trnR(1.0, 2.0, 2.0);
+			else a.trnL(1.0, 2.0, 2.0);
+
+			a.movF(1.3, 1.2, 0.7);
+
+			a.pickUp();
+			a.movB(1.3, 1.2, 0.7);
+
+			if (blue) a.trnL(1.0, 2.0, 2.0);
+			else a.trnR(1.0, 2.0, 2.0);
+
+			if (!mid) {
+				if (blue) a.movL(6.0, 2.0, 2.6);
+				else a.movR(6.0, 2.0, 2.6);
+			}
+
+			a.movF(8.5, 1.0, 2.4);
+			a.drop();
 
 			h.tStatus("Done!");
 		} catch (Exception e) { // Catches exceptions as plain-text
