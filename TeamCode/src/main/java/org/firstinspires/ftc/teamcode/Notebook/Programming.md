@@ -849,6 +849,30 @@ void customTrn(double leftPower, double rightPower, long t) {
 
 For the Super Qualifying Tournament, we made some pretty substantial changes regarding code organization, core algorithms used to accomplish tasks, and improving reliability.
 
+## Drive
+
+We also expanded the scope of our speed switching algorithm at the request of the drivers. Now it incorporates unique speeds for strafing in addition to forward and backwards and turning. The code is shown below.
+
+```java
+double getPower(int i) {
+    double power;
+    switch (i) {
+        case 0: power = -h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_lf
+        case 1: power = -h.lStick_y + h.lStick_x - h.rStick_x; break; // drive_rb
+        case 2: power = -h.lStick_y - h.lStick_x + h.rStick_x; break; // drive_lb
+        case 3: power = -h.lStick_y - h.lStick_x - h.rStick_x; break; // drive_rf
+        default: power = 0; break;
+    }
+    // 0.2 is buffer, constants are speed modifiers for different situations
+    // Strafing speed : Zero input speed
+    double mod_one = (h.lStick_x >= 0.2 || h.lStick_x <= -0.2) ? 0.3 * 1.9 : 0.3; 
+    double mod_two = h.rTrigger != 0 ? 0.65 : 0.8; // Speed lvl 1 : Speed lvl 2
+    power *= h.lTrigger != 0 ? mod_one : mod_two;
+    if (power > 1) power = 1;
+    return power;
+}
+```
+
 ### AutoBase
 
 First improvement was the algorithm used to detect the Skystone. In the Qualifiers we were not able to confidently say we could detect Skystones, so for the Super Qualifiers, it was top priority. First step was changing the core algorithm. Before, we had the robot start from the far Skystone and work it's was in at a slow and constant pace, tracking the position of any Skystones to make sure it is aligned. This was flawed in both these ways, so we got rid of both of them. Rather than a slow constant pace, detecting all the way through, we had the robot step from stone to stone in increments, only activating the Skystone detection when we are stopped. With this method, we were also able to get rid of trying to track the position, because the robot would always, consistently be aligned with the target stone through the use of encoders. The new algorithm is shown below.

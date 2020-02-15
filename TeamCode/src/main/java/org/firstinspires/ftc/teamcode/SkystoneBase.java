@@ -49,19 +49,19 @@ public class SkystoneBase {
 				a.movB(1.3, 1.2, 0.7);
 			}
 
-			if (blue) a.trnL(1.0, 2.0, 1.0);
-			else a.trnR(1.0, 2.0, 1.0);
+			if (blue) a.trnL(1.05, 2.0, 1.0);
+			else a.trnR(1.05, 2.0, 1.0);
 
 			if (!mid) {
-				if (blue) a.movL(6.2, 2.0, 2.4);
-				else a.movR(6.2, 2.0, 2.4);
+				if (blue) a.movL(6.4, 2.0, 2.4);
+				else a.movR(6.4, 2.0, 2.4);
 			}
 			// 1 = farthest from wall, 3 = nearest
-			a.movF(sPos == 1 ? 8.5 : (sPos == 2 ? 10.5 : 12.5), 3.0, 2.6);
+			a.movF(sPos == 1 ? 9.5 : (sPos == 2 ? 10.5 : 12.5), 3, 2.0);
 			// Don't try to drop the skystone off if findSkystone failed
 			if (sPos != -1) {
 				a.drop();
-				a.movB(3.3, 3.0, 1.5);
+				a.movB(3.3, 1.5, 1.7);
 			}
 
 			h.tStatus("Done!");

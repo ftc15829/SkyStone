@@ -29,7 +29,7 @@ public class __AutoBase__ {
 		for (int i = 1; i <= 3; i++) { if (!opmode.opModeIsActive()) return -1;
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
-			while (elapsedTime.seconds() < 2.5 && opmode.opModeIsActive()) {
+			while (elapsedTime.seconds() < 1.5 && opmode.opModeIsActive()) {
 				h.updateTfDetect();
 				h.tCaminfo(1);
 				if (h.sArea > 50_000) {
@@ -46,8 +46,8 @@ public class __AutoBase__ {
 				halt(0);
 				return -1.0;
 			}
-			if (blue) movR(2.55, 2.0, 2.0);
-			else movL(2.55, 2.0, 2.0);
+			if (blue) movR(2.6, 2.0, 2.0);
+			else movL(2.6, 2.0, 2.0);
 		}
 		h.tSub("Failed");
 		halt(0);
@@ -56,12 +56,12 @@ public class __AutoBase__ {
 
 	void pickUp() {
 		h.tSub("Picking up Stone");
-		platform(2.8, 0.6);
+		platform(2.8, 1.0);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		// Allows servos to settle
 		opmode.sleep(600);
-		platform(-1.1, 0.6);
+		platform(-1.1, 1.0);
 	}
 	void drop() { h.tSub("Dropping Stone");
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
@@ -74,12 +74,12 @@ public class __AutoBase__ {
 		h.fHook_l.setPosition(0.0);
 		h.fHook_r.setPosition(1.0);
 		// Allows servos to settle
-		opmode.sleep(1300);
+		opmode.sleep(700);
 	}
 	void unlatch() { h.tSub("Unlatching");
 		h.fHook_l.setPosition(1.0);
 		h.fHook_r.setPosition(0.0);
-		opmode.sleep(1300);
+		opmode.sleep(700);
 	}
 
 	//*Helper
@@ -135,6 +135,7 @@ public class __AutoBase__ {
 
 	/* Auxilary Movement */
 	void platform(double rev, double p) {
+		ElapsedTime elapsedTime = new ElapsedTime();
 		modeSRE(h.lSlide_l); // Change lSlide mode to SRE
 		modeSRE(h.lSlide_r);
 		targetPos(h.lSlide_l, rev, Brand.TETRIX); // Set lSlide's target Pos
@@ -143,7 +144,7 @@ public class __AutoBase__ {
 		modeRTP(h.lSlide_r);
 		h.lSlide_l.setPower(p); // Set lSlide's power to p
 		h.lSlide_r.setPower(p);
-		while (h.lSlide_l.isBusy() && h.lSlide_r.isBusy() && opmode.opModeIsActive()) {
+		while ((h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) && elapsedTime.seconds() < 3.0 && opmode.opModeIsActive()) {
 			h.tPos(h.lSlide_l);
 			h.tPos(h.lSlide_r);
 			h.t.update();
