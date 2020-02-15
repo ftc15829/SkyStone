@@ -1,0 +1,24 @@
+Autonomous Objectives:
+
+Our autonomous period consists of two main branches, Skystone and Foundation, with each having many
+variants for eight autonomous programs in total. Our Skystone autonomous includes detecting a single
+Skystone, moving it across the tape, then ending on the tape for 15 points. Our Foundation
+autonomous has the robot reposition the foundation into the building site and parking on the tape
+for 15 points. Each of these have variants to end close to the wall of far from the wall. And, of
+course, variants for red and blue. All of these are stored in only two abstract classes.
+
+Sensors Used:
+
+We use a camera and encoders. The camera is used in conjuction with our TensorFlow algorithm to reliably detect the Skystone. All of our autonomous movement is completely encoder-based.
+
+Key Algorithms:
+
+Our Skystone detection algorithm consists of the robot incrementally moving from stone to stone. It tests each stone individually to see if it is the Skystone, it then returns the position of that stone. Another algorithm is our encoder-based movement, we used to have a function for each direction, now all of those functions reference one refactored function. This campacts the code quite a bit and follows the DRY principle which we try to do as much as possible.
+
+Driver Controlled Enhancements:
+
+We have various speed settings. It is outlined in the Notebook, but it mainly consists of a unique speed modifier for strafing, turning, and then togglable speeds, one that makes the robot faster and one that makes the robot slower.
+
+Engineering Notebook references:
+
+Autonomous can be found on page 20, Skystone detection on page 18, and speed settings on page 18
