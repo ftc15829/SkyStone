@@ -26,10 +26,12 @@ public class __AutoBase__ {
 		 */
 		h.tSub("Finding Skystone");
 		driveModeSRE();
-		for (int i = 1; i <= 3; i++) { if (!opmode.opModeIsActive()) return -1;
+		for (int i = 1; i <= 3; i++) {
+			if (!opmode.opModeIsActive()) return -1;
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
-			while (elapsedTime.seconds() < 1.5 && opmode.opModeIsActive()) {
+			while (elapsedTime.seconds() < 1.0 && opmode.opModeIsActive()) {
+				h.tRunTime(elapsedTime);
 				h.updateTfDetect();
 				h.tCaminfo(1);
 				if (h.sArea > 50_000) {
@@ -52,6 +54,44 @@ public class __AutoBase__ {
 		h.tSub("Failed");
 		halt(0);
 		return -1.0;
+	}
+	int findSkystone(boolean blue, double p, boolean n) {
+		/**Scans for the skystone, starting from the stone farthest from the wall and incrementally
+		 * approaches the wall, stopping after scanning the third stone.
+		 *
+		 * Returns -1 if it didn't find a skystone. A value from {1, 2, 3} is returned if success,
+		 * 1 corresponds to the farthest stone from the wall, 3 the third farthest.
+		 */
+		h.tSub("Finding Skystone");
+		driveModeSRE();
+		for (int i = 1; i <= 3; i++) {
+			if (!opmode.opModeIsActive()) return -1;
+			ElapsedTime elapsedTime = new ElapsedTime();
+			h.tfDetect.activate();
+			while (elapsedTime.seconds() < 1.0 && opmode.opModeIsActive()) {
+				h.tRunTime(elapsedTime);
+				h.updateTfDetect();
+				h.tCaminfo(1);
+				if (h.sArea > 50_000) {
+					h.tSub("Success");
+					halt(0);
+					h.tfDetect.deactivate();
+					return i;
+				}
+				opmode.idle();
+			}
+			h.tfDetect.deactivate();
+			if (i == 3) {
+				h.tSub("Failed");
+				halt(0);
+				return -1;
+			}
+			if (blue) movF(2.0, 1.5, 2.0);
+			else movB(2.0, 1.5, 2.0);
+		}
+		h.tSub("Failed");
+		halt(0);
+		return -1;
 	}
 
 	void pickUp() {
@@ -129,8 +169,17 @@ public class __AutoBase__ {
 
 	// BUSY
 	boolean drive_isBusy() { // Will return True if any drive motor is busy
-		return h.drive_lf.isBusy() || h.drive_rf.isBusy() ||
-				h.drive_lb.isBusy() || h.drive_rb.isBusy();
+		int rftp = h.drive_rf.getTargetPosition();
+		int rbtp = h.drive_rb.getTargetPosition();
+		int lftp = h.drive_lf.getTargetPosition();
+		int lbtp = h.drive_lb.getTargetPosition();
+
+		int rfcp = h.drive_rf.getCurrentPosition();
+		int rbcp = h.drive_rb.getCurrentPosition();
+		int lfcp = h.drive_lf.getCurrentPosition();
+		int lbcp = h.drive_lb.getCurrentPosition();
+
+		return rftp == rfcp && rbtp == rbcp && lftp == lfcp && lbtp == lbcp;
 	}
 
 	/* Auxilary Movement */
