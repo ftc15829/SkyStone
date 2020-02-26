@@ -38,8 +38,8 @@ public class FoundationBase {
 			/* Instructions - Foundation */
 //			a.movB(1.0, 1.5, 2.0);
 
-//			if (blue) a.movR(5.0, 1.5, 3.0);
-//			else a.movL(5.0, 1.5, 3.0);
+			if (blue) a.movR(5.0, 1.5, 3.0);
+			else a.movL(5.0, 1.5, 3.0);
 
 			a.movB(3.8, 1.2, 2.8);
 			a.movB(2.8, 0.5, 3.6);
@@ -53,10 +53,43 @@ public class FoundationBase {
 			a.movF(1.0, 1.0, 0.7);
 
 			if (mid)
-				if (blue) a.movL(6.4, 1.5, 3);
-				else a.movR(6.4, 1.5, 3);
+				if (blue) a.movL(6.2, 1.5, 3);
+				else a.movR(6.2, 1.5, 3);
+			else {
+				if (blue) a.movR(1,2,1);
+				else a.movL(1,2,1);
+			}
 
 			a.movF(8.5, 1.0, 3.5);
+
+			if (blue) {
+				if (mid) a.movL(0.5, 2, 1);
+				else a.movR(0.5, 2, 1);
+			} else {
+				if (mid) a.movR(0.5, 2, 1);
+				else a.movL(0.5, 2, 1);
+			}
+
+			h.tStatus("Done!");
+		} catch (Exception e) { // Catches exceptions as plain-text
+			h.tStatus("Error");
+			h.tErr("Auto Runtime", e);
+			opmode.sleep(15_000);
+			opmode.stop();
+		}
+	}
+
+	void tape(boolean left, boolean mid) {
+		try {
+			h.tStatus("Running");
+
+			/* Instructions - Tape */
+			if (!mid) a.movF(2.0, 2.0, 2.0);
+			else {
+				a.movF(5.2, 1.5, 3.0);
+				if (left) a.movR(3.5, 2.0, 2.0);
+				else a.movL(3.5, 2.0, 2.0);
+			}
 
 
 			h.tStatus("Done!");

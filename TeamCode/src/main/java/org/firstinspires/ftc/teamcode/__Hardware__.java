@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -27,10 +28,12 @@ public class __Hardware__ {
 	}
 	LinearOpMode opmode;
 	Telemetry t;
+	HardwareMap _hardwareMap;
 	// Hardware Constants
 	static double GobRate = 108.0; // Double to avoid integer division
 	static double TetRate = 1440.0;
 	static double PowerMod = .333; // Max power is 3.0
+	double voltage = Double.POSITIVE_INFINITY;
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
@@ -63,6 +66,7 @@ public class __Hardware__ {
 		// Telemetry Configuration
 //		t.setAutoClear(false);
 		// Defines drive motors
+		_hardwareMap = hardwareMap;
 		drive_lf = hardwareMap.dcMotor.get("leftFront");
 		drive_rb = hardwareMap.dcMotor.get("rightBack");
 		drive_lb = hardwareMap.dcMotor.get("leftBack");
@@ -132,18 +136,31 @@ public class __Hardware__ {
 		}
 	}
 
+	void updateBatteryVoltage() {
+		double result = Double.POSITIVE_INFINITY;
+		for (VoltageSensor sensor : _hardwareMap.voltageSensor) {
+			double sensorVoltage = sensor.getVoltage();
+			if (sensorVoltage > 0) {
+				result = Math.min(result, sensorVoltage);
+			}
+		}
+		voltage = result;
+	}
+
 	/* Telemetry */
 	void tStatus(String value) {
 //		status.setValue(value);
-//		t.update();
+		t.addData("Status", value);
+		t.update();
 	}
 	void tSub(String value) {
 //		subStatus.setValue(value);
-//		t.update();
+		t.addData("SubStatus", value);
+		t.update();
 	}
 	void tErr(String msg, Exception e) {
-//		t.addData(msg + " Error", "\n" + e);
-//		t.update();
+		t.addData(msg + " Error", "\n" + e);
+		t.update();
 	}
 
 	void tRunTime(int update) {

@@ -33,18 +33,163 @@ public class SkystoneBase {
 		opmode.resetStartTime();
 	}
 
+	//************************************************************
+	//****************New side camera code area*******************
+	//************************************************************
+
+	public void run(boolean blue, boolean mid, boolean n) {
+		try
+		{
+			h.tStatus("Running");
+
+			/* Instructions - SkyStone */
+			if (nobridge) a.movR(5, 1.5, 2.4);
+
+			int sPos = a.findSkystone(blue,0.6, true);
+
+
+			a.movR(0.5, 1.5, 1.0);
+
+			a.pickUp();                       //new pickup
+
+			a.movL(0.5, 1.5, 1.0);
+
+
+				if (blue) {
+					switch (sPos) {
+						case 1: {
+							a.movB(12.0, 2.0, 3.0);
+							break;
+						}
+						case 2: {
+							a.movB(14.5, 2.0, 4.0);
+							break;
+						}
+						case 3: {
+							a.movB(16.0, 2.0, 5);
+							break;
+						}
+					}
+
+				}
+				else {
+					switch (sPos) {
+						case 1: {
+							a.movF(12.0, 2.0, 3.0);
+							break;
+						}
+						case 2: {
+							a.movF(14.5, 2.0, 4.0);
+							break;
+						}
+						case 3: {
+							a.movF(16.0, 2.0, 5);
+							break;
+						}
+					}
+				}
+
+				//new drop
+
+				if (blue) {
+					switch (sPos) {
+						case 1: {
+							a.movF(15.0, 2.0, 3.0);
+							break;
+						}
+						case 2: {
+							a.movF(17.5, 2.0, 4.0);
+							break;
+						}
+						case 3: {
+							a.movF(14.0, 2.0, 5);
+							break;
+						}
+					}
+
+				} else {
+					switch (sPos) {
+						case 1: {
+							a.movB(15.0, 2.0, 3.0);
+							break;
+						}
+						case 2: {
+							a.movB(17.5, 2.0, 4.0);
+							break;
+						}
+						case 3: {
+							a.movB(14.0, 2.0, 5);
+							break;
+						}
+					}
+				}
+				a.movR(0.5, 1.5, 1.0);
+				a.pickUp();                        //new pickup
+				a.movL(0.5, 1.5, 1.0);
+
+				if (blue) {
+					switch (sPos) {
+						case 1: {
+							a.movB(15.0, 2.0, 3.0);
+							break;
+						}
+						case 2: {
+							a.movB(17.5, 2.0, 4.0);
+							break;
+						}
+						case 3: {
+							a.movB(14.0, 2.0, 5);
+							break;
+						}
+					}
+
+				} else {
+					switch (sPos) {
+						case 1: {
+							a.movF(15.0, 2.0, 3.0);
+							break;
+						}
+						case 2: {
+							a.movF(17.5, 2.0, 4.0);
+							break;
+						}
+						case 3: {
+							a.movF(14.0, 2.0, 5);
+							break;
+						}
+					}
+				}
+
+				//new drop
+
+				//move foundation: grab and rotate foundation 180 degrees (see Ethan)
+
+				//park on tape: wall or mid
+
+
+			h.tStatus("Done!");
+		} catch (Exception e) { // Catches exceptions as plain-text
+			h.tStatus("Error");
+			h.tErr("Auto Runtime", e);
+			opmode.sleep(15_000);
+			opmode.stop();
+		}
+	}
+
+
+
 	public void run(boolean blue, boolean mid) {
 		try {
 			h.tStatus("Running");
 
 			/* Instructions - SkyStone */
-			if (nobridge) a.movF(3.5, 1.0, 2.4);
+			if (nobridge) a.movF(3.7, 1.0, 2.4); // 3.5
 
 			double sPos = a.findSkystone(blue,0.6);
 
-			if (sPos == -1) a.movF(1.7, 1.0, 1.5);
+			if (sPos == -1) a.movF(0.8, 1.0, 1.5); // 1.7
 			else {
-				a.movF(2.2, 1.2, 1.5);
+				a.movF(2.1, 1.2, 1.5); // 2.2
 				a.pickUp();
 				a.movB(1.3, 1.2, 0.7);
 			}
@@ -57,7 +202,7 @@ public class SkystoneBase {
 				else a.movR(6.4, 2.0, 2.4);
 			}
 			// 1 = farthest from wall, 3 = nearest
-			a.movF(sPos == 1 ? 9.5 : (sPos == 2 ? 10.5 : 12.5), 3, 2.0);
+			a.movF(sPos == 1 ? 9.5 : (sPos == 2 ? 10.5 : sPos == 3 ? 12.5 : 9.0), 2, 2.0);
 			// Don't try to drop the skystone off if findSkystone failed
 			if (sPos != -1) {
 				a.drop();
