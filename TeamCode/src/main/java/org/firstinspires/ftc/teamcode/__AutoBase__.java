@@ -68,7 +68,7 @@ public class __AutoBase__ {
 			if (!opmode.opModeIsActive()) return -1;
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
-			while (elapsedTime.seconds() < 1.0 && opmode.opModeIsActive()) {
+			while (elapsedTime.seconds() < 1.5 && opmode.opModeIsActive()) {
 				h.tRunTime(elapsedTime);
 				h.updateTfDetect();
 				h.tCaminfo(1);
@@ -86,8 +86,8 @@ public class __AutoBase__ {
 				halt(0);
 				return -1;
 			}
-			if (blue) movF(2.0, 1.5, 2.0);
-			else movB(2.0, 1.5, 2.0);
+			if (blue) movB(1.4, 1.5, 2.0);
+			else movF(1.4, 1.5, 2.0);
 		}
 		h.tSub("Failed");
 		halt(0);
@@ -103,6 +103,28 @@ public class __AutoBase__ {
 		opmode.sleep(600);
 		platform(-1.1, 1.0);
 	}
+	void pickUp1()
+	{
+		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
+		opmode.sleep(400);
+	}
+	void pickUp2()
+	{
+		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 1);
+		opmode.sleep(600);
+	}
+	void drop1()
+	{
+		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 1);
+		opmode.sleep(400);
+	}
+	void drop2()
+	{
+		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
+		opmode.sleep(400);
+	}
+
+
 	void drop() { h.tSub("Dropping Stone");
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
@@ -179,7 +201,7 @@ public class __AutoBase__ {
 		int lfcp = h.drive_lf.getCurrentPosition();
 		int lbcp = h.drive_lb.getCurrentPosition();
 
-		return rftp == rfcp && rbtp == rbcp && lftp == lfcp && lbtp == lbcp;
+		return !(rftp == rfcp && rbtp == rbcp && lftp == lfcp && lbtp == lbcp);
 	}
 
 	/* Auxilary Movement */

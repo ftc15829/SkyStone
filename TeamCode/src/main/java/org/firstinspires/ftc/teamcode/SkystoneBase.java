@@ -43,30 +43,30 @@ public class SkystoneBase {
 			h.tStatus("Running");
 
 			/* Instructions - SkyStone */
-			if (nobridge) a.movR(5, 1.5, 2.4);
+			a.movR(6.1, 1.25, 2.5);
 
 			int sPos = a.findSkystone(blue,0.6, true);
 
+			a.pickUp1();a.drop2();
+			a.movR(2.3, 2, 2);
 
-			a.movR(0.5, 1.5, 1.0);
-
-			a.pickUp();                       //new pickup
-
-			a.movL(0.5, 1.5, 1.0);
+			       a.pickUp2();//new pickup
+a.drop1();
+			a.movL(2.3, 2, 2);
 
 
 				if (blue) {
 					switch (sPos) {
 						case 1: {
-							a.movB(12.0, 2.0, 3.0);
+							a.movF(12.0, 1.5, 3.0);
 							break;
 						}
 						case 2: {
-							a.movB(14.5, 2.0, 4.0);
+							a.movF(14.5, 1.5, 4.0);
 							break;
 						}
 						case 3: {
-							a.movB(16.0, 2.0, 5);
+							a.movF(16.0, 1.5, 5);
 							break;
 						}
 					}
@@ -75,34 +75,34 @@ public class SkystoneBase {
 				else {
 					switch (sPos) {
 						case 1: {
-							a.movF(12.0, 2.0, 3.0);
+							a.movB(12.0, 1.5, 3.0);
 							break;
 						}
 						case 2: {
-							a.movF(14.5, 2.0, 4.0);
+							a.movB(14.5, 1.5, 4.0);
 							break;
 						}
 						case 3: {
-							a.movF(16.0, 2.0, 5);
+							a.movB(16.0, 1.5, 5);
 							break;
 						}
 					}
 				}
 
-				//new drop
-
+				a.drop2();//new drop
+a.pickUp1();
 				if (blue) {
 					switch (sPos) {
 						case 1: {
-							a.movF(15.0, 2.0, 3.0);
+							a.movB(15.0, 1.5, 3.0);
 							break;
 						}
 						case 2: {
-							a.movF(17.5, 2.0, 4.0);
+							a.movB(17.5, 1.5, 4.0);
 							break;
 						}
 						case 3: {
-							a.movF(14.0, 2.0, 5);
+							a.movB(14.0, 1.5, 5);
 							break;
 						}
 					}
@@ -110,35 +110,35 @@ public class SkystoneBase {
 				} else {
 					switch (sPos) {
 						case 1: {
-							a.movB(15.0, 2.0, 3.0);
+							a.movF(15.0, 1.5, 3.0);
 							break;
 						}
 						case 2: {
-							a.movB(17.5, 2.0, 4.0);
+							a.movF(17.5, 1.5, 4.0);
 							break;
 						}
 						case 3: {
-							a.movB(14.0, 2.0, 5);
+							a.movF(14.0, 1.5, 5);
 							break;
 						}
 					}
 				}
-				a.movR(0.5, 1.5, 1.0);
-				a.pickUp();                        //new pickup
-				a.movL(0.5, 1.5, 1.0);
+				a.movR(1, 2.3, 1.0);
+				        a.pickUp1(); a.drop2();               //new pickup
+				a.movL(1, 2.3, 1.0);
 
 				if (blue) {
 					switch (sPos) {
 						case 1: {
-							a.movB(15.0, 2.0, 3.0);
+							a.movF(15.0, 1.5, 3.0);
 							break;
 						}
 						case 2: {
-							a.movB(17.5, 2.0, 4.0);
+							a.movF(17.5, 1.5, 4.0);
 							break;
 						}
 						case 3: {
-							a.movB(14.0, 2.0, 5);
+							a.movF(14.0, 1.5, 5);
 							break;
 						}
 					}
@@ -146,22 +146,22 @@ public class SkystoneBase {
 				} else {
 					switch (sPos) {
 						case 1: {
-							a.movF(15.0, 2.0, 3.0);
+							a.movB(15.0, 1.5, 3.0);
 							break;
 						}
 						case 2: {
-							a.movF(17.5, 2.0, 4.0);
+							a.movB(17.5, 1.5, 4.0);
 							break;
 						}
 						case 3: {
-							a.movF(14.0, 2.0, 5);
+							a.movB(14.0, 1.5, 5);
 							break;
 						}
 					}
 				}
 
-				//new drop
-
+				a.drop2();//new drop
+a.pickUp1();
 				//move foundation: grab and rotate foundation 180 degrees (see Ethan)
 
 				//park on tape: wall or mid
