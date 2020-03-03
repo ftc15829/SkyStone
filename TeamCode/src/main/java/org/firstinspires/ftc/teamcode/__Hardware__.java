@@ -38,7 +38,7 @@ public class __Hardware__ {
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r;
 	Servo fHook_l, fHook_r, autoHand, autoClamp;
-	CRServo grab_l, grab_r;
+	CRServo grab_l, grab_r, bHook_l, bHook_r;
 	// Initialize Vision
 	TFObjectDetector tfDetect;
 	float sPos;
@@ -86,6 +86,8 @@ public class __Hardware__ {
 		lSlide_r = hardwareMap.dcMotor.get("slideR");
 		fHook_l = hardwareMap.servo.get("hook1");
 		fHook_r = hardwareMap.servo.get("hook2");
+		bHook_l = hardwareMap.crservo.get("fHook1");
+		bHook_r = hardwareMap.crservo.get("fHook2");
 		autoClamp = hardwareMap.servo.get("autoClamp");
 		autoHand = hardwareMap.servo.get("autoHand");
 		grab_l = hardwareMap.crservo.get("block1");

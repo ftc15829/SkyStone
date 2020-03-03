@@ -103,27 +103,28 @@ public class __AutoBase__ {
 		opmode.sleep(600);
 		platform(-1.1, 1.0);
 	}
-	void pickUp1()
+
+	void s()
 	{
 		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
-		opmode.sleep(400);
+		opmode.sleep(600);
+		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
+		opmode.sleep(600);
 	}
-	void pickUp2()
+	void g()
 	{
 		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 1);
 		opmode.sleep(600);
-	}
-	void drop1()
-	{
+		opmode.sleep(300);
 		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 1);
-		opmode.sleep(400);
+		opmode.sleep(600);
 	}
-	void drop2()
+	void d()
 	{
+		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
 		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
-		opmode.sleep(400);
+		opmode.sleep(600);
 	}
-
 
 	void drop() { h.tSub("Dropping Stone");
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
@@ -135,13 +136,23 @@ public class __AutoBase__ {
 	void latch() { h.tSub("Latching");
 		h.fHook_l.setPosition(0.0);
 		h.fHook_r.setPosition(1.0);
+		h.bHook_l.setPower(-1);
+		h.bHook_r.setPower(1);
+		opmode.sleep(250);
+		h.bHook_l.setPower(0);
+		h.bHook_r.setPower(0);
 		// Allows servos to settle
-		opmode.sleep(700);
+		opmode.sleep(500);
 	}
 	void unlatch() { h.tSub("Unlatching");
 		h.fHook_l.setPosition(1.0);
 		h.fHook_r.setPosition(0.0);
-		opmode.sleep(700);
+		h.bHook_l.setPower(1);
+		h.bHook_r.setPower(-1);
+		opmode.sleep(250);
+		h.bHook_l.setPower(0);
+		h.bHook_r.setPower(0);
+		opmode.sleep(500);
 	}
 
 	//*Helper

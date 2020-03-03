@@ -46,27 +46,26 @@ public class SkystoneBase {
 			a.movR(6.1, 1.25, 2.5);
 
 			int sPos = a.findSkystone(blue,0.6, true);
-
-			a.pickUp1();a.drop2();
+				a.s();
 			a.movR(2.3, 2, 2);
-
-			       a.pickUp2();//new pickup
-a.drop1();
+					a.g();
 			a.movL(2.3, 2, 2);
-
 
 				if (blue) {
 					switch (sPos) {
 						case 1: {
-							a.movF(12.0, 1.5, 3.0);
+							a.movF(14.0, 1.5, 3.0);
+							a.movR(2,2,2);
 							break;
 						}
 						case 2: {
-							a.movF(14.5, 1.5, 4.0);
+							a.movF(16.5, 1.5, 4.0);
+							a.movR(2,2,2);
 							break;
 						}
 						case 3: {
-							a.movF(16.0, 1.5, 5);
+							a.movF(18.0, 1.5, 5);
+							a.movR(2,2,2);
 							break;
 						}
 					}
@@ -75,22 +74,28 @@ a.drop1();
 				else {
 					switch (sPos) {
 						case 1: {
-							a.movB(12.0, 1.5, 3.0);
+							a.movB(14.0, 1.5, 3.0);
+							a.movR(2,2,2);
 							break;
 						}
 						case 2: {
-							a.movB(14.5, 1.5, 4.0);
+							a.movB(16.5, 1.5, 4.0);
+							a.movR(2,2,2);
 							break;
 						}
 						case 3: {
-							a.movB(16.0, 1.5, 5);
+							a.movB(18.0, 1.5, 5);
+							a.movR(2,2,2);
 							break;
 						}
 					}
 				}
-
-				a.drop2();//new drop
-a.pickUp1();
+				a.d();
+				a.movL(1,2,1);
+				a.trnL(1,2,2);
+				a.movB(1.5,2,2);
+				a.latch();
+				/*
 				if (blue) {
 					switch (sPos) {
 						case 1: {
@@ -124,7 +129,7 @@ a.pickUp1();
 					}
 				}
 				a.movR(1, 2.3, 1.0);
-				        a.pickUp1(); a.drop2();               //new pickup
+				        a.g();               //new pickup
 				a.movL(1, 2.3, 1.0);
 
 				if (blue) {
@@ -160,8 +165,9 @@ a.pickUp1();
 					}
 				}
 
-				a.drop2();//new drop
-a.pickUp1();
+				a.d();
+				*/
+
 				//move foundation: grab and rotate foundation 180 degrees (see Ethan)
 
 				//park on tape: wall or mid
