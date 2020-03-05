@@ -17,7 +17,7 @@ public class __AutoBase__ {
 	enum Brand { GOBUILDA, TETRIX }
 
 	/* Actions */
-	double findSkystone(boolean blue, double p) {
+	int findSkystone(boolean blue, double p, boolean strafe) {
 		/**Scans for the skystone, starting from the stone farthest from the wall and incrementally
 		 * approaches the wall, stopping after scanning the third stone.
 		 *
@@ -27,7 +27,7 @@ public class __AutoBase__ {
 		h.tSub("Finding Skystone");
 		driveModeSRE();
 		for (int i = 1; i <= 3; i++) {
-			if (!opmode.opModeIsActive()) return -1;
+			if (!opmode.opModeIsActive()) break;
 			ElapsedTime elapsedTime = new ElapsedTime();
 			h.tfDetect.activate();
 			while (elapsedTime.seconds() < 1.0 && opmode.opModeIsActive()) {
@@ -43,94 +43,56 @@ public class __AutoBase__ {
 				opmode.idle();
 			}
 			h.tfDetect.deactivate();
-			if (i == 3) {
-				h.tSub("Failed");
-				halt(0);
-				return -1.0;
-			}
-			if (blue) movR(2.6, 2.0, 2.0);
-			else movL(2.6, 2.0, 2.0);
-		}
-		h.tSub("Failed");
-		halt(0);
-		return -1.0;
-	}
-	int findSkystone(boolean blue, double p, boolean n) {
-		/**Scans for the skystone, starting from the stone farthest from the wall and incrementally
-		 * approaches the wall, stopping after scanning the third stone.
-		 *
-		 * Returns -1 if it didn't find a skystone. A value from {1, 2, 3} is returned if success,
-		 * 1 corresponds to the farthest stone from the wall, 3 the third farthest.
-		 */
-		h.tSub("Finding Skystone");
-		driveModeSRE();
-		for (int i = 1; i <= 3; i++) {
-			if (!opmode.opModeIsActive()) return -1;
-			ElapsedTime elapsedTime = new ElapsedTime();
-			h.tfDetect.activate();
-			while (elapsedTime.seconds() < 1.5 && opmode.opModeIsActive()) {
-				h.tRunTime(elapsedTime);
-				h.updateTfDetect();
-				h.tCaminfo(1);
-				if (h.sArea > 50_000) {
-					h.tSub("Success");
-					halt(0);
-					h.tfDetect.deactivate();
-					return i;
-				}
-				opmode.idle();
-			}
-			h.tfDetect.deactivate();
-			if (i == 3) {
-				h.tSub("Failed");
-				halt(0);
-				return -1;
-			}
-			if (blue) movB(1.4, 1.5, 2.0);
-			else movF(1.4, 1.5, 2.0);
+			if (i == 3)
+				break;
+			if (strafe)
+				if (blue) movR(2.6, 2.0, 2.0);
+				else movL(2.6, 2.0, 2.0);
+			else
+				if (blue) movB(1.4, 1.5, 2.0);
+				else movF(1.4, 1.5, 2.0);
 		}
 		h.tSub("Failed");
 		halt(0);
 		return -1;
 	}
 
-	void pickUp() {
-		h.tSub("Picking up Stone");
-		platform(2.8, 1.0);
-		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
-		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
-		// Allows servos to settle
-		opmode.sleep(600);
-		platform(-1.1, 1.0);
-	}
-
-	void s()
-	{
+	void side_setup() {
 		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
 		opmode.sleep(600);
 		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
 		opmode.sleep(600);
 	}
-	void g()
-	{
+
+	void side_grab() {
 		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 1);
 		opmode.sleep(600);
 		opmode.sleep(300);
 		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 1);
 		opmode.sleep(600);
 	}
-	void d()
-	{
+
+	void side_drop() {
 		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
 		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
 		opmode.sleep(600);
 	}
 
-	void drop() { h.tSub("Dropping Stone");
+	void front_drop() { h.tSub("Dropping Stone");
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
 		opmode.sleep(600);
 		platform(-1.7, 0.6);
+	}
+
+	void front_grab() {
+		h.tSub("Grabbing Stone");
+		platform(2.8, 1.0);
+		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
+		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
+		// Allows servos to settle
+		opmode.sleep(600);
+		platform(-1.1, 1.0);
 	}
 
 	void latch() { h.tSub("Latching");
@@ -189,7 +151,7 @@ public class __AutoBase__ {
 
 	// TARGET POSITION
 	void driveTargetPos(double revlf, double revrf, double revlb, double revrb) {
-		// Sets drive's target position
+		// Sets drive'side_setup target position
 		targetPos(h.drive_lf, revlf); targetPos(h.drive_rf, revrf);
 		targetPos(h.drive_lb, revlb); targetPos(h.drive_rb, revrb);
 	} void targetPos(DcMotor motor, double rev, Brand brand/*= GOBUILDA*/) {
@@ -220,11 +182,11 @@ public class __AutoBase__ {
 		ElapsedTime elapsedTime = new ElapsedTime();
 		modeSRE(h.lSlide_l); // Change lSlide mode to SRE
 		modeSRE(h.lSlide_r);
-		targetPos(h.lSlide_l, rev, Brand.TETRIX); // Set lSlide's target Pos
+		targetPos(h.lSlide_l, rev, Brand.TETRIX); // Set lSlide'side_setup target Pos
 		targetPos(h.lSlide_r, -rev, Brand.TETRIX);
 		modeRTP(h.lSlide_l); // Change lSlide mode to RTP
 		modeRTP(h.lSlide_r);
-		h.lSlide_l.setPower(p); // Set lSlide's power to p
+		h.lSlide_l.setPower(p); // Set lSlide'side_setup power to p
 		h.lSlide_r.setPower(p);
 		while ((h.lSlide_l.isBusy() && h.lSlide_r.isBusy()) && elapsedTime.seconds() < 3.0 && opmode.opModeIsActive()) {
 			h.tPos(h.lSlide_l);
@@ -265,6 +227,16 @@ public class __AutoBase__ {
 		driveModeRWE();
 	}
 
+	void movV(double rev, double p, double t, boolean forward) {
+		if (forward) movF(rev, p, t);
+		else movB(rev, p, t);
+	} void movV(double rev, double p, boolean forward) { movH(rev, p, 0, forward); }
+
+	void movH(double rev, double p, double t, boolean right) {
+		if (right) movR(rev, p, t);
+		else movL(rev, p, t);
+	} void movH(double rev, double p, boolean right) { movH(rev, p, 0, right); }
+
 	void movF(double rev, double p, double t/*= 0*/) {
 		h.tSub("Moving Forward");
 		movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t);
@@ -285,6 +257,11 @@ public class __AutoBase__ {
 		movEncoder(Arrays.asList(rev, rev, rev, rev), p, t);
 	} void movB(double rev, double p) { movB(rev, p, 0); }
 
+	void trnH(double rev, double p, double t, boolean right) {
+		if (right) trnR(rev, p, t);
+		else trnL(rev, p, t);
+	} void trnH(double rev, double p, boolean right) { trnH(rev, p, 0, right); }
+
 	void trnL(double rev, double p, double t/*= 0*/) {
 		// 1 rev = 45 degree rotation
 		h.tSub("Turning Left");
@@ -298,10 +275,11 @@ public class __AutoBase__ {
 		movEncoder(Arrays.asList(-rev, rev, -rev, rev), p, t/*= 0*/);
 	} void trnR(double rev, double p) { trnR(rev, p, 0); }
 
-	void customTrn(double leftPower, double rightPower, long t) {
-		h.tSub("Custom Turn");
-		drivePower(leftPower, rightPower, leftPower, rightPower);
-		halt(t);
+	void cTrnH(double radius, int degrees, double p, double t, boolean right) {
+		if (right) cTrnR(radius, degrees, p, t);
+		else cTrnL(radius, degrees, p, t);
+	} void cTrnH(double radius, int degrees, double p, boolean right) {
+		cTrnH(radius, degrees, p, 0, right);
 	}
 
 	void cTrnL(double radius, int degrees, double p, double t) {

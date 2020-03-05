@@ -82,7 +82,7 @@ public class __DriveBase__ {
 /* Update */
 	// Update Auxilary Motors
 	void updateAux() { h.tSub("Updating Aux Motors");
-		// Sets scissor-lift's motor powers
+		// Sets scissor-lift'side_setup motor powers
 		h.scissor.setPower(-h._lStick_y);
 		h.lSlide_l.setPower(-h._rStick_y);
 		h.lSlide_r.setPower(h._rStick_y);

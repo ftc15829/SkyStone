@@ -13,7 +13,11 @@ public class FoundationBase {
 	__Hardware__ h;
 	__AutoBase__ a;
 
-	public void init() {
+	private boolean BLUE, MID, RIGHT;
+
+	enum Modes { REGULAR, TAPE }
+
+	private void init() {
 		try {
 			h.init(opmode.hardwareMap);
 			a.unlatch();
@@ -31,45 +35,39 @@ public class FoundationBase {
 		opmode.resetStartTime();
 	}
 
-	public void run(boolean blue, boolean mid) {
+	public void run(Boolean blue, Boolean mid, Modes mode) {
+		if (blue != null) BLUE = blue;
+		if (mid != null) MID = mid;
+		init();
+		switch(mode) {
+			case REGULAR: foundation(); break;
+			case TAPE: RIGHT = blue; tape(); break;
+			default: opmode.stop();
+		}
+	}
+
+	private void foundation() {
 		try {
 			h.tStatus("Running");
 
 			/* Instructions - Foundation */
 //			a.movB(1.0, 1.5, 2.0);
 
-			if (blue) a.movR(5.0, 1.5, 3.0);
-			else a.movL(5.0, 1.5, 3.0);
+			a.movH(5.0, 1.5, 3.0, BLUE);
 
 			a.movB(3.8, 1.2, 2.8);
 			a.movB(2.8, 0.5, 3.6);
 			a.latch();
-
-			if (blue) a.cTrnL(1.9, 90, 2.0, 3.5);
-			else a.cTrnR(1.9, 90, 2.0, 3.5);
-
+			a.cTrnH(1.9, 90, 2.0, 3.5, !BLUE);
 			a.movB(8.0, 1.0, 2.9);
 			a.unlatch();
 			a.movF(1.0, 1.0, 0.7);
 
-			if (mid)
-				if (blue) a.movL(6.2, 1.5, 3);
-				else a.movR(6.2, 1.5, 3);
-			else {
-				if (blue) a.movR(1,2,1);
-				else a.movL(1,2,1);
-			}
+			if (MID) a.movH(6.2, 1.5, 3, !BLUE);
+			else a.movH(1,2,1, BLUE);
 
 			a.movF(8.5, 1.0, 3.5);
-
-			if (blue) {
-				if (mid) a.movL(0.5, 2, 1);
-				else a.movR(0.5, 2, 1);
-			} else {
-				if (mid) a.movR(0.5, 2, 1);
-				else a.movL(0.5, 2, 1);
-			}
-
+			a.movH(0.5, 2, 1, !(BLUE && MID));
 			h.tStatus("Done!");
 		} catch (Exception e) { // Catches exceptions as plain-text
 			h.tStatus("Error");
@@ -79,18 +77,17 @@ public class FoundationBase {
 		}
 	}
 
-	void tape(boolean left, boolean mid) {
+	private void tape() {
 		try {
 			h.tStatus("Running");
 
 			/* Instructions - Tape */
-			if (!mid) a.movF(2.0, 2.0, 2.0);
+			if (!MID)
+				a.movF(2.0, 2.0, 2.0);
 			else {
 				a.movF(5.2, 1.5, 3.0);
-				if (left) a.movR(3.5, 2.0, 2.0);
-				else a.movL(3.5, 2.0, 2.0);
+				a.movH(3.5, 2.0, 2.0, RIGHT);
 			}
-
 
 			h.tStatus("Done!");
 		} catch (Exception e) { // Catches exceptions as plain-text
