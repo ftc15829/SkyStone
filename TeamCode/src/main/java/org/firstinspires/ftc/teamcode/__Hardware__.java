@@ -25,10 +25,17 @@ public class __Hardware__ {
 	public __Hardware__(LinearOpMode linearOpMode, Telemetry telemetry) {
 		opmode = linearOpMode;
 		t = telemetry;
+		t.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
+		t.log().setCapacity(6);
+
+		status = t.addData("Status", "Init");
+//		status.setRetained(true);
+//		subStatus = t.addData("Sub", "Init");
+//		subStatus.setRetained(true);
 	}
 	LinearOpMode opmode;
 	Telemetry t;
-	HardwareMap _hardwareMap;
+	private HardwareMap hardwareMap;
 	// Hardware Constants
 	static double GobRate = 108.0; // Double to avoid integer division
 	static double TetRate = 1440.0;
@@ -58,15 +65,15 @@ public class __Hardware__ {
 	boolean _dpad_u, _dpad_d, _dpad_l, _dpad_r;
 
 	// Telemetry
-//	Telemetry.Item status = t.addData("Status", "");
-//	Telemetry.Item subStatus = t.addData("Sub", "");
+	Telemetry.Item status;
+	Telemetry.Item subStatus;
 
 	/* Init Functions */
 	void init(HardwareMap hardwareMap) {
 		// Telemetry Configuration
 //		t.setAutoClear(false);
 		// Defines drive motors
-		_hardwareMap = hardwareMap;
+		this.hardwareMap = hardwareMap;
 		drive_lf = hardwareMap.dcMotor.get("leftFront");
 		drive_rb = hardwareMap.dcMotor.get("rightBack");
 		drive_lb = hardwareMap.dcMotor.get("leftBack");
@@ -86,8 +93,8 @@ public class __Hardware__ {
 		lSlide_r = hardwareMap.dcMotor.get("slideR");
 		fHook_l = hardwareMap.servo.get("hook1");
 		fHook_r = hardwareMap.servo.get("hook2");
-		bHook_l = hardwareMap.crservo.get("fHook1");
-		bHook_r = hardwareMap.crservo.get("fHook2");
+		bHook_l = hardwareMap.crservo.get("fHookLeft");
+		bHook_r = hardwareMap.crservo.get("fHookRight");
 		autoClamp = hardwareMap.servo.get("autoClamp");
 		autoHand = hardwareMap.servo.get("autoHand");
 		grab_l = hardwareMap.crservo.get("block1");
@@ -142,7 +149,7 @@ public class __Hardware__ {
 
 	void updateBatteryVoltage() {
 		double result = Double.POSITIVE_INFINITY;
-		for (VoltageSensor sensor : _hardwareMap.voltageSensor) {
+		for (VoltageSensor sensor : hardwareMap.voltageSensor) {
 			double sensorVoltage = sensor.getVoltage();
 			if (sensorVoltage > 0) {
 				result = Math.min(result, sensorVoltage);
@@ -153,8 +160,10 @@ public class __Hardware__ {
 
 	/* Telemetry */
 	void tStatus(String value) {
-//		status.setValue(value);
-		t.addData("Status", value);
+
+		t.log().add(value);
+		status.setValue(value);
+//		t.addData("Status", value);
 		t.update();
 	}
 	void tSub(String value) {
@@ -167,11 +176,10 @@ public class __Hardware__ {
 		t.update();
 	}
 
-	void tRunTime(int update) {
+	void tRunTime() {
 		t.addData("Runtime", opmode.getRuntime());
-		if (update == 1)
-			t.update();
-	} void tRunTime() { tRunTime(0); }
+		t.update();
+	}
 
 	void tRunTime(ElapsedTime elapsedTime, int update) {
 		t.addData("Elapsed Time", elapsedTime.seconds());
@@ -254,9 +262,9 @@ public class __Hardware__ {
 		_rStick_y = gamepad2.right_stick_y;
 
 		_dpad_u = gamepad2.dpad_up;
-		_dpad_u = gamepad2.dpad_down;
-		_dpad_u = gamepad2.dpad_left;
-		_dpad_u = gamepad2.dpad_right;
+		_dpad_d = gamepad2.dpad_down;
+		_dpad_l = gamepad2.dpad_left;
+		_dpad_r = gamepad2.dpad_right;
 
 		_lTrigger = gamepad2.left_trigger;
 		_rTrigger = gamepad2.right_trigger;
@@ -264,9 +272,9 @@ public class __Hardware__ {
         _lBumper = gamepad2.left_bumper;
         _rBumper = gamepad2.right_bumper;
 
-        _button_a = gamepad1.a;
-        _button_b = gamepad1.b;
-        _button_x = gamepad1.x;
-        _button_y = gamepad1.y;
+        _button_a = gamepad2.a;
+        _button_b = gamepad2.b;
+        _button_x = gamepad2.x;
+        _button_y = gamepad2.y;
 	}
 }

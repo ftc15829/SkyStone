@@ -13,7 +13,6 @@ public class __DriveBase__ {
 	}
 	__Hardware__ h;
 	__AutoBase__ a;
-	__AutoBase__.Dir Dir;
 	LinearOpMode opmode;
 
 	ElapsedTime elapsedTime = new ElapsedTime();
@@ -81,22 +80,36 @@ public class __DriveBase__ {
 
 /* Update */
 	// Update Auxilary Motors
-	void updateAux() { h.tSub("Updating Aux Motors");
+	void updateAux() {
 		// Sets scissor-lift'side_setup motor powers
 		h.scissor.setPower(-h._lStick_y);
 		h.lSlide_l.setPower(-h._rStick_y);
 		h.lSlide_r.setPower(h._rStick_y);
 	}
 	// Update CR Servos
-	void updateCrServos() { h.tSub("Updating CRServos");
+	void updateCrServos() {
 		// Sets grabber positions
 		double p = 0.3;
 		h.grab_l.setPower(h._rTrigger != 0.0 ? p : (h._lTrigger != 0.0 ? -p : 0.0));
 		h.grab_r.setPower(h._rTrigger != 0.0 ? -p : (h._lTrigger != 0.0 ? p : 0.0));
 	}
 	// Update Servos
-	boolean fHookT = true; // Toggle (actual value doesn't matter)
-	void updateServos() { h.tSub("Updating Servos");
+	private boolean autoClampT = true;
+	private boolean autoHandT = true;
+	private boolean fHookT = true; // Toggle (actual value doesn't matter)
+	void updateServos() {
+		// Sets AutoClamp and AutoHand's positions
+		// Gamepad2 dpad up and down control AutoHand, left and right control AutoClam
+		if (h._button_a) {
+			h.autoHand.setPosition(autoHandT ? 0.0 : 1.0);
+			autoHandT = !autoHandT;
+			opmode.sleep(300);
+		}
+		if (h._button_x && !autoHandT) {
+			h.autoClamp.setPosition(autoClampT ? 0.0 : 1.0);
+			autoClampT = !autoClampT;
+			opmode.sleep(300);
+		}
 		// Sets f-hook positions
 		if (h.button_b) {
 			h.fHook_l.setPosition(fHookT ? 1.0 : 0.0);
@@ -106,20 +119,20 @@ public class __DriveBase__ {
 		}
 	}
 	// Update Drive
-	void updateDriveCardinal() { h.tSub("Updating Cardinal Drive");
+	void updateDriveCardinal() {
 		if (h.dpad_u) {
-			a.mov(Dir.UP, 1.0);
+			a.mov(__AutoBase__.Dir.UP, 1.0);
 		} else if (h.dpad_d) {
-			a.mov(Dir.DOWN, 1.0);
+			a.mov(__AutoBase__.Dir.DOWN, 1.0);
 		} else if (h.dpad_l) {
-			a.mov(Dir.LEFT, 1.0);
+			a.mov(__AutoBase__.Dir.LEFT, 1.0);
 		} else if (h.dpad_r) {
-			a.mov(Dir.RIGHT, 1.0);
+			a.mov(__AutoBase__.Dir.RIGHT, 1.0);
 		} else {
 			a.halt(0);
 		}
 	}
-	void updateDrive() { h.tSub("Updating Drive");
+	void updateDrive() {
 		h.drive_lf.setPower(getPower(0));
 		h.drive_rb.setPower(getPower(1));
 		h.drive_lb.setPower(getPower(2));
