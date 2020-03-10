@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 //@Disabled
 @Autonomous(name="Debug", group="Debug") public class _Debug extends LinearOpMode {
 	/*Initializations*/
@@ -15,6 +17,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 	@Override public void runOpMode() {
 		// Initiate hardware
 		try {
+			h.initTelemetry();
 //			h.init(hardwareMap);
 //			h.initAuto(hardwareMap);
 		} catch (Exception e) {
@@ -23,17 +26,25 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 			sleep(15_000);
 			stop();
 		}
-		h.tStatus("Ready | Skystone");
-//		h.tSub("OK");
+//		telemetry.setAutoClear(false);
+//		Telemetry.Item status = telemetry.addData("Status", "");
+//		telemetry.update();
 		while (!isStarted()) {
 //			h.tRunTime();
 			idle();
 		}
 		resetStartTime();
 		try {
-			h.tStatus("Running");
 			/* Instructions - Debug */
-			h.tStatus("Debug");
+			h.tStatus("notValue");
+//			telemetry.update();
+			sleep(2000);
+			telemetry.addData("Encoder", "hepu");
+			telemetry.update();
+			sleep(2000);
+			h.tStatus("Value");
+//			sleep(2000);
+			telemetry.clear();
 			sleep(2000);
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text

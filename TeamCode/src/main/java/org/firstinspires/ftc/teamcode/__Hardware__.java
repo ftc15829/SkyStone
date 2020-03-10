@@ -25,13 +25,6 @@ public class __Hardware__ {
 	public __Hardware__(LinearOpMode linearOpMode, Telemetry telemetry) {
 		opmode = linearOpMode;
 		t = telemetry;
-		t.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
-		t.log().setCapacity(6);
-
-		status = t.addData("Status", "Init");
-//		status.setRetained(true);
-//		subStatus = t.addData("Sub", "Init");
-//		subStatus.setRetained(true);
 	}
 	LinearOpMode opmode;
 	Telemetry t;
@@ -69,10 +62,15 @@ public class __Hardware__ {
 	Telemetry.Item subStatus;
 
 	/* Init Functions */
+	void initTelemetry() {
+		t.setAutoClear(true);
+		status = t.addData("Status", "value");
+		status.setRetained(true);
+		t.update();
+	}
 	void init(HardwareMap hardwareMap) {
-		// Telemetry Configuration
-//		t.setAutoClear(false);
 		// Defines drive motors
+		initTelemetry();
 		this.hardwareMap = hardwareMap;
 		drive_lf = hardwareMap.dcMotor.get("leftFront");
 		drive_rb = hardwareMap.dcMotor.get("rightBack");
@@ -161,9 +159,9 @@ public class __Hardware__ {
 	/* Telemetry */
 	void tStatus(String value) {
 
-		t.log().add(value);
+//		t.log().add(value);
 		status.setValue(value);
-//		t.addData("Status", value);
+
 		t.update();
 	}
 	void tSub(String value) {
