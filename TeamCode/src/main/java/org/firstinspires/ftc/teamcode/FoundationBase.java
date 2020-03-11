@@ -19,17 +19,15 @@ public class FoundationBase {
 
 	private void init() {
 		try {
-			h.init(opmode.hardwareMap);
+			h.initTelemetry();
+			h.initHardware(opmode.hardwareMap);
 			a.unlatch();
-		} catch (Exception e) {
-			h.tStatus("Error");
-			h.tErr("HardwareMap", e);
-			opmode.sleep(15_000);
-			opmode.stop();
-		}
-		h.tStatus("Ready | Foundation");
+		} catch (Exception e) { h.except(e); }
+
+		h.tStatus("Ready - " + (BLUE ? "Blue" : "Red") + "Found " + (MID ? "Mid" : "Wall"));
+		h.update();
 		while (!opmode.isStarted()) {
-			h.tRunTime();
+			h.tRunTime(); h.update();
 			opmode.idle();
 		}
 		opmode.resetStartTime();
@@ -47,41 +45,29 @@ public class FoundationBase {
 	}
 
 	private void foundation() {
-		try {
-			h.tStatus("Running");
-
-			/* Instructions - Foundation */
-//			a.movB(1.0, 1.5, 2.0);
-
+		try { /* Instructions - Foundation */
+			h.tStatus("Running"); h.update();
 			a.movH(5.0, 1.5, 3.0, BLUE);
-
 			a.movB(3.8, 1.2, 2.8);
 			a.movB(2.8, 0.5, 3.6);
+
 			a.latch();
 			a.cTrnH(1.9, 90, 2.0, 3.5, !BLUE);
 			a.movB(8.0, 1.0, 2.9);
+
 			a.unlatch();
 			a.movF(1.0, 1.0, 0.7);
-
 			if (MID) a.movH(6.2, 1.5, 3, !BLUE);
 			else a.movH(1,2,1, BLUE);
-
 			a.movF(8.5, 1.0, 3.5);
 			a.movH(0.5, 2, 1, !(BLUE && MID));
 			h.tStatus("Done!");
-		} catch (Exception e) { // Catches exceptions as plain-text
-			h.tStatus("Error");
-			h.tErr("Auto Runtime", e);
-			opmode.sleep(15_000);
-			opmode.stop();
-		}
+		} catch (Exception e) { h.except(e); }
 	}
 
 	private void tape() {
-		try {
-			h.tStatus("Running");
-
-			/* Instructions - Tape */
+		try { /* Instructions - Tape */
+			h.tStatus("Running"); h.update();
 			if (!MID)
 				a.movF(2.0, 2.0, 2.0);
 			else {
@@ -90,11 +76,6 @@ public class FoundationBase {
 			}
 
 			h.tStatus("Done!");
-		} catch (Exception e) { // Catches exceptions as plain-text
-			h.tStatus("Error");
-			h.tErr("Auto Runtime", e);
-			opmode.sleep(15_000);
-			opmode.stop();
-		}
+		} catch (Exception e) { h.except(e); }
 	}
 }

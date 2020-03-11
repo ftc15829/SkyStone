@@ -24,7 +24,7 @@ public class __AutoBase__ {
 		 * Returns -1 if it didn't find a skystone. A value from {1, 2, 3} is returned if success,
 		 * 1 corresponds to the farthest stone from the wall, 3 the third farthest.
 		 */
-		h.tSub("Finding Skystone");
+		h.tSub("Finding Skystone"); h.update();
 		driveModeSRE();
 		for (int i = 1; i <= 3; i++) {
 			if (!opmode.opModeIsActive()) break;
@@ -33,9 +33,12 @@ public class __AutoBase__ {
 			while (elapsedTime.seconds() < 1.0 && opmode.opModeIsActive()) {
 				h.tRunTime(elapsedTime);
 				h.updateTfDetect();
-				h.tCaminfo(1);
+				h.tCaminfo();
+				h.update();
 				if (h.sArea > 50_000) {
-					h.tSub("Success");
+					h.tLog("Skystone detected");
+					h.tSub("---");
+					h.update();
 					halt(0);
 					h.tfDetect.deactivate();
 					return i;
@@ -52,7 +55,9 @@ public class __AutoBase__ {
 				if (blue) movB(1.4, 1.5, 2.0);
 				else movF(1.4, 1.5, 2.0);
 		}
-		h.tSub("Failed");
+		h.tLog("Detection failed");
+		h.tSub("---");
+		h.update();
 		halt(0);
 		return -1;
 	}
@@ -78,24 +83,28 @@ public class __AutoBase__ {
 //		opmode.sleep(600);
 	}
 
-	void front_drop() { h.tSub("Dropping Stone");
+	void front_drop() {
+		h.tSub("Dropping Stone"); h.update();
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 0);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 1);
 		opmode.sleep(600);
 		platform(-1.7, 0.6);
+		h.tSub("---"); h.update();
 	}
 
 	void front_grab() {
-		h.tSub("Grabbing Stone");
+		h.tSub("Grabbing Stone"); h.update();
 		platform(2.8, 1.0);
 		h.grab_l.getController().setServoPosition(h.grab_l.getPortNumber(), 1);
 		h.grab_r.getController().setServoPosition(h.grab_r.getPortNumber(), 0);
 		// Allows servos to settle
 		opmode.sleep(600);
 		platform(-1.1, 1.0);
+		h.tSub("---"); h.update();
 	}
 
-	void latch() { h.tSub("Latching");
+	void latch() {
+		h.tSub("Latching"); h.update();
 		h.fHook_l.setPosition(0.0);
 		h.fHook_r.setPosition(1.0);
 		h.bHook_l.setPower(-1);
@@ -105,8 +114,10 @@ public class __AutoBase__ {
 		h.bHook_r.setPower(0);
 		// Allows servos to settle
 		opmode.sleep(500);
+		h.tSub("---"); h.update();
 	}
-	void unlatch() { h.tSub("Unlatching");
+	void unlatch() {
+		h.tSub("Unlatching"); h.update();
 		h.fHook_l.setPosition(1.0);
 		h.fHook_r.setPosition(0.0);
 		h.bHook_l.setPower(1);
@@ -115,6 +126,7 @@ public class __AutoBase__ {
 		h.bHook_l.setPower(0);
 		h.bHook_r.setPower(0);
 		opmode.sleep(500);
+		h.tSub("---"); h.update();
 	}
 
 	//*Helper
@@ -179,7 +191,6 @@ public class __AutoBase__ {
 
 	/* Auxilary Movement */
 	void motorPosition(DcMotor motor, double rev, double p, double t) {
-		h.tSub("---");
 		ElapsedTime elapsed = new ElapsedTime();
 		targetPos(motor, rev, Brand.TETRIX);
 		modeRTP(motor);
@@ -187,7 +198,7 @@ public class __AutoBase__ {
 		while (motor.isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
-		if (elapsed.seconds() >= t) h.tSub("Timed Out");
+		if (elapsed.seconds() >= t) h.tLog(motor.toString() + " - Timed Out at " + String.format("%.2f", (motor.getCurrentPosition() / motor.getTargetPosition()) * 100) + "%");
 		motor.setPower(0);
 		modeRWE(motor);
 	} void motorPosition(DcMotor motor, double rev, double p) {
@@ -195,6 +206,7 @@ public class __AutoBase__ {
 	}
 
 	void platform(double rev, double p) {
+		h.tSub("Moving Platform");
 		ElapsedTime elapsedTime = new ElapsedTime();
 		modeSRE(h.lSlide_l); // Change lSlide mode to SRE
 		modeSRE(h.lSlide_r);
@@ -212,6 +224,7 @@ public class __AutoBase__ {
 		}
 		h.lSlide_l.setPower(0); // Stop lSlide
 		h.lSlide_r.setPower(0);
+		h.tSub("---");
 	}
 
 	/* Drive Movement */
@@ -238,8 +251,9 @@ public class __AutoBase__ {
 		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
-		if (elapsed.seconds() >= t) h.tSub("Timed Out");
+		if (elapsed.seconds() >= t) h.tLog("Drive timed out at " + String.format("%.2f", (h.drive_lf.getCurrentPosition() / h.drive_lf.getTargetPosition()) * 100) + "%");
 		halt(0);
+		driveModeRWE();
 	}
 
 	void movV(double rev, double p, double t, boolean forward) {
@@ -252,24 +266,28 @@ public class __AutoBase__ {
 		else movL(rev, p, t);
 	} void movH(double rev, double p, boolean right) { movH(rev, p, 0, right); }
 
-	void movF(double rev, double p, double t/*= 0*/) {
-		h.tSub("Moving Forward");
+	void movF(double rev, double p, double t) {
+		h.tSub("Moving Forward"); h.update();
 		movEncoder(Arrays.asList(-rev, -rev, -rev, -rev), p, t);
+		h.tSub("---"); h.update();
 	} void movF(double rev, double p) { movF(rev, p, 0); }
 
-	void movL(double rev, double p, double t/*= 0*/) {
-		h.tSub("Moving Left");
+	void movL(double rev, double p, double t) {
+		h.tSub("Moving Left"); h.update();
 		movEncoder(Arrays.asList(rev, -rev, -rev, rev), p, t);
+		h.tSub("---"); h.update();
 	} void movL(double rev, double p) { movL(rev, p, 0); }
 
-	void movR(double rev, double p, double t/*= 0*/) {
-		h.tSub("Moving Right");
+	void movR(double rev, double p, double t) {
+		h.tSub("Moving Right"); h.update();
 		movEncoder(Arrays.asList(-rev, rev, rev, -rev), p, t);
+		h.tSub("---"); h.update();
 	} void movR(double rev, double p) { movR(rev, p, 0); }
 
-	void movB(double rev, double p, double t/*= 0*/) {
-		h.tSub("Moving Backward");
+	void movB(double rev, double p, double t) {
+		h.tSub("Moving Backward"); h.update();
 		movEncoder(Arrays.asList(rev, rev, rev, rev), p, t);
+		h.tSub("---"); h.update();
 	} void movB(double rev, double p) { movB(rev, p, 0); }
 
 	void trnH(double rev, double p, double t, boolean right) {
@@ -277,17 +295,19 @@ public class __AutoBase__ {
 		else trnL(rev, p, t);
 	} void trnH(double rev, double p, boolean right) { trnH(rev, p, 0, right); }
 
-	void trnL(double rev, double p, double t/*= 0*/) {
+	void trnL(double rev, double p, double t) {
 		// 1 rev = 45 degree rotation
-		h.tSub("Turning Left");
+		h.tSub("Turning Left"); h.update();
 		rev *= 5;
-		movEncoder(Arrays.asList(rev, -rev, rev, -rev), p, t/*= 0*/);
+		movEncoder(Arrays.asList(rev, -rev, rev, -rev), p, t);
+		h.tSub("---"); h.update();
 	} void trnL(double rev, double p) { trnL(rev, p, 0); }
 
 	void trnR(double rev, double p, double t){
-		h.tSub("Turning Right");
+		h.tSub("Turning Right"); h.update();
 		rev *= 5;
-		movEncoder(Arrays.asList(-rev, rev, -rev, rev), p, t/*= 0*/);
+		movEncoder(Arrays.asList(-rev, rev, -rev, rev), p, t);
+		h.tSub("---"); h.update();
 	} void trnR(double rev, double p) { trnR(rev, p, 0); }
 
 	void cTrnH(double radius, int degrees, double p, double t, boolean right) {
@@ -298,7 +318,7 @@ public class __AutoBase__ {
 	}
 
 	void cTrnL(double radius, int degrees, double p, double t) {
-		h.tSub("Custom Turn Left");
+		h.tSub("cTurning Left"); h.update();
 		ElapsedTime elapsed = new ElapsedTime();
 		double mod = 6.6;
 		driveModeSRE();
@@ -312,13 +332,14 @@ public class __AutoBase__ {
 		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
-		if (elapsed.seconds() >= t) h.tSub("Timed Out");
+		if (elapsed.seconds() >= t) h.tLog("Left cTurn Timed Out");
 		halt(0);
 		driveModeRWE();
+		h.tSub("---"); h.update();
 	}
 
 	void cTrnR(double radius, int degrees, double p, double t) {
-		h.tSub("Custom Turn Right");
+		h.tSub("cTurning Right"); h.update();
 		ElapsedTime elapsed = new ElapsedTime();
 		double mod = 6.6;
 		driveModeSRE();
@@ -333,9 +354,10 @@ public class __AutoBase__ {
 		while (drive_isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
-		if (elapsed.seconds() >= t) h.tSub("Timed Out");
+		if (elapsed.seconds() >= t) h.tLog("Right cTurn Timed Out");
 		halt(0);
 		driveModeRWE();
+		h.tSub("---"); h.update();
 	}
 
 	void movF(long time, double p) {

@@ -19,18 +19,15 @@ public class SkystoneBase {
 
 	private void init() {
 		try {
-			h.init(opmode.hardwareMap);
-			h.initAuto(opmode.hardwareMap);
+			h.initTelemetry();
+			h.initHardware(opmode.hardwareMap);
+			h.initVision();
 			a.unlatch();
-		} catch (Exception e) {
-			h.tStatus("Error");
-			h.tErr("HardwareMap", e);
-			opmode.sleep(15_000);
-			opmode.stop();
-		}
-		h.tStatus("Ready | Skystone");
+		} catch (Exception e) { h.except(e); }
+		h.tStatus("Ready - " + (BLUE ? "Blue" : "Red") + "Found " + (MID ? "Mid" : "Wall"));
+		h.update();
 		while (!opmode.isStarted()) {
-			h.tRunTime();
+			h.tRunTime(); h.update();
 			opmode.idle();
 		}
 		opmode.resetStartTime();
@@ -47,10 +44,8 @@ public class SkystoneBase {
 	}
 
 	private void combo() {
-		try {
-			h.tStatus("Running");
-
-			/* Instructions - SkyStone */
+		try { /* Instructions - SkyStone */
+			h.tStatus("Running"); h.update();
 			a.movR(6.1, 1.25, 2.5);
 
 			int sPos = a.findSkystone(BLUE,0.6, false);
@@ -73,30 +68,13 @@ public class SkystoneBase {
 			a.latch();
 
 			// move foundation: grab and rotate foundation 180 degrees
-			/*
-			move backward
-			unlatch
-			move left
-			stop at tape
-			 */
-
-			//park on tape: wall or mid
-
-
 			h.tStatus("Done!");
-		} catch (Exception e) { // Catches exceptions as plain-text
-			h.tStatus("Error");
-			h.tErr("Auto Runtime", e);
-			opmode.sleep(15_000);
-			opmode.stop();
-		}
+		} catch (Exception e) { h.except(e); }
 	}
 
 	private void findSkystone_strafe() {
-		try {
+		try { /* Instructions - SkyStone */
 			h.tStatus("Running");
-
-			/* Instructions - SkyStone */
 			a.movF(3.7, 1.0, 2.4);
 
 			int sPos = a.findSkystone(BLUE,0.6, true);
@@ -124,11 +102,6 @@ public class SkystoneBase {
 			}
 
 			h.tStatus("Done!");
-		} catch (Exception e) { // Catches exceptions as plain-text
-			h.tStatus("Error");
-			h.tErr("Auto Runtime", e);
-			opmode.sleep(15_000);
-			opmode.stop();
-		}
+		} catch (Exception e) { h.except(e); }
 	}
 }

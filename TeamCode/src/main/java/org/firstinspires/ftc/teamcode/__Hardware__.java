@@ -28,17 +28,20 @@ public class __Hardware__ {
 	}
 	LinearOpMode opmode;
 	Telemetry t;
-	private HardwareMap hardwareMap;
+	private HardwareMap hMap;
+
 	// Hardware Constants
 	static double GobRate = 108.0; // Double to avoid integer division
 	static double TetRate = 1440.0;
 	static double PowerMod = .333; // Max power is 3.0
 	double voltage = Double.POSITIVE_INFINITY;
+
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
 	DcMotor scissor, lSlide_l, lSlide_r, autoHand;
 	Servo fHook_l, fHook_r, autoClamp;
 	CRServo grab_l, grab_r, bHook_l, bHook_r;
+
 	// Initialize Vision
 	TFObjectDetector tfDetect;
 	float sPos;
@@ -49,6 +52,7 @@ public class __Hardware__ {
 	private List<Recognition> updatedRecognitions;
 	private VuforiaLocalizer vuforia;
 	private static final String VUFORIA_KEY = "ARmB8mr/////AAABmZmt2tlP7EgjixU1JYYoSncNXqoxBId990GbqOpAfBytywT8tnE7y51UQmExhGdE3ctKQ5oiMU2LqcaxxW9zPp4+8x4XDsQbYlNwT8uhOE3X+QlME2xhn7unPHRKS9v8bK7R/P+/kmNfzPPDZuPvHSRAYICg6wkLVArTiKP59oP5UN4NZVm7TqE+2bqB3RR9wg9ItU9E8ufs20T8uJpBEzIOk+CMCGvpalbjz+gIv1NDEci9m/z2KMGcmA1bt+XpozDvNEPznZ9enhB9yS3qTDUkNoO/CUndqvMHEfKaTAGnN0oj5ixI3R4fzBx+Xl2LRdUvmav/7CPdnQqt02867My6dezcLg3ovxXMfrtTGgbn";
+
 	// Initialize gamepad values
 	double lStick_x, lStick_y, rStick_x, rStick_y, lTrigger, rTrigger; // Gamepad 1
 	boolean lBumper, rBumper, button_a, button_b, button_x, button_y;
@@ -57,61 +61,62 @@ public class __Hardware__ {
 	boolean _lBumper, _rBumper, _button_a, _button_b, _button_x, _button_y;
 	boolean _dpad_u, _dpad_d, _dpad_l, _dpad_r;
 
-	// Telemetry
+	// Initialize Telemetry
 	Telemetry.Item status;
 	Telemetry.Item subStatus;
 
 	/* Init Functions */
 	void initTelemetry() {
-//		t.setAutoClear(true);
 		t.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
 		t.log().setCapacity(7);
 		status = t.addData("Status", "---");
-		subStatus = t.addData("SubSta", "---");
+		subStatus = t.addData("Sub", "---");
 		subStatus.setRetained(true);
 		status.setRetained(true);
 		t.update();
 	}
-	void init(HardwareMap hardwareMap) {
-		// Defines drive motors
-		this.hardwareMap = hardwareMap;
-		drive_lf = hardwareMap.dcMotor.get("leftFront");
-		drive_rb = hardwareMap.dcMotor.get("rightBack");
-		drive_lb = hardwareMap.dcMotor.get("leftBack");
-		drive_rf = hardwareMap.dcMotor.get("rightFront");
+	void initHardware(HardwareMap hardwareMap) {
+		hMap = hardwareMap;
+		// Fetch configuration
+		drive_lf = hMap.dcMotor.get("leftFront"); // Left-Front Drive Motor
+		drive_rf = hMap.dcMotor.get("rightFront"); // Right Front Drive Motor
+		drive_lb = hMap.dcMotor.get("leftBack"); // Left-Back Drive Motor
+		drive_rb = hMap.dcMotor.get("rightBack"); // Right-Back Drive Motor
+
+		scissor = hMap.dcMotor.get("scissor"); // Main Scissor Lift Motor
+		lSlide_l = hMap.dcMotor.get("slideL"); // Left Platform Aux Motor
+		lSlide_r = hMap.dcMotor.get("slideR"); // Right Platform Aux Motor
+
+		fHook_l = hMap.servo.get("hook1"); // Left-Front Foundation Servo
+		fHook_r = hMap.servo.get("hook2"); // Right-Front Foundation Servo
+		bHook_l = hMap.crservo.get("fHookLeft"); // Left-Back Foundation Servo
+		bHook_r = hMap.crservo.get("fHookRight"); // Right-Back Foundation Servo
+
+		autoClamp = hMap.servo.get("autoClamp"); // Left-Front Drive Motor
+		autoHand = hMap.dcMotor.get("autoHand"); // Left-Front Drive Motor
+		grab_l = hMap.crservo.get("block1"); // Left-Front Drive Motor
+		grab_r = hMap.crservo.get("block2"); // Left-Front Drive Motor
+
 		// Drive motor setup
 		drive_lf.setDirection(DcMotor.Direction.FORWARD);
-		drive_rb.setDirection(DcMotor.Direction.REVERSE);
-		drive_lb.setDirection(DcMotor.Direction.FORWARD);
 		drive_rf.setDirection(DcMotor.Direction.REVERSE);
+		drive_lb.setDirection(DcMotor.Direction.FORWARD);
+		drive_rb.setDirection(DcMotor.Direction.REVERSE);
 		drive_lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-		drive_rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-		drive_lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		drive_rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-		// Defines scissor-lift hardware
-		scissor = hardwareMap.dcMotor.get("scissor");
-		scissor.getPortNumber();
-		lSlide_l = hardwareMap.dcMotor.get("slideL");
-		lSlide_r = hardwareMap.dcMotor.get("slideR");
-		fHook_l = hardwareMap.servo.get("hook1");
-		fHook_r = hardwareMap.servo.get("hook2");
-		bHook_l = hardwareMap.crservo.get("fHookLeft");
-		bHook_r = hardwareMap.crservo.get("fHookRight");
-		autoClamp = hardwareMap.servo.get("autoClamp");
-		autoHand = hardwareMap.dcMotor.get("autoHand");
-		grab_l = hardwareMap.crservo.get("block1");
-		grab_r = hardwareMap.crservo.get("block2");
+		drive_lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+		drive_rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 	}
-	void initAuto(HardwareMap hardwareMap) {
+	void initVision() {
 		/* Initiate Vuforia */
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 		parameters.vuforiaLicenseKey = VUFORIA_KEY;
-		parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+		parameters.cameraName = hMap.get(WebcamName.class, "Webcam 1");
 		vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
 		/* Initiate TensorFlow Object Detection */
-		int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		int tfodMonitorViewId = hMap.appContext.getResources().getIdentifier(
+				"tfodMonitorViewId", "id", hMap.appContext.getPackageName());
 		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
 		tfodParameters.minimumConfidence = 0.7;
 		tfDetect = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
@@ -151,7 +156,7 @@ public class __Hardware__ {
 
 	void updateBatteryVoltage() {
 		double result = Double.POSITIVE_INFINITY;
-		for (VoltageSensor sensor : hardwareMap.voltageSensor) {
+		for (VoltageSensor sensor : hMap.voltageSensor) {
 			double sensorVoltage = sensor.getVoltage();
 			if (sensorVoltage > 0) {
 				result = Math.min(result, sensorVoltage);
@@ -161,82 +166,71 @@ public class __Hardware__ {
 	}
 
 	/* Telemetry */
+	void update() { t.update(); }
 	void tStatus(String value) {
 		status.setValue(value);
-//		t.addData("Status", value);
-		t.update();
 	}
 	void tSub(String value) {
 		subStatus.setValue(value);
-//		t.addData("Sub", value);
-		t.update();
 	}
+
+	void tLog(String value) {
+		t.log().add(value);
+	}
+
 	void tErr(String msg, Exception e) {
 		t.addData(msg + " Error", "\n" + e);
-		t.update();
 	}
 
 	void except(Exception e) {
+		// Catches exceptions as plain-text
 		tStatus("Error");
 		tErr("Runtime", e);
+		update();
 		opmode.sleep(15_000);
 		opmode.stop();
 	}
 
 	void tRunTime() {
 		t.addData("Runtime", String.format("%3.2f", opmode.getRuntime()));
-		t.update();
 	}
 
-	void tRunTime(ElapsedTime elapsedTime, int update) {
+	void tRunTime(ElapsedTime elapsedTime) {
 		t.addData("Elapsed Time", elapsedTime.seconds());
-		if (update == 1)
-			t.update();
-	} void tRunTime(ElapsedTime elapsedTime) { tRunTime(elapsedTime, 0); }
+	}
 
 	void tSnapRuntime(ElapsedTime elapsedTime) {
 		Telemetry.Item runTimeCP = t.addData("RunTimeCP", elapsedTime.seconds());
-		t.update();
 	}
 	void tSnapDrivePos() {
 //		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %3.2d | %3.2d | %3.2d | %3.2d |",
 //				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
 //				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
-
-		t.update();
 	}
 
-	void tDrivePower(int update) {
+	void tDrivePower() {
 		t.addData("Drive Power", String.format("| %3.2f | %3.2f | %3.2f | %3.2f |",
 						drive_lf.getPower(), drive_rf.getPower(),
 						drive_rb.getPower(), drive_lb.getPower()));
-		if (update == 1)
-			t.update();
-	} void tDrivePower() { tDrivePower(1); }
+	}
 
-	void tDrivePos(int update) {
+	void tDrivePos() {
 		t.addData("Drive Position", String.format("| %6d | %6d | %6d | %6d |",
 				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
 				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
-		if (update == 1)
-			t.update();
-	} void tDrivePos() { tDrivePos(1); }
+	}
 
-	void tPos(DcMotor motor, int update) {
+	void tPos(DcMotor motor) {
 		t.addData("Pos", motor.getCurrentPosition());
-		if (update == 1)
-			t.update();
-	} void tPos(DcMotor motor) { tPos(motor, 0); }
+	}
 
-	void tCaminfo(int update) {
+	void tCaminfo() {
 		t.addData("Pos", sPos);
 		t.addData("left", sLeft);
 		t.addData("right", sRight);
 		t.addData("Area", sArea);
 		t.addData("Confidence", sConf);
-		if (update == 1)
-			t.update();
-	} void tCaminfo() { tCaminfo(0); }
+	}
 
 	/* Update Gamepad Values */
 	void updateGamepad(Gamepad gamepad1, Gamepad gamepad2) {

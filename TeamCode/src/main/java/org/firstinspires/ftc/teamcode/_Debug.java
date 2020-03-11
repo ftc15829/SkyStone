@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //@Disabled
 @Autonomous(name="Debug", group="Debug") public class _Debug extends LinearOpMode {
@@ -18,8 +15,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 		// Initiate hardware
 		try {
 			h.initTelemetry();
-			h.init(hardwareMap);
-			h.initAuto(hardwareMap);
+			h.initHardware(hardwareMap);
+			h.initVision(hardwareMap);
 		} catch (Exception e) {
 			h.tStatus("Error");
 			h.tErr("HardwareMap", e);

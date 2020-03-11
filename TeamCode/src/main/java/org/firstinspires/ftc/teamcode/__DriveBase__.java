@@ -17,13 +17,11 @@ public class __DriveBase__ {
 
 	ElapsedTime elapsedTime = new ElapsedTime();
 
-	void init() {
+	void run() {
 		// Initiate hardware
 		try {
 			h.initTelemetry();
-			h.tSub("Initializing");
-			h.init(opmode.hardwareMap);
-			h.tSub("---");
+			h.initHardware(opmode.hardwareMap);
 		} catch(Exception e) { h.except(e); }
 
 		h.tStatus("Ready");
@@ -33,39 +31,16 @@ public class __DriveBase__ {
 		}
 		opmode.resetStartTime(); h.t.clear();
 		h.tStatus("Running");
-
-	}
-
-	void update() {
-		// Updates hardware
-		h.updateGamepad(opmode.gamepad1, opmode.gamepad2);
-		updateDrive();
-		updateAux();
-		updateCrServos();
-		updateServos();
-		h.tDrivePower();
-	}
-
-/* AutoMaker */
-	void update(int isAlt) { // DEPRECIATED
-		h.tSub("Updating Auto Maker");
-		a.driveModeRUE();
-
-		h.updateGamepad(opmode.gamepad1, opmode.gamepad2);
-		updateDriveCardinal();
-		updateAux();
-		updateCrServos();
-		updateServos();
-
-		// Telemetry
-//		h.t.setAutoClear(false);
-		if (h.button_y) {
-			h.t.addLine("Snapshot Taken");
-			h.tSnapRuntime(elapsedTime);
-			h.tSnapDrivePos();
-			a.driveModeSRE();
-			elapsedTime.reset();
-		}
+		try {
+			while (opmode.opModeIsActive()) {
+				// Updates hardware
+				h.updateGamepad(opmode.gamepad1, opmode.gamepad2);
+				updateDrive();
+				updateAux();
+				updateCrServos();
+				updateServos();
+			}
+		} catch (Exception e) { h.except(e); }
 	}
 
 /* Update */
@@ -73,7 +48,7 @@ public class __DriveBase__ {
 	void updateAux() {
 		// Sets scissor-lift'side_setup motor powers
 		h.scissor.setPower(h._lStick_y);
-		if (h._lStick_y != 0) h.t.log().add("AHHH " + String.format("%f", opmode.getRuntime()));
+//		if (h._lStick_y != 0) h.tLog("AHHH " + String.format("%f", opmode.getRuntime()));
 		h.lSlide_l.setPower(-h._rStick_y);
 		h.lSlide_r.setPower(h._rStick_y);
 	}
@@ -90,14 +65,13 @@ public class __DriveBase__ {
 	private boolean fHookT = true; // Toggle (actual value doesn't matter)
 	void updateServos() {
 		// Sets AutoClamp and AutoHand's positions
-		// Gamepad2 dpad up and down control AutoHand, left and right control AutoClam
+		// Gamepad2 dpad update and down control AutoHand, left and right control AutoClam
 		if (h._button_y) {
 			h.t.log().add(Integer.toString(h.autoHand.getCurrentPosition()));
 			h.t.update();
 			opmode.sleep(220);
 		}
 		if (h._button_a && clampIsClosed) {
-//			h.autoHand.setPosition(handIsRaised ? 0.0 : 1.0);
 			a.motorPosition(h.autoHand, handIsRaised ? -0.3 : 0.1, 0.2, 1.5);
 			handIsRaised = !handIsRaised;
 			opmode.sleep(220);
@@ -115,27 +89,13 @@ public class __DriveBase__ {
 			opmode.sleep(220);
 		}
 	}
-	// Update Drive
-	void updateDriveCardinal() { // DEPRECIATED
-		if (h.dpad_u) {
-			a.mov(__AutoBase__.Dir.UP, 1.0);
-		} else if (h.dpad_d) {
-			a.mov(__AutoBase__.Dir.DOWN, 1.0);
-		} else if (h.dpad_l) {
-			a.mov(__AutoBase__.Dir.LEFT, 1.0);
-		} else if (h.dpad_r) {
-			a.mov(__AutoBase__.Dir.RIGHT, 1.0);
-		} else {
-			a.halt(0);
-		}
-	}
+
 	void updateDrive() {
 		h.drive_lf.setPower(getPower(0));
 		h.drive_rb.setPower(getPower(1));
 		h.drive_lb.setPower(getPower(2));
 		h.drive_rf.setPower(getPower(3));
-	}
-	double getPower(int i) {
+	} double getPower(int i) {
 		double power;
 		switch (i) {
 			case 0: power = -h.lStick_y + h.lStick_x + h.rStick_x; break; // drive_lf
