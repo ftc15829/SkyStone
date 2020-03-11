@@ -165,6 +165,12 @@ public class __Hardware__ {
 		voltage = result;
 	}
 
+	double encoderErrorCalc(int start, int current, int target) {
+		current = Math.abs(current) - Math.abs(start);
+		target = Math.abs(target) - Math.abs(start);
+		return ((float)current / target) * 100.0;
+	}
+
 	/* Telemetry */
 	void update() { t.update(); }
 	void tStatus(String value) {
@@ -189,6 +195,15 @@ public class __Hardware__ {
 		update();
 		opmode.sleep(15_000);
 		opmode.stop();
+	}
+
+	void ready() {
+		tStatus("Ready"); update();
+		while (!opmode.isStarted()) {
+			tRunTime(); update();
+			opmode.idle();
+		}
+		opmode.resetStartTime(); t.clear();
 	}
 
 	void tRunTime() {

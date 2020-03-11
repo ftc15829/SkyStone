@@ -23,14 +23,8 @@ public class __DriveBase__ {
 			h.initTelemetry();
 			h.initHardware(opmode.hardwareMap);
 		} catch(Exception e) { h.except(e); }
-
-		h.tStatus("Ready");
-		while (!opmode.isStarted()) {
-			h.tRunTime();
-			opmode.idle();
-		}
-		opmode.resetStartTime(); h.t.clear();
-		h.tStatus("Running");
+		h.ready();
+		h.tStatus("Running"); h.update();
 		try {
 			while (opmode.opModeIsActive()) {
 				// Updates hardware
@@ -48,7 +42,8 @@ public class __DriveBase__ {
 	void updateAux() {
 		// Sets scissor-lift'side_setup motor powers
 		h.scissor.setPower(h._lStick_y);
-//		if (h._lStick_y != 0) h.tLog("AHHH " + String.format("%f", opmode.getRuntime()));
+		if (h._lStick_y > 0) { h.tSub("Going Down!"); h.update(); }
+		else if (h._lStick_y < 0) { h.tSub("Going Up!"); h.update(); }
 		h.lSlide_l.setPower(-h._rStick_y);
 		h.lSlide_r.setPower(h._rStick_y);
 	}
@@ -67,19 +62,19 @@ public class __DriveBase__ {
 		// Sets AutoClamp and AutoHand's positions
 		// Gamepad2 dpad update and down control AutoHand, left and right control AutoClam
 		if (h._button_y) {
-			h.t.log().add(Integer.toString(h.autoHand.getCurrentPosition()));
+			h.tLog(Integer.toString(h.autoHand.getCurrentPosition()));
 			h.t.update();
 			opmode.sleep(220);
 		}
 		if (h._button_a && clampIsClosed) {
-			a.motorPosition(h.autoHand, handIsRaised ? -0.3 : 0.1, 0.2, 1.5);
+			a.motorPosition(h.autoHand, handIsRaised ? -0.4 : 0.0, 0.2, 1.0);
 			handIsRaised = !handIsRaised;
 			opmode.sleep(220);
 		}
 		if (h._button_x && !handIsRaised) {
 			h.autoClamp.setPosition(clampIsClosed ? 0.0 : 0.93);
 			clampIsClosed = !clampIsClosed;
-			opmode.sleep(220);
+			opmode.sleep(60);
 		}
 		// Sets f-hook positions
 		if (h.button_b) {

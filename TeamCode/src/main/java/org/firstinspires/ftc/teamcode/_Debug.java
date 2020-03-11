@@ -16,20 +16,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 		try {
 			h.initTelemetry();
 			h.initHardware(hardwareMap);
-			h.initVision(hardwareMap);
-		} catch (Exception e) {
-			h.tStatus("Error");
-			h.tErr("HardwareMap", e);
-			sleep(15_000);
-			stop();
-		}
-//		telemetry.setAutoClear(false);
-//		Telemetry.Item status = telemetry.addData("Status", "");
-//		telemetry.update();
-		while (!isStarted()) {
-//			h.tRunTime();
-			idle();
-		}
+			h.initVision();
+		} catch (Exception e) { h.except(e); }
+		h.ready();
 		resetStartTime();
 		try {
 			/* Instructions - Debug */
@@ -44,11 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 			a.motorPosition(h.drive_lf, 1, 1, 3.0);
 			sleep(2000);
 			/* End */
-		} catch (Exception e) { // Catches exceptions as plain-text
-			h.tStatus("Error");
-			h.tErr("Debug Runtime", e);
-			sleep(15_000);
-			stop();
-		}
+		} catch (Exception e) { h.except(e); }
 	}
 }

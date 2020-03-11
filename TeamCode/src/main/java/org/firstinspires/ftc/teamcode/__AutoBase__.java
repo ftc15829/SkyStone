@@ -191,6 +191,7 @@ public class __AutoBase__ {
 
 	/* Auxilary Movement */
 	void motorPosition(DcMotor motor, double rev, double p, double t) {
+		int start = motor.getCurrentPosition();
 		ElapsedTime elapsed = new ElapsedTime();
 		targetPos(motor, rev, Brand.TETRIX);
 		modeRTP(motor);
@@ -198,7 +199,10 @@ public class __AutoBase__ {
 		while (motor.isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
 			opmode.idle();
 		}
-		if (elapsed.seconds() >= t) h.tLog(motor.toString() + " - Timed Out at " + String.format("%.2f", (motor.getCurrentPosition() / motor.getTargetPosition()) * 100) + "%");
+		if (elapsed.seconds() >= t) {
+			h.tLog(motor.getPortNumber() + " - Timed Out at " + String.format("%f",
+			h.encoderErrorCalc(start, motor.getCurrentPosition(), motor.getTargetPosition())));
+		}
 		motor.setPower(0);
 		modeRWE(motor);
 	} void motorPosition(DcMotor motor, double rev, double p) {
