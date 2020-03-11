@@ -58,24 +58,24 @@ public class __AutoBase__ {
 	}
 
 	void side_setup() {
-		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
-		opmode.sleep(600);
-		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
-		opmode.sleep(600);
+//		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
+//		opmode.sleep(600);
+//		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
+//		opmode.sleep(600);
 	}
 
 	void side_grab() {
-		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 1);
-		opmode.sleep(600);
-		opmode.sleep(300);
-		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 1);
-		opmode.sleep(600);
+//		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 1);
+//		opmode.sleep(600);
+//		opmode.sleep(300);
+//		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 1);
+//		opmode.sleep(600);
 	}
 
 	void side_drop() {
-		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
-		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
-		opmode.sleep(600);
+//		h.autoHand.getController().setServoPosition(h.autoHand.getPortNumber(), 0);
+//		h.autoClamp.getController().setServoPosition(h.autoClamp.getPortNumber(), 0);
+//		opmode.sleep(600);
 	}
 
 	void front_drop() { h.tSub("Dropping Stone");
@@ -173,11 +173,27 @@ public class __AutoBase__ {
 		int rbcp = h.drive_rb.getCurrentPosition();
 		int lfcp = h.drive_lf.getCurrentPosition();
 		int lbcp = h.drive_lb.getCurrentPosition();
-
+		// FIXME: This just doesn't work
 		return !(rftp == rfcp && rbtp == rbcp && lftp == lfcp && lbtp == lbcp);
 	}
 
 	/* Auxilary Movement */
+	void motorPosition(DcMotor motor, double rev, double p, double t) {
+		h.tSub("---");
+		ElapsedTime elapsed = new ElapsedTime();
+		targetPos(motor, rev, Brand.TETRIX);
+		modeRTP(motor);
+		motor.setPower(p);
+		while (motor.isBusy() && (elapsed.seconds() < t || t == 0) && opmode.opModeIsActive()) {
+			opmode.idle();
+		}
+		if (elapsed.seconds() >= t) h.tSub("Timed Out");
+		motor.setPower(0);
+		modeRWE(motor);
+	} void motorPosition(DcMotor motor, double rev, double p) {
+		motorPosition(motor, rev, p, 0);
+	}
+
 	void platform(double rev, double p) {
 		ElapsedTime elapsedTime = new ElapsedTime();
 		modeSRE(h.lSlide_l); // Change lSlide mode to SRE
@@ -224,7 +240,6 @@ public class __AutoBase__ {
 		}
 		if (elapsed.seconds() >= t) h.tSub("Timed Out");
 		halt(0);
-		driveModeRWE();
 	}
 
 	void movV(double rev, double p, double t, boolean forward) {

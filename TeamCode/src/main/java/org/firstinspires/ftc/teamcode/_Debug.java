@@ -11,15 +11,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 	/*Initializations*/
 
 	__Hardware__ h = new __Hardware__(this, telemetry);
-//	__AutoBase__ a = new __AutoBase__(h, this);
+	__AutoBase__ a = new __AutoBase__(h, this);
 
 	// Runs when initialized
 	@Override public void runOpMode() {
 		// Initiate hardware
 		try {
 			h.initTelemetry();
-//			h.init(hardwareMap);
-//			h.initAuto(hardwareMap);
+			h.init(hardwareMap);
+			h.initAuto(hardwareMap);
 		} catch (Exception e) {
 			h.tStatus("Error");
 			h.tErr("HardwareMap", e);
@@ -36,15 +36,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 		resetStartTime();
 		try {
 			/* Instructions - Debug */
-			h.tStatus("notValue");
-//			telemetry.update();
-			sleep(2000);
-			telemetry.addData("Encoder", "hepu");
-			telemetry.update();
-			sleep(2000);
-			h.tStatus("Value");
+//			h.tStatus("notValue");
 //			sleep(2000);
-			telemetry.clear();
+//			telemetry.addData("Encoder", "shark");
+//			telemetry.update();
+//			sleep(2000);
+//			h.tStatus("Value");
+//			h.tStatus("Halp");
+//			telemetry.clear();
+			a.motorPosition(h.drive_lf, 1, 1, 3.0);
 			sleep(2000);
 			/* End */
 		} catch (Exception e) { // Catches exceptions as plain-text

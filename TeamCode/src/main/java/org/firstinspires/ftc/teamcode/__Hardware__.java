@@ -36,8 +36,8 @@ public class __Hardware__ {
 	double voltage = Double.POSITIVE_INFINITY;
 	// Initialize hardware
 	DcMotor drive_lf, drive_rb, drive_rf, drive_lb;
-	DcMotor scissor, lSlide_l, lSlide_r;
-	Servo fHook_l, fHook_r, autoHand, autoClamp;
+	DcMotor scissor, lSlide_l, lSlide_r, autoHand;
+	Servo fHook_l, fHook_r, autoClamp;
 	CRServo grab_l, grab_r, bHook_l, bHook_r;
 	// Initialize Vision
 	TFObjectDetector tfDetect;
@@ -63,14 +63,17 @@ public class __Hardware__ {
 
 	/* Init Functions */
 	void initTelemetry() {
-		t.setAutoClear(true);
-		status = t.addData("Status", "value");
+//		t.setAutoClear(true);
+		t.log().setDisplayOrder(Telemetry.Log.DisplayOrder.OLDEST_FIRST);
+		t.log().setCapacity(7);
+		status = t.addData("Status", "---");
+		subStatus = t.addData("SubSta", "---");
+		subStatus.setRetained(true);
 		status.setRetained(true);
 		t.update();
 	}
 	void init(HardwareMap hardwareMap) {
 		// Defines drive motors
-		initTelemetry();
 		this.hardwareMap = hardwareMap;
 		drive_lf = hardwareMap.dcMotor.get("leftFront");
 		drive_rb = hardwareMap.dcMotor.get("rightBack");
@@ -87,6 +90,7 @@ public class __Hardware__ {
 		drive_rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		// Defines scissor-lift hardware
 		scissor = hardwareMap.dcMotor.get("scissor");
+		scissor.getPortNumber();
 		lSlide_l = hardwareMap.dcMotor.get("slideL");
 		lSlide_r = hardwareMap.dcMotor.get("slideR");
 		fHook_l = hardwareMap.servo.get("hook1");
@@ -94,7 +98,7 @@ public class __Hardware__ {
 		bHook_l = hardwareMap.crservo.get("fHookLeft");
 		bHook_r = hardwareMap.crservo.get("fHookRight");
 		autoClamp = hardwareMap.servo.get("autoClamp");
-		autoHand = hardwareMap.servo.get("autoHand");
+		autoHand = hardwareMap.dcMotor.get("autoHand");
 		grab_l = hardwareMap.crservo.get("block1");
 		grab_r = hardwareMap.crservo.get("block2");
 	}
@@ -158,15 +162,13 @@ public class __Hardware__ {
 
 	/* Telemetry */
 	void tStatus(String value) {
-
-//		t.log().add(value);
 		status.setValue(value);
-
+//		t.addData("Status", value);
 		t.update();
 	}
 	void tSub(String value) {
-//		subStatus.setValue(value);
-		t.addData("SubStatus", value);
+		subStatus.setValue(value);
+//		t.addData("Sub", value);
 		t.update();
 	}
 	void tErr(String msg, Exception e) {
@@ -174,8 +176,15 @@ public class __Hardware__ {
 		t.update();
 	}
 
+	void except(Exception e) {
+		tStatus("Error");
+		tErr("Runtime", e);
+		opmode.sleep(15_000);
+		opmode.stop();
+	}
+
 	void tRunTime() {
-		t.addData("Runtime", opmode.getRuntime());
+		t.addData("Runtime", String.format("%3.2f", opmode.getRuntime()));
 		t.update();
 	}
 
@@ -190,28 +199,28 @@ public class __Hardware__ {
 		t.update();
 	}
 	void tSnapDrivePos() {
-//		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
+//		Telemetry.Item drivePosCP = t.addData("DrivePosCP", String.format("\n| %3.2d | %3.2d | %3.2d | %3.2d |",
 //				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
 //				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
+
 		t.update();
 	}
 
 	void tDrivePower(int update) {
-//		t.addData("Drive Power",
-//				String.format("\n| %3.2d | %3.2d |\n| %3.2d | %3.2d |",
-//						drive_lf.getPower(), drive_rf.getPower(),
-//						drive_rb.getPower(), drive_lb.getPower()));
+		t.addData("Drive Power", String.format("| %3.2f | %3.2f | %3.2f | %3.2f |",
+						drive_lf.getPower(), drive_rf.getPower(),
+						drive_rb.getPower(), drive_lb.getPower()));
 		if (update == 1)
 			t.update();
-	} void tDrivePower() { tDrivePower(0); }
+	} void tDrivePower() { tDrivePower(1); }
 
 	void tDrivePos(int update) {
-//		t.addData("Drive Position", String.format("\n| %6d | %6d |\n| %6d | %6d |",
-//				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
-//				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
+		t.addData("Drive Position", String.format("| %6d | %6d | %6d | %6d |",
+				drive_lf.getCurrentPosition() / GobRate, drive_rf.getCurrentPosition() / GobRate,
+				drive_lb.getCurrentPosition() / GobRate, drive_rb.getCurrentPosition() / GobRate));
 		if (update == 1)
 			t.update();
-	} void tDrivePos() { tDrivePos(0); }
+	} void tDrivePos() { tDrivePos(1); }
 
 	void tPos(DcMotor motor, int update) {
 		t.addData("Pos", motor.getCurrentPosition());

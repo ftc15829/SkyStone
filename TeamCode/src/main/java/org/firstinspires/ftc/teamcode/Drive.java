@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 				d.update();
 			}
 		} catch(Exception e) {
-			d.except(e);
+			d.h.except(e);
 		}
 	}
 }

@@ -20,30 +20,20 @@ public class __DriveBase__ {
 	void init() {
 		// Initiate hardware
 		try {
-			h.tStatus("Initializing");
+			h.initTelemetry();
+			h.tSub("Initializing");
 			h.init(opmode.hardwareMap);
-		} catch(Exception e) {
-			h.tStatus("Error");
-			h.tErr("HardwareMap", e);
-			opmode.sleep(15_000);
-			opmode.stop();
-		}
+			h.tSub("---");
+		} catch(Exception e) { h.except(e); }
 
-		h.tStatus("Ready | Drive");
+		h.tStatus("Ready");
 		while (!opmode.isStarted()) {
 			h.tRunTime();
 			opmode.idle();
 		}
-		opmode.resetStartTime();
+		opmode.resetStartTime(); h.t.clear();
 		h.tStatus("Running");
 
-	}
-
-	void except(Exception e) {
-		h.tStatus("Error");
-		h.tErr("Runtime", e);
-		opmode.sleep(15_000);
-		opmode.stop();
 	}
 
 	void update() {
@@ -82,7 +72,8 @@ public class __DriveBase__ {
 	// Update Auxilary Motors
 	void updateAux() {
 		// Sets scissor-lift'side_setup motor powers
-		h.scissor.setPower(-h._lStick_y);
+		h.scissor.setPower(h._lStick_y);
+		if (h._lStick_y != 0) h.t.log().add("AHHH " + String.format("%f", opmode.getRuntime()));
 		h.lSlide_l.setPower(-h._rStick_y);
 		h.lSlide_r.setPower(h._rStick_y);
 	}
@@ -94,32 +85,38 @@ public class __DriveBase__ {
 		h.grab_r.setPower(h._rTrigger != 0.0 ? -p : (h._lTrigger != 0.0 ? p : 0.0));
 	}
 	// Update Servos
-	private boolean autoClampT = true;
-	private boolean autoHandT = true;
+	private boolean clampIsClosed = true;
+	private boolean handIsRaised = true;
 	private boolean fHookT = true; // Toggle (actual value doesn't matter)
 	void updateServos() {
 		// Sets AutoClamp and AutoHand's positions
 		// Gamepad2 dpad up and down control AutoHand, left and right control AutoClam
-		if (h._button_a) {
-			h.autoHand.setPosition(autoHandT ? 0.0 : 1.0);
-			autoHandT = !autoHandT;
-			opmode.sleep(300);
+		if (h._button_y) {
+			h.t.log().add(Integer.toString(h.autoHand.getCurrentPosition()));
+			h.t.update();
+			opmode.sleep(220);
 		}
-		if (h._button_x && !autoHandT) {
-			h.autoClamp.setPosition(autoClampT ? 0.0 : 1.0);
-			autoClampT = !autoClampT;
-			opmode.sleep(300);
+		if (h._button_a && clampIsClosed) {
+//			h.autoHand.setPosition(handIsRaised ? 0.0 : 1.0);
+			a.motorPosition(h.autoHand, handIsRaised ? -0.3 : 0.1, 0.2, 1.5);
+			handIsRaised = !handIsRaised;
+			opmode.sleep(220);
+		}
+		if (h._button_x && !handIsRaised) {
+			h.autoClamp.setPosition(clampIsClosed ? 0.0 : 0.93);
+			clampIsClosed = !clampIsClosed;
+			opmode.sleep(220);
 		}
 		// Sets f-hook positions
 		if (h.button_b) {
 			h.fHook_l.setPosition(fHookT ? 1.0 : 0.0);
 			h.fHook_r.setPosition(fHookT ? 0.0 : 1.0);
 			fHookT = !fHookT;
-			opmode.sleep(300);
+			opmode.sleep(220);
 		}
 	}
 	// Update Drive
-	void updateDriveCardinal() {
+	void updateDriveCardinal() { // DEPRECIATED
 		if (h.dpad_u) {
 			a.mov(__AutoBase__.Dir.UP, 1.0);
 		} else if (h.dpad_d) {
@@ -151,7 +148,7 @@ public class __DriveBase__ {
 		double SLOW = (h.lStick_x >= 0.2 || h.lStick_x <= -0.2) ? 0.3 * 1.9 : 0.3; // Crab : Normal Slow = SLOW
 		double slow = h.rTrigger != 0 ? 0.65 : 0.8; // not as slow : normal = slow
 		power *= h.lTrigger != 0 ? SLOW : slow;
-		if (power > 1) power = 1;
+		if (power > 1.0) power = 1.0;
 		return power;
 	}
 }
